@@ -1,0 +1,61 @@
+pro aziavg, type=type, loc=loc, start=start, finish=finish
+pi=3.141592654
+;;;;;;;;;;;;;;;
+;WHERE IS DATA;
+;;;;;;;;;;;;;;;
+location=strcompress('out'+loc,/remove_all)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;GET DIMENSIONS AND TIME UNIT;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+dims=(read_ascii(filepath('dims.dat',root_dir='.',subdir=[location]))).(0)
+nrad=fix(dims(6))
+nsec=fix(dims(7))
+nout=fix(dims(5))
+info=dblarr(9,nout+1)
+openr,3,filepath('planet0.dat',root_dir='.',subdir=[location])
+readf,3,info
+close,3
+a0=info(1,0)
+dt=info(7,1)
+p0=2.*pi*(a0)^(3./2.)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;CREATE ARRAY FOR RADIUS AND ARRAY TO HOLD AVERAGE SIGMA;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+radtmp=dblarr(nrad+1)
+rad=dblarr(nrad)
+avgsig=dblarr(nrad)
+openr,1,filepath('used_rad.dat',root_dir='.',subdir=[location])
+readf,1,radtmp
+close,1
+for j=0, nrad-1 do rad(j)=(radtmp(j)+radtmp(j+1))/2.
+;;;;;;;;;;;;;;;;;;;;;
+;GET THE PLANET DATA;
+;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;PLOT AZIMUTHAL-AVERAGED DENSITY VS RADIUS;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+data = dblarr(nsec,nrad)
+for k=start, finish do begin
+ks=string(k,format='(I03)')
+openr,2,filepath(strcompress('gas'+type+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+readu,2,data
+close,2
+for i=0, nrad-1 do avgsig(i)=mean(data(*,i))
+time=string(k*dt/p0,format='(F5.1)')
+set_plot, 'ps'
+device, filename=filepath(strcompress('avg'+type+ks+'.ps',/remove_all),root_dir='.',subdir=[location])$
+,bits_per_pixel=8,xsize=8, ysize=6,xoffset=0,yoffset=0,/inches
+plot,rad,avgsig,title=time+' orbits',xmargin=[8,6],ymargin=[3,3],xtitle='r',ytitle=textoidl('<\Sigma>_{\phi}')$
+,xrange=[min(radtmp),max(radtmp)],charsize=1.5
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;OPTION TO PLOT PLANET RADIUS;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+if keyword_set(planet) then begin
+pos=0.5*(max(avgsig)+min(avgsig))
+radius=info(1,k)
+oplot,radius,pos,psym=4,symsize=5
+endif
+device,/close
+print, 'done '+ks
+endfor
+end

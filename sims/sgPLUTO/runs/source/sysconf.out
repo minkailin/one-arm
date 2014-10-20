@@ -1,0 +1,12 @@
+USER           = minkailin
+WORKING_DIR    = /gsfs1/rsgrps/kkratterstudents/minkailin/sgPLUTO/runs/source
+SYSTEM_NAME    = Linux
+NODE_NAME      = elgato-login.hpc.arizona.edu
+RELEASE        = 2.6.32-358.el6.x86_64
+ARCH           = x86_64
+BYTE_ORDER     = little
+VERSION        = #1 SMP Tue Jan 29 11:47:41 EST 2013
+PLUTO_DIR      = /rsgrps/kkratterstudents/minkailin/sgPLUTO/
+PLUTO_VERSION  = "4.0"
+C_COMPILER     = gcc
+MPI_C_COMPILER = mpicc

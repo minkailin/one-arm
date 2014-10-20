@@ -1,0 +1,124 @@
+; THIS PROCEDURE CALCULATES SIGMA/OMEGA ON THE GRID POINTS USING
+; CENTRAL DIFFERENCING.
+pro vort, loc=loc, start=start, finish=finish
+pi=3.141592654
+;;;;;;;;;;;;;;;
+;WHERE IS DATA;
+;;;;;;;;;;;;;;;
+location=strcompress('out'+loc,/remove_all)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;GET DIMENSIONS AND TIME UNIT;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+dims=(read_ascii(filepath('dims.dat',root_dir='.',subdir=[location]))).(0)
+nrad=fix(dims(6))
+nsec=fix(dims(7))
+info=dblarr(9,2)
+openr,3,filepath('planet0.dat',root_dir='.',subdir=[location])
+readf,3,info
+close,3
+a0=info(1,0)
+dt=info(7,1)
+p0=2.*pi*(a0)^(3./2.)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;CREATE ARRAY FOR AZIMUTH AND RADIAL FOR POLAR PLOTS LATER;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+in=4
+azi=dblarr(nsec)
+radtmp=dblarr(nrad+1)
+rad=dblarr(in+nrad)
+openr,1,filepath('used_rad.dat',root_dir='.',subdir=[location])
+readf,1,radtmp
+close,1
+azi=dindgen(nsec)*2.*pi/nsec
+rad(0:in-1)=(radtmp(0)/in)*(dindgen(in)+0.5)
+rad(in:nrad+in-1)=(radtmp(0:nrad-1)+radtmp(1:nrad))/2.
+;for j=in, nrad+in-1 do rad(j)=(radtmp(j-in)+radtmp(j-in+1))/2.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;CALCULATE VORTICITY FOR EACH TIMESTEP;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Arrays to hold variables. vtheta and vrad is bigger than array of raw data because
+;we need some ghost cells for numerical differentiation.
+sigma=dblarr(nsec,nrad)
+vtheta= dblarr(nsec+2,nrad+2)
+vrad=dblarr(nsec+2,nrad+2)
+vthetaraw=dblarr(nsec,nrad)
+vradraw=dblarr(nsec,nrad)
+;Radius array. Radius of the (m,n) grid only depends on n.
+rmed=radtmp(0:nrad-1)+radtmp(1:nrad)
+rmed=rmed*0.5
+;Grid size for numerical differentiation. 
+dtheta=2.*pi/nsec
+dr=(radtmp(nrad)-radtmp(0))/nrad
+;Array to hold results.
+vort=dblarr(nsec,nrad)
+;;;;;;SETUP DONE;;;;;
+loadct,3, bottom=0
+for k=start, finish do begin
+ks=string(k,format='(I03)')
+;Read raw data.
+openr,2,filepath(strcompress('gasdens'+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+readu,2,sigma
+close,2
+openr,3,filepath(strcompress('gasvtheta'+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+readu,3,vthetaraw
+close,3
+vtheta(1:nsec,1:nrad)=vthetaraw(0:nsec-1,0:nrad-1)
+openr,2,filepath(strcompress('gasvrad'+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+readu,2,vradraw
+close,2
+vrad(1:nsec,1:nrad)=vradraw(0:nsec-1,0:nrad-1)
+;Fill in ghost cells that is needed when doing azimuthal gradient at
+;theta=0 or theta=2pi. 
+vtheta(0,1:nrad)=vtheta(nsec,1:nrad)
+vtheta(nsec+1,1:nrad)=vtheta(0,1:nrad)
+vrad(0,1:nrad)=vrad(nsec,1:nrad)
+vrad(nsec+1,1:nrad)=vrad(0,1:nrad)
+;Fill in ghost cells beyond rmax and below rmin. This is needed when
+;doing radialg radients at rmax and rmin. The values are determined
+;such that the boundary value (data we have) is the average of it's 4
+;neighbours. One of the neighbour is beyond the boundary.
+vtheta(1:nsec,0)=4.*vtheta(1:nsec,1)-vtheta(0:nsec-1,1)-vtheta(1:nsec,2)-vtheta(2:nsec+1,1)
+vtheta(1:nsec,nrad+1)=4.*vtheta(1:nsec,nrad)-vtheta(2:nsec+1,nrad)-vtheta(0:nsec-1,nrad)-vtheta(1:nsec,nrad-1)
+vrad(1:nsec,0)=4.*vrad(1:nsec,1)-vrad(0:nsec-1,1)-vrad(1:nsec,2)-vrad(2:nsec+1,1)
+vrad(1:nsec,nrad+1)=4.*vrad(1:nsec,nrad)-vrad(2:nsec+1,nrad)-vrad(0:nsec-1,nrad)-vrad(1:nsec,nrad-1)
+;Finally setup array to hold radius of each grid point. 
+;Also need values for radius of ghost cells above and below rmax. 
+rad2=dblarr(nrad+2)
+radius=dblarr(nsec+2,nrad+2)
+rad2(1:nrad)=rmed(0:nrad-1)
+rad2(0)=radtmp(0)-dr
+rad2(nrad+1)=radtmp(nrad)+dr
+;"radius" is 2d array to hold radius of each grid point. these do not
+;vary with the first index (azimuth).
+for l=0, nsec+1 do radius(l,0:nrad+1)=rad2(0:nrad+1)
+;;;;;;;;;;;;;;;;;;;;;;;
+;VORTICITY CALCULATION;
+;;;;;;;;;;;;;;;;;;;;;;;
+vort(0:nsec-1,0:nrad-1)=(radius(1:nsec,2:nrad+1)*vtheta(1:nsec,2:nrad+1)-radius(1:nsec,0:nrad-1)*vtheta(1:nsec,0:nrad-1))/(2.*dr)$
+-(vrad(2:nsec+1,1:nrad)-vrad(0:nsec-1,1:nrad))/(2.*dtheta)
+vort(0:nsec-1,0:nrad-1)=vort(0:nsec-1,0:nrad-1)/radius(1:nsec,1:nrad)
+;;;;;;Below is just a different method to calculate vort using one loop.
+; for j=1, nrad do begin
+; vort(0:nsec-1,j-1)=(rad2(j+1)*vtheta(1:nsec,j+1)-rad2(j-1)*vtheta(1:nsec,j-1))/(2.*dr)$
+; -(vrad(2:nsec+1,j)-vrad(0:nsec-1,j))/(2.*dtheta)
+; vort(0:nsec-1,j-1)=vort(0:nsec-1,j-1)/rad2(j)
+; endfor
+;;;;;;
+;;;;;;;;;;;;;;;
+;DO POLAR PLOT;
+;;;;;;;;;;;;;;;
+data2=dblarr(nsec,nrad+in)
+data=alog(sigma/vort)
+data2(*,0:in-1)=0.
+data2(*,in:nrad+in-1)=data
+levels=min(data)+(max(data)-min(data))*(dindgen(32)/32.)
+time=string(k*dt/p0,format='(F5.1)')
+set_plot, 'ps'
+device, filename=filepath(strcompress('sigvort'+ks+'.ps',/remove_all),root_dir='.',subdir=[location])$
+,/color, bits_per_pixel=8,xsize=16, ysize=12
+ polar_contour,data2,azi,rad,/isotropic,/fill,levels=levels,title=time+' orbits',ymargin=[2.5,2.5]
+ colorbar, position=[0.85, 0.1, 0.9, 0.9],/vertical,/right,range=[min(data),max(data)]
+ device,/close
+ print, 'done '+ks
+endfor
+end

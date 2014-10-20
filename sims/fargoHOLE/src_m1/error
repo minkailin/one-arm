@@ -1,0 +1,11 @@
+/home/mkl23/fargoSG/fftw/lib/libfftw_mpi.a(transpose_mpi.o)(.text+0x85a): In function `transpose_mpi_create_plan':
+: undefined reference to `ompi_mpi_double'
+/home/mkl23/fargoSG/fftw/lib/libfftw_mpi.a(transpose_mpi.o)(.text+0xd68): In function `transpose_start_exchange_step':
+: undefined reference to `ompi_request_null'
+/home/mkl23/fargoSG/fftw/lib/libfftw_mpi.a(transpose_mpi.o)(.text+0xd70): In function `transpose_start_exchange_step':
+: undefined reference to `ompi_request_null'
+/home/mkl23/fargoSG/fftw/lib/libfftw_mpi.a(fftwnd_mpi.o)(.text+0x3f5): In function `fftw_mpi_die':
+: undefined reference to `ompi_mpi_comm_world'
+/home/mkl23/fargoSG/fftw/lib/libfftw_mpi.a(fftwnd_mpi.o)(.text+0x427): In function `fftw_mpi_die':
+: undefined reference to `ompi_mpi_comm_world'
+

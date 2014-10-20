@@ -1,0 +1,243 @@
+pro pdisk_nonaxi_evol, start=start, finish=finish, xrange=xrange, yrange=yrange, $
+        label=label, legend=legend, r0=r0, max=max, basic=basic, $
+        ytickinterval=ytickinterval, rrange=rrange, xtickinterval=xtickinterval, azimodes=azimodes 
+
+COMMON PLUTO_GRID,  nx1,nx2,nx3,x1,x2,x3,$
+                    dx1,dx2,dx3, geometry, xpos, ypos,$
+                    AMRLevel, AMRBoxes;  ** Chombo data structure **
+                                      ;  ** loaded when HDF5LOAD is called **
+
+COMMON PLUTO_VAR, NVAR, rho, vx1, vx2, vx3, $
+                             bx1, bx2, bx3, $
+                             Ax1, Ax2, Ax3, $
+                             bx1s, bx2s, bx3s, pot, $
+                         ; ----------------------------------------
+                             v1, v2, v3, $   ; Kept for backward
+                             b1, b2, b3, $   ; compatibility with 
+                             A1, A2, A3, $   ; PLUTO 3 data name
+                             b1s, b2s, b3s, $ ;
+                             pr,            $ ;
+                         ; -----------------------------------------
+                  prs, psi_glm, fneut, fion, fh2, $
+                  tmp, tr1, tr2, tr3, tr4,$
+                  fhI, fheI, fheII,$
+                  fcI, fcII, fcIII, fcIV, fcV,$
+                  fnI, fnII, fnIII, fnIV, fnV,$
+                  foI, foII, foIII, foIV, foV,$
+                  fneI, fneII, fneIII, fneIV, fneV,$
+                  fsI, fsII, fsIII, fsIV, fsV, vars, vname
+COMMON PLUTO_RUN,  t, dt, nlast, first_call
+!p.font = 0
+
+if not keyword_set(finish) then finish=start 
+if not keyword_set(r0) then r0 = 1d0 
+if not keyword_set(basic) then basic=start
+
+pload, basic
+
+rad   = x1
+theta = x2
+phi   = 2d0*!dpi*dindgen(nx3)/(nx3-1d0)
+
+nrad   = nx1
+ntheta = nx2
+nphi   = nx3
+
+p0  = 2d0*!dpi*r0^1.5
+
+data     = dblarr(nx1, nx3)
+data2d   = dblarr(nx1, nx2)
+data2d_re= data2d
+data2d_im= data2d
+data1d   = dblarr(nx1)
+data1d_re= data1d
+data1d_im= data1d
+
+nmodes = n_elements(azimodes)
+
+time     = dblarr(finish-start+1)
+mode_amp = dblarr(nmodes, finish-start+1)
+mode_ang = dblarr(nmodes, finish-start+1)
+tot_ang  = dblarr(finish-start+1)
+
+     if keyword_set(rrange) then begin
+     temp = min(abs(rrange(0) - rad), r1)
+     temp = min(abs(rrange(1) - rad), r2)
+     endif else begin
+     r1 = 0
+     r2 = nx1-1
+     endelse
+
+;normalization for mode amplitude
+     rho0      = rho 
+     for i=0, nrad-1 do begin
+     data1d(i)   = int_tabulated(-cos(theta(*)), rho0(i,*,0))
+     endfor
+     czero       = int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2))
+
+;normalization for ang mom amplitude
+;     vphi   = vx3
+;     j = rho0*vphi
+;     for i=0, nrad-1 do begin
+;     data1d(i)   = 2d0*int_tabulated(-cos(theta(*)), j(i,*,nphi/2)*sin(theta));factor of 2 for the lower disk 
+;     endfor
+;     angmom0       = 2d0*!dpi*int_tabulated(rad(r1:r2), data1d(r1:r2)*rad(r1:r2)^3)
+
+
+ ;   for i=r1, r2 do begin
+ ;   for j=0, ntheta-1 do begin
+ ;   data2d(i,j) = int_tabulated(phi,rho(i,j,*)*vx3(i,j,*))
+ ;   endfor
+ ;   data1d(i)   = 2d0*int_tabulated(-cos(theta), data2d(i,*)*sin(theta))
+ ;   endfor
+ ;   angmom1 = int_tabulated(rad(r1:r2), data1d(r1:r2)*rad(r1:r2)^3)
+
+
+ vphi_fft = fft(vx3, -1, dimension=3,/double)
+ rho_fft = fft(rho, -1, dimension=3,/double)
+
+temp = dblarr(nphi/2+1)
+for m=0, nphi/2 do begin
+data2d = real_part( rho_fft(*,*,m)*conj(vphi_fft(*,*,m)) )
+for i=0, nrad-1 do begin
+data1d(i) = 2d0*int_tabulated(-cos(theta), sin(theta)*data2d(i,*))
+endfor
+temp(m) = 4d0*!dpi*int_tabulated(rad(r1:r2)^3d0/3d0, rad(r1:r2)*data1d(r1:r2))
+if (m eq 0) then temp(m) /= 2d0
+endfor 
+angmom0 = total(temp)
+
+
+
+for n=start, finish do begin
+   ks   = string(n,format='(I03)')
+
+   pload, n, /silent
+   vphi = vx3   
+
+   time(n-start) = t(n)/p0 
+    
+   vphi_fft = fft(vphi, -1, dimension=3,/double)
+   rho_fft = fft(rho, -1, dimension=3,/double)
+
+   for mm=0, nmodes-1 do begin
+      m = azimodes(mm)
+;mode amplitudes
+      if not keyword_set(max) then begin
+      data2d_re = real_part(rho_fft(*,*,m))
+      data2d_im = imaginary(rho_fft(*,*,m))
+
+      for i=0, nrad-1 do begin
+      data1d_re(i) = int_tabulated(-cos(theta), data2d_re(i,*))
+      data1d_im(i) = int_tabulated(-cos(theta), data2d_im(i,*))
+      endfor
+      amp = dcomplex(int_tabulated(rad(r1:r2)^3d0/3d0, data1d_re(r1:r2)) $
+                    ,int_tabulated(rad(r1:r2)^3d0/3d0, data1d_im(r1:r2)) )
+      mode_amp(mm, n-start) = alog10(abs(amp)/czero + 1d-16)
+      endif else begin
+      mode_amp(mm, n-start) = max(alog10( abs(rho_fft(r1:r2,*,m)/rho0(r1:r2,*,0)) ) )
+
+      endelse
+
+;angular momentum components
+      data2d = real_part( rho_fft(*,*,m)*conj(vphi_fft(*,*,m)) )
+      for i=0, nrad-1 do begin
+      data1d(i) = 2d0*int_tabulated(-cos(theta), sin(theta)*data2d(i,*))
+      endfor
+      mode_ang(mm, n-start) = 4d0*!dpi*int_tabulated(rad(r1:r2)^3d0/3d0, rad(r1:r2)*data1d(r1:r2))
+      if (m eq 0) then begin
+      mode_ang(mm, n-start) /= 2d0
+;      if (n eq start) then angmom0 = mode_ang(mm, n-start)
+      endif 
+;      mode_ang(mm, n-start) /= angmom0
+      
+    endfor
+
+;total ang mom
+    for i=r1, r2 do begin
+    for j=0, ntheta-1 do begin
+    data2d(i,j) = int_tabulated(phi,rho(i,j,*)*vphi(i,j,*))
+    endfor
+    data1d(i)   = 2d0*int_tabulated(-cos(theta), data2d(i,*)*sin(theta))
+    endfor
+    tot_ang(n-start) = int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2)*rad(r1:r2))  
+
+;total mass
+    data2d = 2.0*!dpi*real_part(rho_fft(*,*,0))
+    for i=r1, r2 do begin
+    data1d(i)   = int_tabulated(-cos(theta), data2d(i,*))
+    endfor
+    mass = 2.0*int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2)); factor of 2 to account for lower z plane
+
+print, n, tot_ang(n-start),total(mode_ang(*,n-start)) ,mass, format='(I03,x,3(e22.15,x))'
+endfor
+  if not keyword_set(max) then begin
+  ytitle=textoidl('log_{10}(C_m/C_{0,t=0})')
+  endif else begin
+  ytitle=textoidl('max(log_{10}|\rho_m/\rho_{0,t=0}|)')
+  endelse
+
+  set_plot, 'ps'
+  device, filename='nonaxi_evol.ps' $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time, mode_amp(0,*), xmargin=[6.5,1.5], ymargin=[3.5,0.5] , ytitle=ytitle, ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(mode_amp),max(mode_amp)], xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time, mode_amp(j,*), thick=4, linestyle=j
+  endfor
+   if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif
+    device,/close
+
+  tot = mode_ang(0,*)
+  for i=0, finish-start do tot(i) = total(mode_ang(*,i))
+
+  for j=0, nmodes-1 do begin
+  m = azimodes(j)
+  if(m lt 1) then mode_ang(j,*) = mode_ang(j,*) - angmom0  
+;   mode_ang(j,*) = mode_ang(j,*) -  mode_ang(j,0)
+  endfor
+  mode_ang /=angmom0
+
+
+  set_plot, 'ps'
+  device, filename='nonaxi_evol_ang.ps' $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time, mode_ang(0,*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\DeltaJ_m/J_{ref}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(mode_ang),max(mode_ang)], xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time, mode_ang(j,*), thick=4, linestyle=j
+  endfor
+  oplot, time, tot/angmom0-1., thick=1, linestyle=0
+    if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif
+   device,/close
+
+  tot_ang /= angmom0
+  tot_ang -= 1d0
+  set_plot, 'ps'
+  device, filename='nonaxi_evol_totj.ps' $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time(*), tot_ang(*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\Delta J_{tot}/J_{ref}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(tot_ang),max(tot_ang)], xstyle=1
+  device,/close
+end

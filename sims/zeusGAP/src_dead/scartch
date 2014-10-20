@@ -1,0 +1,231 @@
+      
+c        den0 = sqrt(sound_speed_sq(rout))*omega_k(rout)/(pi*qout)
+c        get_omega_out = .true. 
+c        call vortensity(rin*sin(thetamin), 
+c     &                  surfD, dlogsurfD, get_omega_out) !get omega_out   
+
+
+
+c      call vortensity(cylind_rad, surfD, dlogsurfD, get_omega_out)  
+c      initialdens = surfD*vertical  
+
+
+c      initialdens = initialdens*bump(cylind_rad)
+
+
+
+c      call vortensity(cylind_rad, surfD, dlogsurfD, get_omega_out)
+c      dlogsigma_dR = cylind_rad*dlogsurfD
+
+
+c      dlogsigma_dR = dlogsigma_dR + cylind_rad*dlogbump_dr(cylind_rad)
+
+c      subkepvel = -csq + csq*dlogsigma_dR + 1d0/radius      ! vphi^2 
+
+
+c        get_omega_out = .true.
+c        call vortensity(rin, surfD, dlogsurfD, get_omega_out) !get omega_out 
+
+
+
+c        mass = 0d0    
+c        do 290 k=ks,ke
+c           do 280 j=js,je
+c              do 270 i=is,ie
+c                 rad = x1b(i) 
+c                 theta = x2b(j)                 
+c                 mass = mass + d(i,j,k)*rad**2*sin(theta)*dx1a(i)
+c     &                *dx2a(j)*dx3a(k)
+c 270          continue
+c 280       continue
+c 290    continue        
+c         call MPI_allREDUCE(mass, discmass, 1, MPI_DOUBLE_PRECISION,
+c     &        MPI_SUM, comm3d, ierr )
+c         if(sgzsymm .eqv. .true.) discmass = 2d0*discmass ! If only simulate upper disk, need to double up to get physical disk mass 
+c         if(myid .eq. 0) print*, 'disk mass, post SG tweak=',
+discmass
+
+
+c
+c    MKL: smooth the density field 
+c
+      if(densmooth.eqv..true.) call density_smooth
+
+
+
+
+       subroutine density_smooth
+!
+!     smooth the density field toward radial boundaries (incl. ghosts for now)
+!
+      use param 
+      use root 
+      use domain 
+      use field
+      use grid
+      use planet     
+
+      implicit none
+
+      integer :: i,j,k
+      real*8, parameter :: dlfoor=1d-2
+      real*8 :: rad, damp_rate, cylind_rad, denlim
+
+
+      do j=1, jn
+         do i=1, in
+            denlim = dfloor*d0(i,j)
+            do k=1, kn
+            if(d(i,j,k).lt.denlim) d(i,j,k) = denlim
+            enddo
+         enddo
+      enddo
+
+
+c      do i = 1, in
+c         rad   = x1b(i)        
+c         call get_damp_rate(rad, damp_rate)
+cc         do k=1,kn
+c            do j=1,jn
+c            cylind_rad = rad*sin(x2b(j))  
+c                d(i,j,:) = d(i,j,:) - damp_rate*(d(i,j,:) - d0(i,j))*dt 
+c                e(i,j,:) = e(i,j,:) - damp_rate*(e(i,j,:) 
+c     &                 - (smallh**2/cylind_rad)*d0(i,j)/(gamma-1d0) )*dt    
+c             enddo
+c          enddo
+c       enddo
+      return
+      end
+
+
+c      rmin = planetrad*(1d0 - width*softeps)
+c       rmax = planetrad*(1d0 + width*softeps)
+
+c       dr = smallh*rmax
+
+c                 factor = exp(-0.5*(cylind_rad-rmax)**2/dr**2)
+
+
+
+      real*8 function ellipse(x,y,f,mu0)
+      implicit none
+      real*8 :: x, y, f, mu0 
+      real*8 :: x2, y2
+      
+      x2 = (x/(f*cosh(mu0)))**2
+      y2 = (y/(f*sinh(mu0)))**2
+      
+      ellipse = x2 + y2 
+      return 
+      end function ellipse
+
+      
+
+      subroutine vortex_pert
+      use planet
+      use field  
+      use grid 
+      implicit none
+      integer :: i, j, k 
+      real*8, parameter :: pi=2d0*asin(1d0), chi=8d0, LY = 1d0 
+      real*8 :: wx, wy, angle, r, dvr, dvt, dvx, dvy, x, y, f, mu0, test
+      real*8 :: bigX,bigY, S, rr,vphi,xe,ye,re2, theta 
+      real*8, external :: ellipse       
+
+      wy = LY*smallh*planetrad 
+      S = 1.5*planetrad**(-1.5d0) 
+      f   = wy*sqrt((chi*chi-1d0)/(chi*chi))
+      mu0 = atanh(1d0/chi)
+     
+ 
+      do k=ks, ke 
+         angle = x3b(k) 
+         do j=js, je
+            theta = x2b(j)
+            do i=is, ie
+               r    = x1b(i)*sin(theta) !cylind rad 
+               bigX = r*cos(angle);
+               bigY = r*sin(angle);
+               
+               
+               if(((angle.le.pi/4d0).and.(angle.gt.0d0)).or.
+     &              ((angle.le.2d0*pi).and.(angle.gt.7d0*pi/4d0))) then 
+
+                  x = bigY
+                  y = planetrad-bigX
+                  dvx = S*y*chi/(chi-1d0)
+                  dvy = -S*x/chi/(chi-1d0)
+                  test = ellipse(x,y,f,mu0)
+                  if(test.gt.1d0) then
+                     rr = sqrt(x*x + y*y)
+                     xe = f*cosh(mu0)*x/rr
+                     ye = f*sinh(mu0)*y/rr
+                     re2 = xe*xe + ye*ye
+                     dvx = dvx*exp(-(rr - sqrt(re2))**2/re2);
+                     dvy = dvy*exp(-(rr - sqrt(re2))**2/re2);
+                  endif
+
+
+                  
+                  v1(i,j,k) = v1(i,j,k) - dvy*sin(theta)
+                  v2(i,j,k) = v2(i,j,k) - dvy*cos(theta)
+                  v3(i,j,k) = v3(i,j,k) + dvx
+               endif
+c     /*vortex 2*/
+               if((angle.le.3d0*pi/4d0).and.(angle.gt.pi/4d0)) then
+
+                  x = -bigX
+                  y = planetrad - bigY
+                  test = ellipse(x,y,f,mu0)
+                  dvx = S*chi*y/(chi-1d0)
+                  dvy = -S*x/chi/(chi-1d0)
+                  if(test.gt.1d0) then
+                     rr = sqrt(x*x + y*y)
+                     xe = f*cosh(mu0)*x/rr
+                     ye = f*sinh(mu0)*y/rr
+                     re2 = xe*xe + ye*ye
+                     dvx = dvx*exp(-(rr - sqrt(re2))**2/re2)
+                     dvy = dvy*exp(-(rr - sqrt(re2))**2/re2)
+                  endif
+
+                  v1(i,j,k) = v1(i,j,k) - dvy*sin(theta)
+                  v2(i,j,k) = v2(i,j,k) - dvy*cos(theta)
+                  v3(i,j,k) = v3(i,j,k) + dvx
+               endif
+               
+            enddo
+         enddo
+      enddo
+
+      return
+      end subroutine vortex_pert
+
+
+               mass = mass + d(i,j,k)*rad**2*sin(theta)*dx1a(i)
+     &              *dx2a(j)*dx3a(k)
+
+      
+      call MPI_REDUCE(mass, discmass, 1, MPI_DOUBLE_PRECISION,
+     &     MPI_SUM, 0, comm3d, ierr )
+
+      if(sgzsymm .eqv. .true.) discmass = 2d0*discmass ! If only simulate upper disk, need to double up to get physical disk mass
+      if(myid .eq. 0) print*,'disc mass after random pert =',discmass
+
+
+
+c
+cMKL      Damp out residual phi velocity [test]. w.r.t. vkep for now. 
+c     
+c          st = st - damp_rate*(u3(i,j,k) 
+c     1         - (x1b(i)*sin(x2b(j)))**(-0.5d0)) 
+c      if(dampin.eq.1) then
+c        frin = 1.25d0
+c      else
+c        frin = -1d0
+c      endif
+
+c      if(dampout.eq.1) then
+c        frout = 0.84d0
+c      else
+c        frout = 1.84d0
+c      endif

@@ -1,0 +1,268 @@
+if ( !SelfGravity ) {
+/*      VKepIn = sqrt (  G*1.0/Rmed[0] *                                        \
+                       ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX)*       \
+                         pow(AspectRatio(Rmed[0]),2.0)*pow(Rmed[0],2.0*FLARINGINDEX) ) );
+      VKepOut = sqrt (  G*1.0/Rmed[nr-1] *                              \
+                        ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX)*      \
+                          pow(AspectRatio(Rmed[nr-1]),2.0)*pow(Rmed[nr-1],2.0*FLARINGINDEX) ) );
+*/
+Hin = ASPECTRATIO*pow(RMIN,FLARINGINDEX+1.0);
+      VKepIn = G*1.0/Rmed[0]                                            \
+        + pow(ASPECTRATIO,2.0)*pow(Rmed[0],2.0*FLARINGINDEX -1.0)*
+        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0 + 0.5*Rmed[0]*sqrt(RMIN)*pow(Rmed[0]+Hin, -1.5)/(1.0 - sqrt(RMIN/(Rmed[0]+Hin))));
+    VKepIn = sqrt(VKepIn);
+
+VKepOut = G*1.0/Rmed[nr-1]                                          \
+        + pow(ASPECTRATIO,2.0)*pow(Rmed[nr-1],2.0*FLARINGINDEX -1.0)*
+        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0 + 0.5*Rmed[nr-1]*sqrt(RMIN)*pow(Rmed[nr-1]+Hin, -1.5)/(1.0 - sqrt(RMIN/(Rmed[nr-1]+Hin))));
+    VKepOut = sqrt(VKepOut);
+    }
+    else {
+      if ( !SGZeroMode )
+        mpi_make1Dprofile (SG_Accr, GLOBAL_AxiSGAccr);
+      else
+        GLOBAL_AxiSGAccr = SG_Accr;
+ /*     VKepIn = sqrt (  G*1.0/Rmed[0] *                                        \ 
+                       ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX)*       \ 
+                         pow(AspectRatio(Rmed[0]),2.0)*pow(Rmed[0],2.0*FLARINGINDEX) ) - \ 
+                       Rmed[0]*GLOBAL_AxiSGAccr[0] ); */
+
+      Hin = ASPECTRATIO*pow(RMIN,FLARINGINDEX+1.0);
+      VKepIn = G*1.0/Rmed[0]                                            \
+        + pow(ASPECTRATIO,2.0)*pow(Rmed[0],2.0*FLARINGINDEX -1.0)*
+        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0 + 0.5*Rmed[0]*sqrt(RMIN)*pow(Rmed[0]+Hin, -1.5)/(1.0 - sqrt(RMIN/(Rmed[0]+Hin)))) - \
+        Rmed[0]*GLOBAL_AxiSGAccr[0];
+    VKepIn = sqrt(VKepIn);
+
+      /* VKepOut = sqrt (  G*1.0/Rmed[nr-1] *                           \ */
+/*                      ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX)*      \ */
+/*                        pow(AspectRatio(Rmed[nr-1]),2.0)*pow(Rmed[nr-1],2.0*FLARINGINDEX) ) - \ */
+/*                      Rmed[nr-1]*GLOBAL_AxiSGAccr[nr-1+IMIN] ); */
+    VKepOut = G*1.0/Rmed[nr-1]                                          \
+        + pow(ASPECTRATIO,2.0)*pow(Rmed[nr-1],2.0*FLARINGINDEX -1.0)*
+        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0 + 0.5*Rmed[nr-1]*sqrt(RMIN)*pow(Rmed[nr-1]+Hin, -1.5)/(1.0 - sqrt(RMIN/(Rmed[nr-1]+Hin)))) - \
+        Rmed[nr-1]*GLOBAL_AxiSGAccr[IMIN+nr-1];
+    VKepOut = sqrt(VKepOut);
+    }
+
+
+
+
+//      VKepIn = G*1.0/Rmed[0]                                            \
+//        + pow(ASPECTRATIO,2.0)*pow(Rmed[0],2.0*FLARINGINDEX -1.0)*
+//        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0 );
+//      VKepIn = sqrt(VKepIn);
+
+      VKepOut = G*1.0/Rmed[nr-1]                                          \
+        + pow(ASPECTRATIO,2.0)*pow(Rmed[nr-1],2.0*FLARINGINDEX -1.0)*
+        (-SIGMASLOPE + 2.0*FLARINGINDEX - 1.0);
+      VKepOut = sqrt(VKepOut);
+
+
+
+      if (!SelfGravity) {
+        vtheta0 = sqrt ( G*1.0/Rmed[i] *                                \
+                         ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX - Rmed[i]*df/f)*      \
+                           pow(AspectRatio(Rmed[i]),2.0)*pow(Rmed[i],2.0*FLARINGINDEX) ) );
+      }
+      if (SelfGravity) {
+        vtheta0 = sqrt (  G*1.0/Rmed[i] *                               \
+                          ( 1.0 - (1.0+SIGMASLOPE-2.0*FLARINGINDEX - Rmed[i]*df/f)*     \
+                            pow(AspectRatio(Rmed[i]),2.0)*pow(Rmed[i],2.0*FLARINGINDEX) ) - \
+                          Rmed[i]*GLOBAL_AxiSGAccr[i+IMIN] );
+      }
+
+
+
+/* if(CPU_Rank == CPU_Number -1){//last cpu applies open bc, need to set DAMPRADOUT > 1 */
+ /*   OpenBoundary (Vrad, Rho, Energy); //outflow outer boundary */
+ /*   i = nr - 1; */
+ /*   for (j = 0; j < ns; j++) { */
+ /*     l = i*ns + j; */
+ /*     vtheta[l] = vtheta[l-ns]; */
+ /*   } */
+ /* } else {  */
+
+
+
+/* csnrm2 = 0.0;
+    csnrm1 = 0.0;
+    for (j=0; j<ns; j++) {
+      csnrm2 += cs[(nr-2)*ns+j];
+      csnrm1 += cs[(nr-1)*ns+j];
+    }
+    csnrm1 /= (real)ns;
+    csnrm2 /= (real)ns;
+    */
+
+
+
+
+
+void RestoreAxi (Vrad, Vtheta, Rho, Energy, dt)
+     PolarGrid *Vrad, *Vtheta, *Rho, *Energy;
+     real dt;
+{
+  int i, j, l, nr, ns;
+  real *vrad, *vtheta, *dens, *energ;
+  real vrad0, vtheta0, dens0, energ0, dvr, dvt, dsig, den, tau;
+  vrad = Vrad->Field;
+  vtheta = Vtheta->Field;
+  dens = Rho->Field;
+  energ = Energy->Field;
+  nr = Rho->Nrad;
+  ns = Rho->Nsec;
+
+  for (i = 0; i < nr; i++) {
+
+       vrad0   =  0.0;
+       vtheta0 =  0.0;
+       dens0   =  0.0;
+       energ0  =  0.0;
+
+         for(j = 0; j < ns; j++){
+            l = i*ns + j;
+            vrad0  += vrad[l];
+            vtheta0+= vtheta[l];
+            dens0  += dens[l];
+            if(Adiabatic) energ0+=energ[l];
+         }
+             vrad0 /= (real)ns;
+             vtheta0/= (real)ns;
+             dens0  /= (real)ns;
+           if(Adiabatic) energ0/=(real)ns;
+
+    tau = 0.1*pow(Rmed[i] , 1.5);
+
+    for (j = 0; j < ns; j++) {
+        l = i*ns + j;
+
+        dvr       = vrad[l] - vrad0;
+        vrad[l]   = vrad0 - (vrad0-vr0(Rmed[i]))*(dt/tau) + dvr;
+
+        dvt       = vtheta[l] - vtheta0;
+        vtheta[l] = vtheta0 - (vtheta0-sqrt (pow(vphi0(Rmed[i]),2.0) - \
+                          Rmed[i]*GLOBAL_AxiSGAccr[i+IMIN] ))*(dt/tau) + dvt;
+
+        dsig      = dens[l] - dens0;
+        dens[l]   = dens0 - (dens0-SigmaMed[i])*(dt/tau) + dsig;
+
+        if (Adiabatic){
+          den       = energ[l] - energ0;
+          energ[l]  = energ0 - (energ0-EnergyMed[i])*(dt/tau) + den;
+          }
+      }
+    }
+}
+
+
+
+
+void RestoreAxi (Vrad, Vtheta, Rho, Energy, dt)
+     PolarGrid *Vrad, *Vtheta, *Rho, *Energy;
+     real dt;
+{
+  int i, j, l, nr, ns;
+  real *vrad, *vtheta, *dens, *energ;
+  real vrad0, vtheta0, dens0, energ0, dvr, dvt, dsig, den, tau;
+  vrad = Vrad->Field;
+  vtheta = Vtheta->Field;
+  dens = Rho->Field;
+  energ = Energy->Field;
+  nr = Rho->Nrad;
+  ns = Rho->Nsec;
+
+  for (i = 0; i < nr; i++) {
+
+       vrad0   =  0.0;
+       vtheta0 =  0.0;
+       dens0   =  0.0;
+       energ0  =  0.0;
+
+         for(j = 0; j < ns; j++){
+            l = i*ns + j;
+            vrad0  += vrad[l];
+            vtheta0+= vtheta[l];
+            dens0  += dens[l];
+            if(Adiabatic) energ0+=energ[l];
+         }
+             vrad0 /= (real)ns;
+             vtheta0/= (real)ns;
+             dens0  /= (real)ns;
+           if(Adiabatic) energ0/=(real)ns;
+
+//    tau = 0.1*pow(Rmed[i] , 1.5);
+
+     if( (Rmed[i]<=DAMPRADIN*RMIN) || (Rmed[i]>=DAMPRADOUT*RMAX)){
+     for (j = 0; j < ns; j++) {
+        l = i*ns + j;
+
+          dvr       = vrad[l] - vrad0;
+//        vrad[l]    -= (vrad0-vr0(Rmed[i]))*(dt/tau);
+          vrad[l]    = vr0(Rmed[i]);// + dvr;
+
+
+             dvt       = vtheta[l] - vtheta0;
+//        vtheta[l]  -= (vtheta0-sqrt (pow(vphi0(Rmed[i]),2.0) - \
+                          Rmed[i]*GLOBAL_AxiSGAccr[i+IMIN] ))*(dt/tau);
+            vtheta[l]  = sqrt(pow(vphi0(Rmed[i]),2.0) - \
+                          Rmed[i]*GLOBAL_AxiSGAccr0[i+IMIN]) ;//+ dvt;
+
+
+           dsig      = dens[l] - dens0;
+//         dens[l]    -= (dens0-SigmaMed[i])*(dt/tau);
+           dens[l]    = SigmaMed[i] ;//+ dsig;
+
+        if (Adiabatic){
+            den       = energ[l] - energ0;
+//          energ[l] -= (energ0-EnergyMed[i])*(dt/tau);
+            energ[l]  = EnergyMed[i] ;//+ den;
+          }
+      }
+    }
+   }
+}
+
+
+
+;//sin(PI*(Rmed[i]-RDEAD1)/(RDEAD2-RDEAD1));
+
+
+
+
+
+  for (i = 0; i < nr; i++) {
+//   if( (Rmed[i]>=RDEAD1) && ((Rmed[i]<=RDEAD2)) ){
+
+     fr = exp(-0.5*pow((R - 0.5*(RDEAD1+RDEAD2))/(RDEAD2-RDEAD1), 2.0));
+     rnd = PERTMIN + (PERTMAX-PERTMIN)*rand()/(double) RAND_MAX;  
+ 
+     sig0 = 0.0;
+     vt0  = 0.0;  
+
+
+      for (j = 0; j < ns; j++) {
+      l = j+i*ns;
+      sig0 += dens[l];
+      vt0  += vtheta[l]; 
+      }
+      sig0 /= (double) ns;
+      vt0  /= (double) ns;  
+    
+    
+      for (j = 0; j < ns; j++) {
+      l = j+i*ns;
+      phi = 2.0*PI*(double)j/(double)ns; 
+
+      sig1 =  rnd*fr*sig0;
+      vt1  = -rnd*fr*vt0; 
+      
+      dsig0 = -2.0*vt1*sig1/vt0; 
+      dvt0  = -2.0*vt1*sig1/sig0; 
+
+      dens[l] = sig0  + dsig0 + 2.0*cos(phi)*sig1;
+      vtheta[l] = vt0 + 2.0*cos(phi)*vt1;       
+
+//      vrad[l] = rnd*fr*sqrt(csq(Rmed[i]))*cos(phi);   
+//      }
+    }

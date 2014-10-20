@@ -1,0 +1,272 @@
+function hdf, n, name
+
+fileid = hdf_sd_start(name,/read)
+sds = hdf_sd_select(fileid,n)
+hdf_sd_getdata,sds,data
+
+return, data
+end
+
+pro nonaxi_evol, loc=loc, start=start, finish=finish $
+           ,xtickinterval=xtickinterval, ytickinterval=ytickinterval $
+           ,azimodes=azimodes, xrange=xrange, yrange=yrange, rrange=rrange $
+           ,legend=legend, label=label, basic=basic, rdisk=rdisk 
+
+  !p.font = 0
+
+  if not keyword_set(finish) then finish = start
+  nmodes = n_elements(azimodes)
+
+if not keyword_set(basic) then basic=start
+
+;get the basic info
+  location =strcompress(loc,/remove_all)
+  filename = strcompress('hdfaa.'+string(basic,format='(I03)'),/remove_all)
+  fileloc  = filepath(filename,root_dir='.',subdir=[location])
+  
+  rad  = hdf(2, fileloc)
+  theta= hdf(1, fileloc)
+  phi  = hdf(0, fileloc)
+  
+  nrad  = n_elements(rad)
+  ntheta= n_elements(theta)
+  nphi  = n_elements(phi)
+
+  phi = 2d0*!dpi*dindgen(nphi)/(nphi - 1d0) 
+
+  ;assume uniform log spacing in radius 
+  dlogr = alog(rdisk(1)/rdisk(0))/nrad
+  dr    = rad*dlogr 
+
+
+  bigR_3D     = dblarr(nrad,ntheta,nphi)
+  bigR_axisym = dblarr(nrad,ntheta)
+  dVol_3D     = dblarr(nrad,ntheta,nphi)
+  dVol_axisym = dblarr(nrad,ntheta)
+
+  ;set up geometric arrays 
+  for kk=0, nx3-1 do begin
+  for jj=0, nx2-1 do begin
+  for ii=0, nx1-1 do begin
+  bigR_3D(ii,jj,kk)    = x1(ii)*sin(x2(jj))
+  dVol_3D(ii,jj,kk)    = 2d0*x1(ii)^2*sin(x2(jj))*dx1(ii)*dx2(jj)*dx3(kk) ; factor of 2 for lower disk 
+  endfor
+  endfor
+  endfor
+
+   for jj=0, nx2-1 do begin
+   for ii=0, nx1-1 do begin
+   bigR_axisym(ii,jj)    = x1(ii)*sin(x2(jj))
+   dVol_axisym(ii,jj)    = 2d0*x1(ii)^2*sin(x2(jj))*dx1(ii)*dx2(jj)*2d0*!dpi ; 2pi from phi-integration, factor of 2 in front for lower disk 
+   endfor
+   endfor
+
+
+
+
+
+
+ 
+  data2d = dblarr(nrad, ntheta)
+  data2d_re = dblarr(nrad, ntheta)
+  data2d_in = dblarr(nrad, ntheta)
+
+  data1d = dblarr(nrad) 
+  data1d_re = dblarr(nrad)
+  data1d_im = dblarr(nrad)
+
+  time     = dblarr(finish-start+1)
+  mode_amp = dblarr(nmodes, finish-start+1)
+  mode_ang = dblarr(nmodes, finish-start+1)
+  tot_ang  = dblarr(finish-start+1)
+
+; planet info
+  nlines = file_lines(filepath('planetxy_hdf.dat',root_dir='.',subdir=[location]))
+  planetinfo = dblarr(7,nlines)
+  openr, 1, filepath('planetxy_hdf.dat',root_dir='.',subdir=[location])
+  readf,1,planetinfo
+  close,1
+  torb = 2d0*!dpi*planetinfo(1,0)^(3d0/2d0)
+
+     if keyword_set(rrange) then begin
+     temp = min(abs(rrange(0) - rad), r1)
+     temp = min(abs(rrange(1) - rad), r2)
+     endif else begin
+     r1 = 0
+     r2 = nrad-1
+     endelse
+
+;normalization for mode amplitude
+     rho0      = hdf(19, fileloc)
+     for i=0, nrad-1 do begin
+     data1d(i)   = int_tabulated(-cos(theta(*)), rho0(i,*,0))
+     endfor
+     czero       = int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2))
+
+;normalization for ang mom amplitude
+     vphi   = hdf(11, fileloc)
+;     j = rho0*vphi
+;     for i=0, nrad-1 do begin
+;     data1d(i)   = 2d0*int_tabulated(-cos(theta(*)), j(i,*,0)*sin(theta))
+;     endfor
+;     angmom0       = 2d0*!dpi*int_tabulated(rad(r1:r2)^3d0/3d0, rad(r1:r2)*data1d(r1:r2))
+; 
+;
+;    for i=r1, r2 do begin
+;    for j=0, ntheta-1 do begin
+;    data2d(i,j) = int_tabulated(phi,rho0(i,j,*)*vphi(i,j,*))
+;    endfor
+;    data1d(i)   = 2d0*int_tabulated(-cos(theta), data2d(i,*)*sin(theta))
+;    endfor
+;    angmom1 = int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2)*rad(r1:r2))
+
+
+ vphi_fft = fft(vphi, -1, dimension=3,/double)
+ rho_fft = fft(rho0, -1, dimension=3,/double)
+
+temp = dblarr(nphi/2+1)
+for m=0, nphi/2 do begin
+data2d = real_part( rho_fft(*,*,m)*conj(vphi_fft(*,*,m)) )
+for i=0, nrad-1 do begin
+data1d(i) = 2d0*int_tabulated(-cos(theta), sin(theta)*data2d(i,*))
+endfor
+temp(m) = 4d0*!dpi*int_tabulated(rad(r1:r2)^3d0/3d0, rad(r1:r2)*data1d(r1:r2))
+if (m eq 0) then temp(m) /= 2d0
+endfor
+angmom0= total(temp)
+
+
+  for n=start, finish do begin
+     ks   = string(n,format='(I03)')
+     filename = strcompress('hdfaa.'+ks,/remove_all)
+     fileloc  = filepath(filename,root_dir='.',subdir=[location])
+
+     time(n-start) = planetinfo(0,n)/torb  
+    
+     vphi     = hdf(11, fileloc)
+     rho      = hdf(19, fileloc)
+     
+     vphi_fft = fft(vphi, -1, dimension=3,/double) 
+     rho_fft = fft(rho, -1, dimension=3,/double)
+
+     for mm=0, nmodes-1 do begin
+      m = azimodes(mm) 
+;mode amplitudes       
+      if not keyword_set(max) then begin
+      data2d_re = real_part(rho_fft(*,*,m))
+      data2d_im = imaginary(rho_fft(*,*,m)) 
+       
+      for i=0, nrad-1 do begin
+      data1d_re(i) = int_tabulated(-cos(theta), data2d_re(i,*))
+      data1d_im(i) = int_tabulated(-cos(theta), data2d_im(i,*)) 
+      endfor
+      amp = dcomplex(int_tabulated(rad(r1:r2)^3d0/3d0, data1d_re(r1:r2)) $
+                    ,int_tabulated(rad(r1:r2)^3d0/3d0, data1d_im(r1:r2)) )
+      mode_amp(mm, n-start) = alog10(abs(amp)/czero + 1d-16)
+      endif else begin
+      mode_amp(mm, n-start) = max(alog10( abs(rho_fft(r1:r2,*,m)/rho0(r1:r2,*,0)) ) )
+
+      endelse 
+
+;angular momentum components
+      data2d = real_part( rho_fft(*,*,m)*conj(vphi_fft(*,*,m)) )
+      for i=0, nrad-1 do begin
+      data1d(i) = 2d0*int_tabulated(-cos(theta), sin(theta)*data2d(i,*))
+      endfor
+      mode_ang(mm, n-start) = 4d0*!dpi*int_tabulated(rad(r1:r2)^3d0/3d0, rad(r1:r2)*data1d(r1:r2))
+      if (m eq 0) then begin
+      mode_ang(mm, n-start) /= 2d0 
+;      if (n eq start) then angmom0 = mode_ang(mm, n-start)
+      endif 
+
+    endfor 
+
+;total ang mom    
+    for i=r1, r2 do begin 
+    for j=0, ntheta-1 do begin
+    data2d(i,j) = int_tabulated(phi,rho(i,j,*)*vphi(i,j,*))
+    endfor 
+    data1d(i)   = 2d0*int_tabulated(-cos(theta), data2d(i,*)*sin(theta))
+    endfor
+    tot_ang(n-start) = int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2)*rad(r1:r2)) 
+   
+;total mass
+    data2d = 2.0*!dpi*real_part(rho_fft(*,*,0))
+    for i=r1, r2 do begin
+    data1d(i)   = int_tabulated(-cos(theta), data2d(i,*))
+    endfor
+    mass = 2.0*int_tabulated(rad(r1:r2)^3d0/3d0, data1d(r1:r2)); factor of 2 to account for lower z plane
+ 
+    print, n, tot_ang(n-start),total(mode_ang(*,n-start)) ,mass, format='(I03,x,3(e22.15,x))'
+endfor
+
+  if not keyword_set(max) then begin
+  ytitle=textoidl('log_{10}(C_m/C_{0,t=0})')
+  endif else begin
+  ytitle=textoidl('max(log_{10}|\rho_m/\rho_{0,t=0}|)')
+  endelse
+
+
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time, mode_amp(0,*), xmargin=[6.5,1.5], ymargin=[3.5,0.5] , ytitle=ytitle, ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(mode_amp),max(mode_amp)], xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time, mode_amp(j,*), thick=4, linestyle=j
+  endfor
+   if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif 
+    device,/close
+
+  tot = mode_ang(0,*)
+  for i=0, finish-start do tot(i) = total(mode_ang(*,i))
+
+  for j=0, nmodes-1 do begin
+  mode_ang(j,*) = mode_ang(j,*) - mode_ang(j,0)
+  endfor
+  mode_ang /= angmom0
+
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol_ang.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time, mode_ang(0,*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\DeltaJ_m/J_{0,t=0}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(mode_ang),max(mode_ang)], xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time, mode_ang(j,*), thick=4, linestyle=j
+  endfor
+  oplot, time, tot/angmom0-1., thick=1, linestyle=0
+    if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif 
+   device,/close
+
+  tot_ang /= angmom0
+  tot_ang -= 1d0
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol_totj.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time(*), tot_ang(*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\Delta J_{tot}/J_{tot,0}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(tot_ang),max(tot_ang)], xstyle=1
+  device,/close
+
+
+end

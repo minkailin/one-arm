@@ -1,0 +1,65 @@
+### Disk parameters
+
+AspectRatio             0.05            Thickness over Radius in the disk
+Sigma0                  0.00641006      Surface Density at r=1
+Viscosity               0.0             viscosity at outer edge of the domain. this may be ACTIVE OR DEAD depending on RDEAD2
+SigmaSlope              2.0             Slope of surface density profile
+FlaringIndex            0.0             Slope of Temperature/radius profile
+SelfGravity             YES              choose: Yes, Z or No
+Adiabatic               NO             choose No for an isothermal eq. of state
+AdiabaticIndex          1.4             Default value: 1.4
+Cooling                 YES             choose: Yes or No
+CoolingTime0            25.0
+OUTTRUNC                45.0
+INTRUNC                 -0.45
+DENFLOOR                0.0
+FOUT                    1.0e3
+FIN                     0.1                denstiy reduction factor in active zones
+SGSMOOTH                1.0e-4
+PERTMIN                -1.0e-3
+PERTMAX                 1.0e-3
+PERT_MMIN               1
+PERT_MMAX               1
+PERTTIME                0.0                 when to apply radial velo pert?
+QOUT                    2.0                 toomre Q at outer boundary or outer dead zone edge, whichever is smaller
+RDEAD1                  1.0                 inner edge of dead zone
+RDEAD2                  2.0                 outer edge of dead zone
+DNU                     5                   transition width in terms of local H
+ANU                     1.0                 not used
+DAMPRADIN               2.0
+DAMPRADOUT              0.8
+DAMPRATEIN              0.1
+DAMPRATEOUT             0.1
+
+### Planet parameters
+
+PlanetConfig            ./massless.cfg
+ForcedCircular          YES
+RocheSmoothing          0.5
+MassTaper               316.227766
+PLANET_ON               1.0e10
+HPLANET                 -1
+### Numerical method parameters
+
+Transport               FARGO
+InnerBoundary           O
+Disk                    YES
+OmegaFrame              0.0
+Frame                   FIXED
+IndirectTerm            NO
+LabelAdvection          NO
+
+### Mesh parameters
+
+Nrad                    1024               Radial number of zones
+Nsec                    2048               Azimuthal number of zones (sectors)
+Rmin                    0.4               Inner boundary radius
+Rmax                    10.                Outer boundary radius
+RadialSpacing           L                 Zone interfaces evenly spaced
+
+### Output control parameters
+
+Ntot                    300                                      Total number of time steps
+Ninterm                 1                                        Time steps between outputs
+DT                      0.6283185                                Time step length. 2PI = 1 orbit
+OutputDir               ./

@@ -1,0 +1,1109 @@
+c=======================================================================
+c
+c                            Developed by
+c                Laboratory of Computational Astrophysics
+c               University of Illinois at Urbana-Champaign
+c
+      subroutine gpbv
+c
+c  Written by PSLi (12/4/99)
+c
+c  PURPOSE: Calculate the gravitational potential at the boundary
+c           surfaces contributed from monopole and quadrupole moments
+c           of a mass distribution.
+c           Boundary potentals are calculated if the flags niis(3),
+c           nois(3), nijs(3), nojs(3), niks(3), or noks(3) = 3,
+c           respectively.
+c
+c  EXTERNALS: [none]
+c
+c  LOCALS:
+c  dm(i,j,k)   is mass contained in zone i,j,k
+c  lqm         is the local quadrupole moment (qm)
+c  lcx,lcy,lcz coords of mass center at local processor (cx,cy,cz)
+c  ltm         total mass at local processor (tm)
+c-----------------------------------------------------------------------
+      use real_prec
+      use config
+      use param
+      use grid
+      use field
+      use bndry
+      use root
+      use scratch
+#ifdef MPI_USED
+      use mpiyes
+#else
+      use mpino
+#endif
+      use mpipar
+c
+      implicit NONE
+c
+      real(rl) ::     errmax
+      integer  :: n
+c
+      real(rl) ::  dm(in,jn,kn),qm(6,nprocs_w),tm(nprocs_w),
+     .             cx(nprocs_w),
+     &             cy(nprocs_w),cz(nprocs_w),r1,dx,dy,dz,dx2,dy2,dz2,
+     &             xdm,ydm,zdm,ltm,lcx,lcy,lcz,lqm(6),cthe,cphi,sthe,
+     .             sphi
+c
+      integer  i,j,k,m,ism1,jsm1,ksm1,iep1,jep1,kep1
+c
+c\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////
+c=======================================================================
+c  This routine calculate the monopole and quadrupole moments of a mass
+c  distribution and the gravitational potential at the boundary surfaces
+c  for solving Poisson equation.
+c
+c  Positive potential for the sign convention of ZeusMP.
+c
+      do i=1,6
+        do m=1,nprocs_w
+          qm(i,m) = 0.0
+        enddo
+        lqm(i) = 0.0
+      enddo
+      do k=1,kn
+        do j=1,jn
+          gpiib(j,k,1)=0.0
+          gpoib(j,k,1)=0.0
+        enddo
+      enddo
+      do k=1,kn
+        do i=1,in
+          gpijb(i,k,1)=0.0
+          gpojb(i,k,1)=0.0
+        enddo
+      enddo
+      do j=1,jn
+        do i=1,in
+          gpikb(i,j,1)=0.0
+          gpokb(i,j,1)=0.0
+        enddo
+      enddo
+      xdm=0.0
+      ydm=0.0
+      zdm=0.0
+      ism1=is-1
+      jsm1=js-1
+      ksm1=ks-1
+      iep1=ie+1
+      jep1=je+1
+      kep1=ke+1
+c
+c  Determine the center of mass.
+c
+      do i=1,nprocs_w
+        tm(i)=tiny
+        cx(i)=0.0
+        cy(i)=0.0
+        cz(i)=0.0
+      enddo
+      ltm=0.0
+      lcx=0.0
+      lcy=0.0
+      lcz=0.0
+c
+      do k=ks,ke
+       if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+        cphi=cos(x3b(k))
+        sphi=sin(x3b(k))
+       endif ! CYL or SPHERE
+	do j=js,je
+         if(lgeom .eq. 3) then
+          cthe=cos(x2b(j))
+          sthe=sin(x2b(j))
+         endif ! SPHERE
+          do i=is,ie
+C            dm(i,j,k) = g2b(i)*g31b(i)*g32b(j)*dx1a(i)*
+C     &                  dx2a(j)*dx3a(k)*d(i,j,k)
+            dm(i,j,k) = d(i,j,k)*dvl1a(i)*dvl2a(j)*dvl3a(k)
+            ltm=ltm+dm(i,j,k)
+           if(lgeom .eq. 1) then
+            xdm=xdm+x1b(i)*dm(i,j,k)
+            ydm=ydm+x2b(j)*dm(i,j,k)
+            zdm=zdm+x3b(k)*dm(i,j,k)
+           endif ! CART
+           if(lgeom .eq. 2) then
+            xdm=xdm+x2b(j)*cphi*dm(i,j,k)
+            ydm=ydm+x2b(j)*sphi*dm(i,j,k)
+            zdm=zdm+x1b(i)*dm(i,j,k)
+           endif ! CYL
+           if(lgeom .eq. 3) then
+            xdm=xdm+x1b(i)*sthe*cphi*dm(i,j,k)
+            ydm=ydm+x1b(i)*sthe*sphi*dm(i,j,k)
+            zdm=zdm+x1b(i)*cthe*dm(i,j,k)
+           endif ! SPHERE
+          enddo
+        enddo
+      enddo
+c
+      lcx=xdm/ltm
+      lcy=ydm/ltm
+      lcz=zdm/ltm
+c
+c  Compute the 2nd order terms in the expansion.
+c
+      do k=ks,ke
+       if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+        sphi=sin(x3b(k))
+        cphi=cos(x3b(k))
+       endif ! CYL or SPHERE
+	do j=js,je
+         if(lgeom .eq. 3) then
+          cthe=cos(x2b(j))
+          sthe=sin(x2b(j))
+         endif ! SPHERE
+          do i=is,ie
+           if(lgeom .eq. 1) then
+            dx=x1b(i)-lcx
+            dy=x2b(j)-lcy
+            dz=x3b(k)-lcz
+           endif ! CART
+           if(lgeom .eq. 2) then
+            dx=x2b(j)*cphi-lcx
+            dy=x2b(j)*sphi-lcy
+            dz=x1b(i)-lcz
+           endif ! CYL
+           if(lgeom .eq. 3) then
+            dx=x1b(i)*sthe*cphi-lcx
+            dy=x1b(i)*sthe*sphi-lcy
+            dz=x1b(i)*cthe-lcz
+           endif ! SPHERE
+            dx2=dx*dx
+            dy2=dy*dy
+            dz2=dz*dz
+            lqm(1)=lqm(1)+(2.*dx2-dy2-dz2)*dm(i,j,k)
+            lqm(2)=lqm(2)+(2.*dy2-dx2-dz2)*dm(i,j,k)
+            lqm(3)=lqm(3)+(2.*dz2-dx2-dy2)*dm(i,j,k)
+            lqm(4)=lqm(4)+3.*dx*dy*dm(i,j,k)
+            lqm(5)=lqm(5)+3.*dx*dz*dm(i,j,k)
+            lqm(6)=lqm(6)+3.*dy*dz*dm(i,j,k)
+          enddo
+        enddo
+      enddo
+#ifdef MPI_USED
+c
+c  Sum up qm from all processors.
+c
+      call MPI_Gather(ltm,1,MPI_FLOAT,
+     &       tm,1,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Gather(lcx,1,MPI_FLOAT,
+     &       cx,1,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Gather(lcy,1,MPI_FLOAT,
+     &       cy,1,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Gather(lcz,1,MPI_FLOAT,
+     &       cz,1,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Gather(lqm,6,MPI_FLOAT,
+     &       qm,6,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Bcast(tm,nprocs_w,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Bcast(cx,nprocs_w,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Bcast(cy,nprocs_w,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Bcast(cz,nprocs_w,MPI_FLOAT,0,comm3d,ierr)
+      call MPI_Bcast(qm,nprocs_w*6,MPI_FLOAT,0,comm3d,ierr)
+#endif
+c
+c  Now compute the potential along each boundary surface, starting
+c  with the inner i surface.
+c
+      if (niis(3) .eq. 3) then
+        do m=1,nprocs_w
+          do k=ks,ke
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            sphi=sin(x3b(k))
+            cphi=cos(x3b(k))
+           endif ! CYL OR SPHERE
+            do j=js,je
+             if(lgeom .eq. 3) then
+              cthe=cos(x2b(j))
+              sthe=sin(x2b(j))
+             endif ! SPHERE
+             if(lgeom .eq. 1) then
+              dx=x1b(ism1)-cx(m)
+              dy=x2b(j)-cy(m)
+              dz=x3b(k)-cz(m)
+             endif ! CART
+             if(lgeom .eq. 2) then
+              dx=x2b(j)*cphi-cx(m)
+              dy=x2b(j)*sphi-cy(m)
+              dz=x1b(ism1)-cz(m)
+             endif ! CYL
+             if(lgeom .eq. 3) then
+              dx=x1b(ism1)*sthe*cphi-cx(m)
+              dy=x1b(ism1)*sthe*sphi-cy(m)
+              dz=x1b(ism1)*cthe-cz(m)
+             endif ! SPHERE
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpiib(j,k,1) = gpiib(j,k,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+
+
+!              print*, (gpiib(j,k,1) - gp(is,j,k))/gp(is,j,k)
+
+            enddo
+          enddo
+        enddo
+      endif
+c
+c  Initial solution along outer i surface
+c
+      if (nois(3) .eq. 3) then
+        do m=1,nprocs_w
+          do k=ks,ke
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            sphi=sin(x3b(k))
+            cphi=cos(x3b(k))
+           endif
+            do j=js,je
+             if(lgeom .eq. 3) then
+              cthe=cos(x2b(j))
+              sthe=sin(x2b(j))
+             endif
+             if(lgeom .eq. 1) then
+              dx=x1b(iep1)-cx(m)
+              dy=x2b(j)-cy(m)
+              dz=x3b(k)-cz(m)
+             endif
+             if(lgeom .eq. 2) then
+              dx=x2b(j)*cphi-cx(m)
+              dy=x2b(j)*sphi-cy(m)
+              dz=x1b(iep1)-cz(m)
+             endif
+             if(lgeom .eq. 3) then
+              dx=x1b(iep1)*sthe*cphi-cx(m)
+              dy=x1b(iep1)*sthe*sphi-cy(m)
+              dz=x1b(iep1)*cthe-cz(m)
+             endif
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpoib(j,k,1) = gpoib(j,k,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+            enddo
+          enddo
+        enddo
+      endif
+c
+c  Initial solution along inner j surface
+c
+      if (nijs(3) .eq. 3) then
+        do m=1,nprocs_w
+         if(lgeom .eq. 3) then
+          cthe=cos(x2b(jsm1))
+          sthe=sin(x2b(jsm1))
+         endif
+          do k=ks,ke           
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            sphi=sin(x3b(k))
+            cphi=cos(x3b(k))
+           endif
+            do i=is,ie
+             if(lgeom .eq. 1) then
+              dx=x1b(i)-cx(m)
+              dy=x2b(jsm1)-cy(m)
+              dz=x3b(k)-cz(m)
+             endif
+             if(lgeom .eq. 2) then
+              dx=x2b(jsm1)*cphi-cx(m)
+              dy=x2b(jsm1)*sphi-cy(m)
+              dz=x1b(i)-cz(m)
+             endif
+             if(lgeom .eq. 3) then
+              dx=x1b(i)*sthe*cphi-cx(m)
+              dy=x1b(i)*sthe*sphi-cy(m)
+              dz=x1b(i)*cthe-cz(m)
+             endif
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpijb(i,k,1) = gpijb(i,k,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+            enddo
+          enddo
+        enddo
+      endif
+c
+c  Initial solution along outer j surface
+c
+      if (nojs(3) .eq. 3) then
+        do m=1,nprocs_w
+         if(lgeom .eq. 3) then
+          cthe=cos(x2b(jep1))
+          sthe=sin(x2b(jep1))
+         endif
+          do k=ks,ke           
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            sphi=sin(x3b(k))
+            cphi=cos(x3b(k))
+           endif
+            do i=is,ie
+             if(lgeom .eq. 1) then
+              dx=x1b(i)-cx(m)
+              dy=x2b(jep1)-cy(m)
+              dz=x3b(k)-cz(m)
+             endif
+             if(lgeom .eq. 2) then
+              dx=x2b(jep1)*cphi-cx(m)
+              dy=x2b(jep1)*sphi-cy(m)
+              dz=x1b(i)-cz(m)
+             endif
+             if(lgeom .eq. 3) then
+              dx=x1b(i)*sthe*cphi-cx(m)
+              dy=x1b(i)*sthe*sphi-cy(m)
+              dz=x1b(i)*cthe-cz(m)
+             endif
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpojb(i,k,1) = gpojb(i,k,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+            enddo
+          enddo
+        enddo
+      endif
+c
+c  Initial solution along inner k surface
+c
+      if (niks(3) .eq. 3) then
+        do m=1,nprocs_w
+         if(lgeom .eq. 3) then
+          sphi=sin(x3b(ksm1))
+          cphi=cos(x3b(ksm1))
+         endif
+          do j=js,je           
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            cthe=cos(x2b(j))
+            sthe=sin(x2b(j))
+           endif
+            do i=is,ie
+             if(lgeom .eq. 1) then
+              dx=x1b(i)-cx(m)
+              dy=x2b(j)-cy(m)
+              dz=x3b(ksm1)-cz(m)
+             endif
+             if(lgeom .eq. 2) then
+              dx=x2b(j)*cphi-cx(m)
+              dy=x2b(j)*sphi-cy(m)
+              dz=x1b(i)-cz(m)
+             endif
+             if(lgeom .eq. 3) then
+              dx=x1b(i)*sthe*cphi-cx(m)
+              dy=x1b(i)*sthe*sphi-cy(m)
+              dz=x1b(i)*cthe-cz(m)
+             endif
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpikb(i,j,1) = gpikb(i,j,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+            enddo
+          enddo
+        enddo
+      endif
+c
+c  Initial solution along outer k surface
+c
+      if (noks(3) .eq. 3) then
+        do m=1,nprocs_w
+         if(lgeom .eq. 3) then
+          sphi=sin(x3b(kep1))
+          cphi=cos(x3b(kep1))
+         endif
+          do j=js,je           
+           if(lgeom .eq. 2 .or. lgeom .eq. 3) then
+            cthe=cos(x2b(j))
+            sthe=sin(x2b(j))
+           endif
+            do i=is,ie
+             if(lgeom .eq. 1) then
+              dx=x1b(i)-cx(m)
+              dy=x2b(j)-cy(m)
+              dz=x3b(kep1)-cz(m)
+             endif
+             if(lgeom .eq. 2) then
+              dx=x2b(j)*cphi-cx(m)
+              dy=x2b(j)*sphi-cy(m)
+              dz=x1b(i)-cz(m)
+             endif
+             if(lgeom .eq. 3) then
+              dx=x1b(i)*sthe*cphi-cx(m)
+              dy=x1b(i)*sthe*sphi-cy(m)
+              dz=x1b(i)*cthe-cz(m)
+             endif
+              dx2=dx*dx
+              dy2=dy*dy
+              dz2=dz*dz
+              r1 = sqrt(dx2+dy2+dz2)
+              gpokb(i,j,1) = gpokb(i,j,1)+tm(m)/r1+(0.5*(qm(1,m)*dx2+
+     &                       qm(2,m)*dy2+qm(3,m)*dz2)+
+     &                       qm(4,m)*dx*dy+qm(5,m)*dx*dz+
+     &                       qm(6,m)*dy*dz)/r1**5
+            enddo
+          enddo
+        enddo
+      endif
+c
+      return
+      end
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c                                                                                                                    c
+c calculating the potential at radial boundaries using spherical harmonic expansion                                  c  
+c                                                                                                                    c
+c                                                                                                                    c  
+c                                                                                                                    c 
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      real*8 FUNCTION plgndr(l,m,x)
+      use param
+
+      implicit none
+
+      INTEGER :: l,m
+      REAL*8 :: x
+      INTEGER :: i,ll
+      REAL*8 :: fact,oldfact,pll,pmm,pmmp1,omx2
+      if(m.lt.0.or.m.gt.l.or.abs(x).gt.1.)then
+         print*, 'bad arguments in plgndr'
+         stop
+      endif
+      pmm=1d0
+      if(m.gt.0) then
+         omx2=(1d0-x)*(1d0+x)
+         fact=1d0
+         do i=1,m
+            pmm=pmm*omx2*fact/(fact+1d0)
+            fact=fact+2d0
+         enddo
+      endif
+      pmm=sqrt((2*m+1d0)*pmm/(4d0*PI))
+      if(mod(m,2).eq.1)pmm=-pmm
+      if(l.eq.m) then
+         plgndr=pmm
+      else
+         pmmp1=x*sqrt(2d0*m+3d0)*pmm
+         if(l.eq.m+1) then
+            plgndr=pmmp1
+         else
+            oldfact=sqrt(2d0*m+3d0)
+            do ll=m+2,l
+               fact=sqrt((4d0*ll**2-1d0)/(ll**2-m**2))
+               pll=(x*pmmp1-pmm/oldfact)*fact
+               oldfact=fact
+               pmm=pmmp1
+               pmmp1=pll
+            enddo
+            plgndr=pll
+         endif
+      endif
+      return
+      END
+
+      complex*16 function sph_harm(l, m, polar, azimuth)
+      implicit none
+
+      integer :: l, m, absm
+      real*8  :: polar, azimuth, x, mphi, pi ! theta, phi
+      real*8  :: coeff !normalisation
+      real*8, external :: plgndr, factorial
+
+      pi = acos(-1d0)
+      absm = iabs(m) !get Y_lm for positive m first
+      
+      x = cos(polar)
+      mphi = absm*azimuth 
+      sph_harm = plgndr(l,absm,x)*dcmplx(cos(mphi), sin(mphi))
+
+      if(m.lt.0) then
+         sph_harm = (-1)**absm*conjg(sph_harm)
+      endif
+      return
+      end
+
+      subroutine get_sph_harm_array
+      use gboundary
+      use grid
+c
+c    get Ylm(l, m theta, phi)
+c
+      implicit none
+      integer :: j, k, lcount, mcount, mrange, absm
+      real*8  :: theta, phi, x
+      real*8  :: plgndr
+      complex*16, external :: sph_harm
+      
+      do k=ks-1, ke+1
+         phi = x3b(k)
+         do j=js-1, je+1
+            theta = x2b(j)
+            x = cos(theta)
+            
+            do lcount = lmin, lmax
+               mrange = min(mmax, lcount)
+               do mcount=-mrange, mrange
+                  absm = iabs(mcount)
+
+                  Y_ml(mcount, lcount, j, k) 
+     &                 = sph_harm(lcount, mcount, theta, phi)
+
+
+                  Y_ml_star(mcount, lcount, j) !this is just the legendre polynomial part of Y_ml*. insert m-dependence (exp im phi) later
+     &                 = plgndr(lcount, absm, x)
+                  if(mcount.lt.0) Y_ml_star(mcount,lcount,j) 
+     &                 =(-1)**(absm)*Y_ml_star(mcount,lcount,j) 
+
+               enddo
+            enddo
+            
+         enddo
+      enddo
+
+      print*, 'got the 4D spherical harmonic array'
+
+      return
+      end
+
+      subroutine get_pot_ml(m, l)
+!     
+!     get the pot_ml's. do the phi-theta integration locally. then store it in appropriate subarray of the global rho_ml ( which 
+!     covers the entire radial range   
+      
+      use root
+      use gboundary
+      use grid
+      use field
+      use mpiyes
+      use param
+      use mpiyes
+      use mpipar
+      
+      implicit none
+      
+      integer, parameter :: itmax=20
+      real*8, parameter :: tol=1d-3, relax = 1.5
+      integer :: i, j, k, m, l, ibeg, info, count,
+     &     errest
+      real*8  :: res, resmax, error
+      real*8  :: thetaint(1:ntab_j),phiint(1:ntab_k),
+     &     result, dphi, phiint_real(1:ntab_k), 
+     &     phiint_imag(1:ntab_k), sintheta(1:ntab_j),
+     &     result2, res_real, res_imag, dblem,
+     &     ywork_j(3,ntab_j), ework_j(ntab_j), work_j(ntab_j),
+     &     ywork_k(3,ntab_k), ework_k(ntab_k), work_k(ntab_k),
+     &     hwork(2*(ntab_j-1)), hwork2(2*(ntab_k-1)),
+     &     res_real2, res_imag2
+      complex*16 :: dd(0:nrad+1), du(0:nrad), dl(1:nrad+1), 
+     &     trial(0:nrad+1), trialold(0:nrad+1), rhsinit(0:nrad+1)
+      complex*16 :: contribution
+      
+      dblem = dble(m)
+      sintheta(1:ntab_j) = sin(x2b(js:je))
+      
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     part 1: get the rho_ml's                             c
+c                                                          c
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+!     
+!     zero the local copy of the global rho_ml
+!     
+      rho_ml_1d_glob = dcmplx(0d0, 0d0)
+      
+!     
+!     first do local phi-theta integration. active density zones only
+!     
+      do i=is, ie
+         
+         do k=ks, ke !fix phi, do theta integration. no m-phi dependence here
+                     !note that some routines assume uniform spacing in theta, which is NOT
+                     !      the same as uniform spacing in -cos(theta) \eqv vol2 axis!
+                     !if the integrator does interpolations, then not good idea to parallelise in that direction
+                     ! because we don't know end point interpolants are consistent between CPU's
+
+               thetaint(1:ntab_j) = d(i,js:je,k)*Y_ml_star(m,l,js:je)
+c
+c     UNEVEN spaced integrators, so int  thetaint * d(-cos theta), thetaaxis holds -cos(theta) data points
+c
+
+                result = sum(thetaint(1:ntab_j)*dvl2b(js:je)) ! the standard (constant in each cell) gives 0.011 error
+               
+!               call cubint(thetaint, thetaaxis, ntab_j, 1,                  !***seems good, less than 0.003 error. thetaaxis is -cos(theta)
+!     &              ntab_j, result, error)                                  !but should NOT PARALLELIZE in theta. cubic splined.
+               
+               
+!     call cspint (thetaint, thetaaxis, ntab_j, vol2a(js), !0.011 error. splined. seems OK to parallelise
+!     &              vol2a(je+1), ywork_j, ework_j, work_j, result)
+!               
+!     call davint(thetaaxis, thetaint, ntab_j, vol2a(js), !about 0.011. OK to parallelise
+!     &              vol2a(je+1), result, errest)        
+!               
+!     call simpne ( thetaaxis, thetaint, ntab_j, result) !0.003 error. DO NOT PARALLELIZE
+!     
+!     call plint (thetaint, thetaaxis, ntab_j, vol2a(js) , !0.011 error. OK to parallel
+!     &             vol2a(je+1), result)               
+c     
+c     EVEN spacing integrators, so int thetaint*sin(theta) dtheta 
+c     
+!     call hiordq (ntab_j, thetaint*sintheta,(x2a(je+1)-x2a(js)!0.05 (parallel) or 0.003 if single CPU in theta
+!     &              )/ntab_j, hwork, result )
+!     
+!     call simpsn((x2a(je+1)-x2a(js))/ntab_j, !error 0.0025 but do not parallelise (error is 5% if so)
+!     &              thetaint*sintheta, ntab_j, result)
+!              
+               phiint(k - ks + 1)= result
+            enddo
+            
+!     
+!     now do phi integration, do real part (cosine) and imaginary part( sine) separately. 
+!     
+            if(m.eq.0) then     ! no m-phi dependence, use cubic interpolation
+               result2 = sum(phiint(1:ntab_k)*dx3b(ks:ke))
+               
+!               call davint(phiaxis, phiint, ntab_k, x3a(ks), !maintains 0.003 error. no change with CPU number
+!     &              x3a(ke+1), result2, errest) 
+               
+               
+!     call cspint (phiint, phiaxis, ntab_k, x3a(ks), !maintains 0.003 error. but increases a little when more cpu's put in phi 
+!     &              x3a(ke+1), ywork_k, ework_k, work_k, result2)!fortunetly not obvious problem at tile boundary
+!     call hiordq (ntab_k, phiint,(x3a(ke+1)-x3a(ks))/ntab_k!increases error. error doubles when cpu numbers double
+!     &           , hwork2, result2 )
+!     call plint (phiint, phiaxis, ntab_k, x3a(ks) , !maintains 0.003 error. no change with cpu number
+!     &           x3a(ke+1), result2)
+               
+               contribution = dcmplx(result2)            
+            else                !there is phi dependence
+               
+               phiint_real(1:ntab_k) =  phiint(1:ntab_k)
+     &           *cos(dblem*phiaxis(1:ntab_k))
+               phiint_imag(1:ntab_k) = -phiint(1:ntab_k)
+     &           *sin(dblem*phiaxis(1:ntab_k))
+               
+               res_real = sum(phiint_real(1:ntab_k)*dx3b(ks:ke)) !actually looks good!
+               res_imag = sum(phiint_imag(1:ntab_k)*dx3b(ks:ke))
+               
+!     call filon(phiint_real(1:ntab_k),
+!     &           phiint_imag(1:ntab_k),                            
+!     &           ntab_k, dblem, res_real, res_imag)               
+               
+!               call flinn(phiint_real(1:ntab_k),
+!     &              phiint_imag(1:ntab_k),                          
+!     &              ntab_k, dblem, res_real, res_imag) 
+               
+!     call davint(phiaxis, phiint_real, ntab_k, x3a(ks), !seems ok! goes crazy for high m (though error is few per cent). but nonaxisymmetric error
+!     &           x3a(ke+1), res_real, errest)  
+!     call davint(phiaxis, phiint_imag, ntab_k, x3a(ks), 
+!     &           x3a(ke+1), res_imag, errest)  
+!     
+!     call eightP_newton_cotes(phiint_real, ntab_k, !you need at lease 16 cells per wavelength of the mmax mode. e.g. mmax=16 and Nphi=256 then
+!     &              (x3a(ke+1)-x3a(ks))/ntab_k, res_real) !have 256/16=16, that's two newton-cotes intervals per wavelength so you're ok
+!     call eightP_newton_cotes(phiint_imag, ntab_k, !if you try mmax = 32, then only one NC interval and the result is shit . same goes for 4P NC method
+!     &              (x3a(ke+1)-x3a(ks))/ntab_k, res_imag)
+!     
+!     call fourP_newton_cotes(phiint_real, ntab_k, !problem if you try 4 cells per mode. e.g. Nphi=128 and mmax=32 then 
+!     &           dx3a(ks), res_real)                     !for m=32 it's 4 grids per wave-length=one newton-cotes. not good enough
+!     call fourP_newton_cotes(phiint_imag, ntab_k,
+!     &           dx3a(ks), res_imag) 
+               contribution = dcmplx(res_real,res_imag)  
+            endif
+            rho_ml_1d_loc(i-is+1) = contribution*4d0*pi*x1b(i)**2 
+         enddo
+     
+!      print*, 'got the 1D rho_lm (local)'
+!     
+!     put the local 1D array above into the correct subarray of the global version. first set zero it though
+!     
+      
+      ibeg = coords(1)*nrad_loc + 1
+!      print*, 'r-coord, ibeg', coords(1), ibeg, ie-is+1, nrad_loc, nrad
+      rho_ml_1d_glob(ibeg:ibeg+nrad_loc-1) = rho_ml_1d_loc(1:nrad_loc)
+
+!     
+!     now do global sum.
+!     
+      call mpi_allreduce(rho_ml_1d_glob, rho_ml, nrad, 
+     &     MPI_DOUBLE_COMPLEX, MPI_SUM, comm3d,ierr)
+!      print*, 'did global sum'
+
+
+!    save the rho_lm for diagonstic checks if desired
+!
+      rho_ml_3d(m,l,is:ie) = rho_ml(ibeg:ibeg+nrad_loc-1)
+     &     /(4d0*pi*x1b(is:ie)**2)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c                                                          c
+c part II: matrix problem                                  c
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+!     
+!     matrix problem. construct rhs. interior points first.
+!     
+      rhs(1:nrad) = rho_ml(1:nrad)
+
+!     
+!     boundary condition for zero mass outside boundaries or zero gradient in potential
+!
+       rhs(0)     = 0d0 
+       rhs(nrad+1)= 0d0 
+
+!
+!     boundary condition for ghost density being same as last active zones
+!     AND d^2Phi/dr^2 = 0 at ghost/active boundary. basically evaluate the 
+!     ODE for Phi_ml here and put Phi" = 0. don't think it's working for OBC, though
+
+!       rhs(0)     = rho_ml(1)*exp(-1d0/dlogri)
+!      rhs(nrad+1)= rho_ml(nrad)*exp(1d0/dlogri)
+
+
+!     
+!  construct elements of the tridiagonal matrix. note that zgtsv overwrites these 1D arrays so they are
+!  no good for the next l
+!
+
+!!! interior points, for active zone
+      du(1:nrad) = udiag(1:nrad)
+      dd(1:nrad) = -2d0*dlogri**2 - l*(l+1d0)
+      dl(1:nrad) = ldiag(1:nrad) 
+
+!!! IBC: du(0) and dd(0)
+!! for zero mass inside boundary:
+         du(0)      = dlogri - l/2d0
+         dd(0)      = -(dlogri + l/2d0)
+!! for zero radial potential gradient at inner boundary
+!      du(0)      = dlogri 
+!      dd(0)      = -dlogri
+!! for zero second radial potential gradient at inner boundary (use original ODE to relate Phi and Phi')
+!       du(0)      = dlogri - (l+1d0)*l/2d0
+!       dd(0)      = -(dlogri + l*(l+1d0)/2d0)
+
+!!! OBC: dd(nrad+1) and dl(nrad+1) controls OBC
+!!  for zero mass outside boundary
+         dd(nrad+1) = dlogri + (l+1d0)/2d0
+         dl(nrad+1) = -dlogri + (l+1d0)/2d0 
+!! for zero radial potential gradient at outer boundary
+!       dd(nrad+1) =  dlogri
+!       dl(nrad+1) = -dlogri
+!! for zero second radial potential gradient at outer boundary (doesn't work - crashes)
+!      dd(nrad+1) = dlogri - l*(l+1d0)/2d0
+!      dl(nrad+1) = -(dlogri + l*(l+1d0)/2d0)
+
+
+!     
+!     solve matrix problem
+!
+
+!         if((nhy.eq.0).or.(nfail.gt.itmax/2)) then !compute exact solution at very first step, or if 
+                                                 !we were using SOR but kept failing to converge witin itmax for the previous m,l's
+!            nfail = 0
+            call zgtsv(nrad+2, 1, dl, dd, du, rhs, nrad+2, info)
+            if(info.ne.0) then
+               print*, 'did not solve poisson successfully, info=', info
+               stop
+            endif
+!         else
+!!           
+!!    we are beyond step 0, so have earlier solution, use that in an SOR algorithm
+!!     
+!            trial(0:nrad+1) = pot_ml_3d_glob(m,l,0:nrad+1)
+!            rhsinit = rhs
+!            count = 0
+!            resmax= 1d0 
+!            do while(resmax.gt.tol)  
+!               if(count.gt.itmax) then !too many iterations, just call exact solver
+!                   nfail = nfail + 1
+!                   call zgtsv(nrad+2, 1, dl, dd, du, rhsinit, nrad+2, 
+!     &                  info)
+!                   rhs = rhsinit
+!                   exit
+!                endif 
+!               
+!               trialold = trial
+!               trial(0) = (1d0-relax)*trial(0)
+!     &              + relax*(rhsinit(0) - du(0)*trial(1))/dd(0)
+!               do i=1, nrad
+!                  trial(i) = (1d0 - relax)*trial(i)
+!     &                 + relax*(rhsinit(i) - dl(i-1)*trial(i-1) 
+!     &                 -   du(i)*trial(i+1))/dd(i)
+!               enddo
+!               trial(nrad+1) = (1d0-relax)*trial(nrad+1)
+!     &              + relax*(rhsinit(nrad+1) - dl(nrad+1)*trial(nrad))
+!     &              /dd(nrad+1)
+!                resmax = maxval(abs((trial - trialold)/trialold))
+!                count = count + 1
+!                rhs(0:nrad+1) = trial(0:nrad+1) ! replace rhs with the new interated solution
+!!                if(myid.eq.0) print*, count
+!             enddo
+!         endif
+
+!
+!     rhs is now the phi_ml(r) 1D vector that covers the global disk. copy appropriate subsection into local array
+!     for potential calculation. save a copy of the global solution. 
+      pot_ml_3d_loc(m,l,is-1:ie+1) = rhs(ibeg-1:ibeg+nrad_loc)
+!      pot_ml_3d_glob(m,l,0:nrad+1) = rhs(0:nrad+1)
+
+      return
+      end
+
+
+      subroutine get_pot
+!
+!     get the potential. do ghost zones too, so we don't need to communicate
+!
+      use field
+      use grid
+      use gboundary
+
+      implicit none
+
+      integer :: i, j, k, l, m
+      integer :: mrange
+      complex*16 :: contribution
+      
+      do k=ks-1, ke+1
+         do j=js-1, je+1
+            do i=is-1, ie+1               
+
+
+               contribution = sum(pot_ml_3d_loc(-mmax:mmax, lmin:lmax,i)
+     &              *Y_ml(-mmax:mmax, lmin:lmax, j,k))
+
+      
+               gp(i,j,k) = -dble(contribution)
+!!
+!! solution method is for standard convention (negative potential) but zeus standard is positive potential
+!! 
+            enddo
+         enddo
+      enddo
+
+
+      do k=ks, ke !get the reconstructed density. for diagonistic and testing runs only. comment out otherwise
+         do j=js, je
+            do i=is, ie               
+               
+               
+                contribution = sum(rho_ml_3d(-mmax:mmax, lmin:lmax, i)
+     &              *Y_ml(-mmax:mmax, lmin:lmax, j, k))
+
+
+               
+               rho_recons(i,j,k)=(dble(contribution)-d(i,j,k))/d(i,j,k)
+               
+            enddo
+         enddo
+      enddo
+
+      return
+      end
+
+
+
+
+
+
+
+
+
+
+
+
+      subroutine get_potBC
+!
+!     get the potential for theta and radial boundaries
+!
+      use bndry
+      use grid
+      use gboundary
+      use field
+
+      implicit none
+
+      integer :: i, j, k, l, m
+      integer :: mrange
+      complex*16 :: rgpin, rgpout, tgpin, tgpout
+      complex*16 :: contribution      
+!
+!     possibly add mpi to this routine, i.e. only CPU that actually need the boundary potentials calculate it
+!
+
+
+      do k=ks-1, ke+1
+!!
+!!    radial boundaries, at is-1 and ie+1, do all j
+!!
+         do j=js-1, je+1
+
+
+ 
+            rgpin = sum(pot_ml_3d_loc(-mmax:mmax, lmin:lmax, is-1)
+     &            *Y_ml(-mmax:mmax, lmin:lmax, j, k))             
+
+            rgpout= sum(pot_ml_3d_loc(-mmax:mmax,lmin:lmax,  ie+1)
+     &            *Y_ml(-mmax:mmax,lmin:lmax , j, k))
+
+
+
+
+               gpiib(j,k,1) = -dble(rgpin)
+               gpoib(j,k,1) = -dble(rgpout)
+         enddo
+!!
+!!    theta boundaries, at js-1 and je+1, do all i
+!!
+         do i=is-1, ie+1
+            tgpin = sum(pot_ml_3d_loc(-mmax:mmax, lmin:lmax, i)
+     &           *Y_ml(-mmax:mmax, lmin:lmax, js-1, k))             
+
+            tgpout= sum(pot_ml_3d_loc(-mmax:mmax,lmin:lmax,  i)
+     &           *Y_ml(-mmax:mmax,lmin:lmax , je+1, k))
+
+
+
+               gpijb(i,k,1) = -dble(tgpin)
+               gpojb(i,k,1) = -dble(tgpout)
+         enddo
+!!
+!! solution method is for standard convention (negative potential) but zeus standard is positive potential
+!!
+         enddo
+
+!         do k=ks, ke !get the reconstructed density. for diagonistic and testing runs only. comment out otherwise
+!            do j=js, je
+!               do i=is, ie                                
+!                  contribution = sum(rho_ml_3d(-mmax:mmax, lmin:lmax, i)
+!     &                 *Y_ml(-mmax:mmax, lmin:lmax, j, k))
+!                                    
+!                  rho_recons(i,j,k)=(dble(contribution)
+!     &                 -d(i,j,k))/d(i,j,k)
+!                  
+!            enddo
+!         enddo
+!      enddo
+
+      return
+      end
+
+      subroutine sgboss
+!
+!     compute the self-potential everywhere using spherical harmonic expansion
+!
+      use gboundary
+      use mpiyes
+      use mpipar
+
+      implicit none
+      
+      integer :: j, k, l,m, mprime, lprime
+      integer :: mrange
+      real*8 :: azi(128), theta(64)
+      real*8 :: dphi, dtheta
+      complex*16 :: sph_harm, res
+      
+      do l=lmin, lmax
+         mrange = min(mmax, l)
+         do m=-mrange, mrange
+            if(mod(l+m,2).eq.0) call get_pot_ml(m, l) ! only do l+m = even modes
+         enddo
+      enddo
+
+      call mpi_barrier(comm3d, ierr)
+      call get_pot
+      
+      return
+      end
+
+    
+      real*8 function sgacc_cut(tt)
+!
+!     tapering SG acceleration. because vertical structure not setup to include SG. 
+!     so switch on theta-SG acceleration slowly. to switch off, set sg_on to large 
+!     negative number at input 
+
+      use gboundary
+      use param
+      implicit none
+      real*8 :: tt, temp
+      if( tt .lt. (tsg + sg_on)) then
+         temp = (tt - tsg)/sg_on
+         sgacc_cut = (sin(temp*pi/2d0))**2
+      else
+         sgacc_cut = 1d0
+      endif
+      return
+      end        
+
+  
+      subroutine sgBCboss
+!
+!     compute the boundary potential 
+!
+      use gboundary
+      use mpiyes
+      use mpipar
+      use field
+      use bndry
+
+      implicit none
+
+      integer :: bvstat_dummy(8,nbvar)
+      integer :: l, m
+      integer :: mrange
+
+      pot_ml_3d_loc = dcmplx(0d0, 0d0) !initialise
+
+      do l=lmin, lmax
+         mrange = min(mmax, l)
+         do m=-mrange, mrange
+            if(mod(l+m,2).eq.0) call get_pot_ml(m, l) ! only do l+m = even modes
+            
+         enddo
+      enddo
+
+      call mpi_barrier(comm3d, ierr)
+      call get_potBC    
+      return
+      end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

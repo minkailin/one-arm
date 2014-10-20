@@ -1,0 +1,79 @@
+;     rsigmavr_fft = fft(sigma*vrad, -1, dimension=1,/double)
+;     re_rsigmavr_fft = real_part(rsigmavr_fft)
+;     im_rsigmavr_fft = imaginary(rsigmavr_fft)
+;     for i=0,nsec-1 do begin
+;        rsigmavr_fft(i,*) = dcomplex( deriv(radius(*), radius(*)*re_rsigmavr_fft(i,*)), $
+;                                      deriv(radius(*), radius(*)*im_rsigmavr_fft(i,*)))
+;        rsigmavr_fft(i,*) /= -radius(*)
+;     endfor
+
+
+        ;; real = real_part(sigma_fft(m,*))
+        ;; imag = imaginary(sigma_fft(m,*))
+        ;; sigm = dcomplex(int_tabulated(radius(x1:x2),real(x1:x2)), int_tabulated(radius(x1:x2),imag(x1:x2)))
+
+
+
+
+        ;; real = real_part(sigmam_dot(m,*))
+        ;; imag = imaginary(sigmam_dot(m,*))
+        ;; sigmdot = dcomplex(int_tabulated(radius(x1:x2),real(x1:x2)), int_tabulated(radius(x1:x2),imag(x1:x2)))
+
+        ;; eigen = dcomplex(0,1d0)*sigmdot/sigm
+        ;; omega = real_part(eigen)
+        ;; gmma  = imaginary(eigen)
+
+
+
+;;   m=1
+;;   lhs = m*omega1d -  mode_corot_time(1, tslice-start)
+;;   lhs = lhs^2
+
+;;   lhs_ex = m*omega1d -  mode_corotex_time(1, tslice-start)
+;;   lhs_ex = lhs_ex^2
+
+;;   print, mode_corot_time(1, tslice-start) , mode_corotex_time(1, tslice-start), omega1d(nrad-1)
+
+;;   rhs = kappa1d^2*(1d0 - 1d0/toomreq)
+
+;   set_plot, 'ps'
+;   device, filename=filepath('fftdensity_tslice.ps',root_dir='.',subdir=[location]) $
+;           , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+;           , /inches,/color,bits_per_pixel=8
+;   plot, radius, m*omega1d-kappa1d-mode_corotex_time(1, tslice-start), xmargin=[6,2], ymargin=[3.5,0.5] , ytitle=textoidl('') $
+;         , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('r/r_0'), xrange=xrange, yrange=yrange, xstyle=1
+;;   oplot, radius, m*omega1d-kappa1d-mode_corotex_time(1, tslice-start), thick=4,linestyle=1
+;; ;  oplot, radius, lhs_ex/rhs-1d0,thick=4,linestyle=1
+;; ;  oplot, [0,10], [0,0], thick=1, linestyle=2
+;   device,/close
+
+
+
+  ;; energy = azimode^2*pattern*kr^2*(re^2 + im^2)*sigma*(pattern - omega)
+  ;; energy/= ( kappa2 - azimode^2*(pattern - omega)^2 + (kr*cs)^2 )^2
+
+  ;; set_plot, 'ps'
+  ;; device, filename=filepath(strcompress('m1_analysis_energy'+ks+'.ps',/remove_all),root_dir='.',subdir=[location]) $ 
+  ;;         ,bits_per_pixel=8,xsize=8, ysize=4.5,xoffset=0,yoffset=0,/inches
+  ;; plot, rplot, energy,xmargin=[8,2],ymargin=[3.5,0.5], ytitle=textoidl('Wave energy'), ystyle=0  $
+  ;;       ,charsize=1.5, thick=4, xtitle=textoidl('r/r_0'), xstyle=1,xrange=xrange
+  ;; oplot, [0,1]*max(rad), [0,0], linestyle=1
+  ;; device,/close
+
+
+     re  = real_part(fourier)
+     dre = deriv(rad, re)
+     d2re = deriv(rad, dre)
+
+     im  = imaginary(fourier)
+     dim = deriv(rad, im)
+     d2im = deriv(rad, dim)
+     
+;     k2 = -dcomplex(d2re, d2im)/( dcomplex(re,im) + 1d-16)
+;     k2*= rad^2
+
+     kr  = dim*re - dre*im
+     kr /= re^2 + im^2 + 1d-16
+     
+     kr_norm = kr
+     kr_norm/= !dpi*sigma/soundspeed(pressure,sigma)^2

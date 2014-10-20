@@ -1,0 +1,580 @@
+/* ///////////////////////////////////////////////////////////////////// */
+/*! 
+  \file  
+  \brief initialization for self-gravity [assume spherical]
+*/
+/* ///////////////////////////////////////////////////////////////////// */
+#include "pluto.h"
+#include <gsl/gsl_sf_legendre.h>
+
+#define   LMAX  64
+#define   MMAX  64
+#define   Re     0
+#define   Im     1
+
+/* ********************************************************************* */
+void StartupSG (Data *d, Grid *G)
+/*! 
+ *
+ *
+ *
+ *
+ *********************************************************************** */
+{
+  int j, k, l, m, n, counter, nstar, nprev, two_n;
+  int Nlm;
+  double x2, x3, cos_theta, m_phi, test;
+  double x, xl, xr, xp1, xm1;
+  struct GRID *GY, *GZ;
+ 
+  print1 ("> Initializing self-gravity ...\n");
+
+  GY = G + 1;
+  GZ = G + 2;
+
+  /*
+    ---allocate memory for the Plm array
+    Plm is array[theta, (l,m)]. the l,m part is stored as 1D. only l+m
+    = even are stored, and only l,m >= 0 stored, and only l<=LMAX,
+    m<=MMAX. there are Nlm number of such elements. 
+    in the (l,m) plane these elements form the locus of points
+    ******************************
+    m = l, for l=0....LMAX
+    m = l-2, for l=2...LMAX
+    .
+    .
+    .
+    m = l-2n, for l=2n...LMAX
+    .
+    .
+    .
+    m = l-LMAX, for l=LMAX (i.e. n=LMAX/2)
+    ******************************
+    But m<= MMAX so not every line accepts the fill l range
+    for n < nstar, some higher l modes are disgarded (because they
+    imply m > MMAX)
+    
+    so there are nstar lines with cut-off, each has MMAX + 1 elements
+    for n>=nstar is no cut-off, full range of l applies
+  */
+  nstar = (LMAX - MMAX)/2;
+  Nlm = nstar*(MMAX + 1) + (LMAX/2 + 1 - nstar)*(LMAX/2 + 1 - nstar);
+  d->Plm = ARRAY_2D(NX2_TOT, Nlm, double);
+ 
+  /* --------------------------------------------------------------
+   Fill Plm with associated legendre polynomials. these are used for
+   constructing potential from harmonic coefficients
+   -------------------------------------------------------------- */
+  
+  JTOT_LOOP(j) { 
+    x2 = GY->x[j];
+    cos_theta = cos(x2);
+    
+    for(n=0; n<=nstar-1; n++){/*go through each line with cut-off*/
+      nprev = n*(MMAX+1);
+      two_n = 2*n;
+      
+      for(l=two_n; l<=MMAX+two_n; l++){   
+	m = l - two_n;
+	counter = nprev + m;
+	
+	d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+    }
+    
+    for(n=nstar; n<=LMAX/2; n++){/*go through each line without cut-off*/
+      nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+      two_n = 2*n;
+      
+      for(l=two_n; l<=LMAX; l++){   
+	m = l - two_n;
+	counter = nprev + m;
+	
+	d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+    }
+  }
+  
+  /*
+    Allocate array for weights in the phi integration
+    for each m. 
+    quad interpolation for now. 
+    integration across the jth cell (from j-1/2 to j+1/2) is done by 
+    cubic interpolation of the integrand across (j-1, j, j+1). 
+    so need one ghost on either side
+    for phi integration, integrand includes an exp(-i*m*phi)
+    factor. this factor is integrated by hand. 
+  */
+  double dphi, th, costh, sincth, ReI0, ImI0, ReI1, ImI1, ReI2, ImI2;
+  double cosmphi, sinmphi, dblem;
+  double filon_corr; 
+  dphi = GZ->dx[KBEG]; /*assume uniform phi spacing*/
+  
+  d->phi_weights_m = ARRAY_3D(2, MMAX+1, NX3_TOT, double);
+  
+  for(m=0;m<=MMAX;m++){ /*zero the weights array*/
+    KTOT_LOOP(k){
+      d->phi_weights_m[Re][m][k] = 0.0;
+      d->phi_weights_m[Im][m][k] = 0.0;
+    }
+  }
+  
+  m = 0 ; /*axisymmetric mode, no trig factor, only weights from quad
+	    interpolation. for uniform spacing these expressions
+	    actually simplify a lot w_(j-1) is dphi/24, w_j is
+	    dphi/3.0 and w_j(j+1) = dphi/24. but this is just
+	    initialization stage so i've put in the full expressions
+	  */
+  KDOM_LOOP(k){
+    x   = GZ->x[k];
+    xp1 = GZ->x[k+1];
+    xm1 = GZ->x[k-1];
+    xl  = GZ->xl[k];
+    xr  = GZ->xr[k];
+    
+    d->phi_weights_m[Re][m][k-1]
+      +=( x*xp1*dphi-0.5*(x+xp1)*(xr*xr-xl*xl) + (1.0/3.0)*(xr*xr*xr -
+							    xl*xl*xl) )/(2.0*dphi*dphi);
+    
+    d->phi_weights_m[Re][m][k]
+      +=( 0.5*(xm1+xp1)*(xr*xr-xl*xl) - xm1*xp1*dphi -
+	  (1.0/3.0)*(xr*xr*xr - xl*xl*xl) )/(dphi*dphi);
+    
+    d->phi_weights_m[Re][m][k+1]
+      +=( (1.0/3.0)*(xr*xr*xr - xl*xl*xl) -
+	  0.5*(x+xm1)*(xr*xr-xl*xl)+x*xm1*dphi)/( 2.0*dphi*dphi);
+
+    /* below is for filon-trapezoidal rule */
+    /*
+      d->phi_weights_m[Re][m][k] = dphi;
+      d->phi_weights_m[Im][m][k] = 0.0;
+    */
+  }
+
+  for(m=1;m<=MMAX;m++){/*non-axisymmetric modes, there are terms
+			 accounting for the trig factor. see notes*/
+    KDOM_LOOP(k){
+
+      x   = GZ->x[k];
+      xp1 = GZ->x[k+1];
+      xm1 = GZ->x[k-1];
+
+      dblem = (double)m;
+      m_phi = x*dblem;
+      cosmphi = cos(m_phi);
+      sinmphi = sin(m_phi);
+
+      th = dphi*dblem/2.0;
+      costh = cos(th);
+      sincth= sin(th)/th;
+
+      ReI0 = cosmphi*dphi*sincth;
+      ImI0 =-sinmphi*dphi*sincth;
+
+      ReI1 = cosmphi*x*sincth + sinmphi*(1.0/dblem)*(costh - sincth);
+      ReI1*= dphi;
+      ImI1 = cosmphi*(1.0/dblem)*(costh - sincth) - sinmphi*x*sincth;
+      ImI1*= dphi;
+
+      ReI2 = cosmphi*( 2.0*costh/(dblem*dblem) + sincth*(
+							 (th*th-2.0)/(dblem*dblem)
+							 + x*x) )
+	+ sinmphi*2.0*x*(1.0/dblem)*(costh - sincth);
+      ReI2*= dphi;
+      ImI2 = cosmphi*2.0*(x/dblem)*(costh - sincth) 
+	- sinmphi*(2.0*costh/(dblem*dblem) + sincth*(
+						     (th*th-2.0)/(dblem*dblem) + x*x)); 
+      ImI2*= dphi;
+
+      d->phi_weights_m[Re][m][k-1]
+      	+=( x*xp1*ReI0 - (x+xp1)*ReI1 + ReI2 )/(2.0*dphi*dphi);
+      d->phi_weights_m[Re][m][k]
+      	+=( (xm1+xp1)*ReI1 - xm1*xp1*ReI0 - ReI2)/(dphi*dphi);
+      d->phi_weights_m[Re][m][k+1]
+      	+=( ReI2 - (x+xm1)*ReI1 + x*xm1*ReI0)/(2.0*dphi*dphi);
+
+      
+      d->phi_weights_m[Im][m][k-1]
+      	+=( x*xp1*ImI0 - (x+xp1)*ImI1 + ImI2 )/(2.0*dphi*dphi);
+      d->phi_weights_m[Im][m][k]
+      	+=( (xm1+xp1)*ImI1 - xm1*xp1*ImI0 - ImI2)/(dphi*dphi);
+      d->phi_weights_m[Im][m][k+1]
+      	+=( ImI2 - (x+xm1)*ImI1 + x*xm1*ImI0)/(2.0*dphi*dphi);
+
+      /* below is for filon-trapezoidal rule*/     
+/*
+       filon_corr = sincth*sincth; 
+       d->phi_weights_m[Re][m][k] = cosmphi*filon_corr*dphi; 
+       d->phi_weights_m[Im][m][k] =-sinmphi*filon_corr*dphi; 
+*/            
+    }
+
+
+
+  }
+
+  /*
+    Allocate array for weights in the theta integration
+    for each (l,m). 
+    quad interpolation for now. 
+    integration across the jth cell (from j-1/2 to j+1/2) is done by 
+    quad interpolation of the integrand across (j-1, j, j+1).
+    so need one ghost on either side
+  */
+
+  double dx, p, pm1, pp1;
+
+  d->theta_weights_lm = ARRAY_2D(Nlm, NX2_TOT, double);
+  
+  for(n=0; n<=nstar-1; n++){/*go through each line with cut-off*/
+    nprev = n*(MMAX+1);
+    two_n = 2*n;
+    
+    for(l=two_n; l<=MMAX+two_n; l++){
+      m = l - two_n;
+      counter = nprev + m;
+      
+      JTOT_LOOP(j){/*zero the weights array*/
+	d->theta_weights_lm[counter][j] = 0.0;
+      }
+      
+      JDOM_LOOP(j){/*go through each active zone, updating the weights
+		     for j-1, j and j+1 */
+	x = GY->x[j];
+	xm1 = GY->x[j-1];
+	xp1 = GY->x[j+1];
+	xl= GY->xl[j];
+	xr= GY->xr[j];
+	dx= GY->dx[j];
+	
+	p = gsl_sf_legendre_sphPlm(l, m, cos(x))*sin(x);
+	pm1 = gsl_sf_legendre_sphPlm(l, m, cos(xm1))*sin(xm1);
+	pp1 = gsl_sf_legendre_sphPlm(l, m, cos(xp1))*sin(xp1);
+	
+	d->theta_weights_lm[counter][j-1] += pm1*(x*xp1*dx -
+						  0.5*(x+xp1)*(xr*xr-xl*xl)+(1.0/3.0)*(xr*xr*xr
+										       - xl*xl*xl))/
+	  ( (x-xm1)*(xp1-xm1) );
+	
+	d->theta_weights_lm[counter][j] +=p*( 0.5*(xp1+xm1)*(xr*xr-xl*xl) - (1.0/3.0)*(xr*xr*xr -
+										       xl*xl*xl) -
+					      xm1*xp1*dx )/(
+							    (x-xm1)*(xp1-x)
+							    );
+	d->theta_weights_lm[counter][j+1] +=pp1*( (1.0/3.0)*(xr*xr*xr -
+							     xl*xl*xl) -
+						  0.5*(x + xm1)*(xr*xr -
+								 xl*xl) +
+						  x*xm1*dx)/(
+							     (xp1-x)*(xp1-xm1) );
+      }
+    } 
+  }
+  
+  for(n=nstar; n<=LMAX/2; n++){/*go through each line without cut-off*/
+    nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+    two_n = 2*n;
+    
+    for(l=two_n; l<=LMAX; l++){
+      m = l - two_n;
+      counter = nprev + m;
+      
+      
+      JTOT_LOOP(j){
+	d->theta_weights_lm[counter][j] = 0.0;
+      }
+      
+      JDOM_LOOP(j){
+	x = GY->x[j];
+	xm1 = GY->x[j-1];
+	xp1 = GY->x[j+1];
+	xl= GY->xl[j];
+	xr= GY->xr[j];
+	dx= GY->dx[j];
+	
+	p = gsl_sf_legendre_sphPlm(l, m, cos(x))*sin(x);
+	pm1 = gsl_sf_legendre_sphPlm(l, m, cos(xm1))*sin(xm1);
+	pp1 = gsl_sf_legendre_sphPlm(l, m, cos(xp1))*sin(xp1);
+	
+	
+	d->theta_weights_lm[counter][j-1] += pm1*(x*xp1*dx -
+						  0.5*(x+xp1)*(xr*xr-xl*xl)+(1.0/3.0)*(xr*xr*xr
+										       - xl*xl*xl))/
+	  ( (x-xm1)*(xp1-xm1) );
+	
+	d->theta_weights_lm[counter][j] +=p*(
+					     0.5*(xp1+xm1)*(xr*xr-xl*xl) - (1.0/3.0)*(xr*xr*xr -
+										      xl*xl*xl) -
+					     xm1*xp1*dx )/(
+							   (x-xm1)*(xp1-x)
+							   );
+	d->theta_weights_lm[counter][j+1] +=pp1*( (1.0/3.0)*(xr*xr*xr -
+							     xl*xl*xl) -
+						  0.5*(x + xm1)*(xr*xr -
+								 xl*xl) +
+						  x*xm1*dx)/(
+							     (xp1-x)*(xp1-xm1) );
+      }
+      
+    }      
+  }
+  
+  /*
+    ---allocate memory for sin(m*phi) and cos(m*phi) arrays.
+    these are used for getting potential from harmonic coefficients only
+  */
+  d->cos_mphi = ARRAY_2D(NX3_TOT, MMAX + 1, double);
+  d->sin_mphi = ARRAY_2D(NX3_TOT, MMAX + 1, double);
+  
+
+  KTOT_LOOP(k) { 
+    x3 = GZ->x[k];
+    
+    for(m=0; m<=MMAX; m++){
+      m_phi = x3*(double)m;
+      d->cos_mphi[k][m] = cos(m_phi);
+      d->sin_mphi[k][m] = sin(m_phi);
+    }
+  }
+  
+  /*
+    ---allocate memory for rho_m(r, theta) =
+    integral[rho*exp(i*m*phi)] dphi. 
+    we need one ghost on either side of the theta range for
+    theta-integration step after phi-integration is done.
+    first index is re/im part
+  */ 
+  d->rho_m = ARRAY_4D(2, MMAX+1, NX2_TOT, NX1_TOT, double);
+}
+
+
+void GetRhom (Data *d, Grid *G)
+/*! 
+ * Given the density cube rho(r,theta,phi) perform the integral
+ *                      rho.exp(-i.m.phi)dphi
+ *over local active phi zones
+ *for all active radial zones
+ *for all active theta-zones PLUS one ghost on either side
+ *currently use quad interpolation so need one phi ghost on either
+ *side (loop is from KBEG-1 to KBEG+1)
+ *if reverting to filon-trapezoidal, then don't need ghosts (loop over
+ *active zones only)
+ *********************************************************************** */
+{
+  int i, j, k, m;
+  struct GRID *GZ;
+  
+  GZ = G + 2;
+ 
+  /*axisymmetric mode*/ 
+  m = 0;
+  k = KBEG-1; /*initialize rho_m(r,theta) with contributions from phi=phi_start*/
+  for(j=JBEG-1; j<=JEND+1; j++){
+    IDOM_LOOP(i){
+      /* d->rho_m[Re][m][j][i] = d->Vc[RHO][k][j][i]*dphi; */
+      /* d->rho_m[Im][m][j][i] = 0.0; */
+      
+      d->rho_m[Re][m][j][i] = d->phi_weights_m[Re][m][k];
+      d->rho_m[Im][m][j][i] = 0.0;
+    }
+  }
+
+  for(k=KBEG;k<=KEND+1;k++){/*add contributions from other (r,theta) slices. no imaginary part from m=0*/
+    for(j=JBEG-1; j<=JEND+1; j++){
+      IDOM_LOOP(i){
+  	/* d->rho_m[Re][m][j][i] += d->Vc[RHO][k][j][i]*d->phi_weights_m[Re][m][k]*; */
+	
+  	d->rho_m[Re][m][j][i] += d->phi_weights_m[Re][m][k];
+      }
+    }
+  }
+  
+
+  int test=32;
+
+  /*non-axisymmetric modes*/
+  for(m=1; m<=MMAX; m++){
+    k=KBEG-1;
+    for(j=JBEG-1; j<=JEND+1; j++){
+      IDOM_LOOP(i){
+  	/* d->rho_m[Re][m][j][i] = d->Vc[RHO][k][j][i]*d->phi_weights_m[Re][m][k]; */
+  	/* d->rho_m[Im][m][j][i] = d->Vc[RHO][k][j][i]*d->phi_weights_m[Im][m][k]; */
+	
+  	d->rho_m[Re][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+  	d->rho_m[Im][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+      }
+    }
+    
+    for(k=KBEG;k<=KEND+1;k++){
+      for(j=JBEG-1; j<=JEND+1; j++){
+  	IDOM_LOOP(i){
+  	  /* d->rho_m[Re][m][j][i] += d->Vc[RHO][k][j][i]*d->phi_weights_m[Re][m][k]; */
+  	  /* d->rho_m[Im][m][j][i] += d->Vc[RHO][k][j][i]*d->phi_weights_m[Im][m][k]; */
+	  
+  	  d->rho_m[Re][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+  	  d->rho_m[Im][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+  	}
+      }
+    }
+  }
+  
+  double re=0.0, im=0.0;
+
+  re = d->rho_m[Re][test][JBEG][IBEG];
+  im = d->rho_m[Im][test][JBEG][IBEG];
+
+  print1 ("> test... %.16lf, %.16lf \n", re, im);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int GetCounter(const int l, const int m)
+{
+  int n, nstar, nprev;
+  /* Given (l,m), work out the position of storage in 1D array of
+     spherical harmonics
+   */
+
+  nstar = (LMAX - MMAX)/2;
+  n = (l-m)/2;
+  
+  if(n<=nstar-1){/*we're on a line with cut off*/
+    nprev = n*(MMAX+1);
+  } else {/*we're on a line without cutoff*/
+    nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+  }
+  return nprev + m;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void GetPhilm (Data *d, Grid *G, const int l, const int m)
+/*! 
+ * given the l,m (corresonding to a unique counter in the 1D storage of the spherical harmonics),
+ * solve the 1D poisson equation to get the local portion of phi_lm(r) --> all active plus one ghost on either side
+ *
+ * step1 rho_m --> rho_lm(r) via theta-integration 
+ * step2 copy rho_lm(r) into appropriate portion of rho_lm_global(r) (which covers the global grid plus all ghosts)
+ * step3 MPI reduce rho_lm_global(r) -->  but only the active zones are non zero 
+ * step4 using rho_lm_global to get rhs of poisson --> active zones plus one ghost on either side
+ * step5 solve 1D poisson ---> gives phi_lm(r) of the global grid. (size active plus only 1 ghost on either side). 
+ * step6 phi_lm_local ---> only fill active zones plus one ghost on either size 
+ ************************************************************************ */
+{
+  int i,j, counter, nrad;
+  double rho_lm_real[NX1_TOT], rho_lm_imag[NX1_TOT];
+  
+
+  struct GRID *GY, *GX, *GZ;
+  
+  GZ = G+2;
+  counter = GetCounter(l, m);
+
+  /* Step 1: theta-integration (requires one ghost on either side)
+********************************/
+  GY = G + 1;
+
+  j=JBEG-1;/*initialize for all r*/
+  IDOM_LOOP(i){
+    rho_lm_real[i] =
+      d->rho_m[Re][m][j][i]*d->theta_weights_lm[counter][j];
+    rho_lm_imag[i] =
+      d->rho_m[Im][m][j][i]*d->theta_weights_lm[counter][j];
+  }
+  
+  for(j=JBEG;j<=JEND+1;j++){/*add contribution from other theta*/
+    IDOM_LOOP(i){
+      rho_lm_real[i] +=
+      	d->rho_m[Re][m][j][i]*d->theta_weights_lm[counter][j];
+      rho_lm_imag[i] +=
+      	d->rho_m[Im][m][j][i]*d->theta_weights_lm[counter][j];
+    }
+  }
+
+  
+  /* Step 2-3: add up contributions to rho_lm from all procs
+********************************/
+  int rcoord;
+  double *work_real, *work_imag;
+  double *rho_lm_real_global, *rho_lm_imag_global;
+  
+  GX = G;
+  nrad = GX->np_tot_glob;
+  rcoord = GX->beg; /*start index in global radial grid*/
+  
+  work_real = ARRAY_1D(nrad, double);
+  work_imag = ARRAY_1D(nrad, double);
+  
+  rho_lm_real_global = ARRAY_1D(nrad, double);
+  rho_lm_imag_global = ARRAY_1D(nrad, double);
+  
+  for(i=0; i<nrad; i++){
+    work_real[i] = 0.0;
+    work_imag[i] = 0.0;
+  }
+  
+  IDOM_LOOP(i){/*double to account for lower half disk (z<0)*/
+    work_real[rcoord + i - IBEG] = rho_lm_real[i]*2.0;
+    work_imag[rcoord + i - IBEG] = rho_lm_imag[i]*2.0;
+  }
+  
+  MPI_Allreduce (&work_real[0], &rho_lm_real_global[0], nrad, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  
+  FreeArray1D (work_real);
+  FreeArray1D (work_imag);
+  
+  /* Step 4A: construct rhs for 1D poisson
+     rho_lm now covers the entire global radial grid, including
+     all ghosts on either side. 
+     poisson rhs is all the active zones plus ONE ghost on either side
+  ********************************/
+  double *rhs_real, *rhs_imag;
+  
+  rhs_real =  ARRAY_1D(GX->np_int_glob + 2, double);
+  rhs_imag =  ARRAY_1D(GX->np_int_glob + 2, double);
+  
+  
+
+
+}
+
+
+

@@ -1,0 +1,9 @@
+;construct array to hold cell edge radius
+
+;re = dblarr(nrad+1)
+;re(0) = rdomain(0)
+;re(nrad) = rdomain(1)
+;for i=0, nrad-2 do begin
+;    re(i+1) = 2d0*rad(i) - re(i)
+;endfor
+

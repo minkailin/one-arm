@@ -1,0 +1,257 @@
+pro nonaxi_evol,  r0=r0, loc=loc, mmax=mmax, basic=basic, azimodes=azimodes, start=start, finish=finish, xrange=xrange, yrange=yrange, rrange=rrange, average=average, max=max, legend=legend, label=label
+
+!p.font=0
+
+if not keyword_set(basic) then basic = 0 
+
+if not keyword_set(azimodes) then begin
+
+if not keyword_set(mmax) then mmax=4
+
+azimodes = dindgen(mmax) + 1d0
+ 
+endif
+
+nmodes = n_elements(azimodes) 
+
+if not keyword_set(r0) then r0=1d0
+
+;;;;;;;;;;;;;;;
+;WHERE IS DATA;
+;;;;;;;;;;;;;;;
+  location=strcompress(loc,/remove_all)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;GET DIMENSIONS AND TIME UNIT;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  dims=(read_ascii(filepath('dims.dat',root_dir='.',subdir=[location]))).(0)
+  nout=fix(dims(5))
+  nrad=fix(dims(6))
+  nsec=fix(dims(7))
+ 
+  nlines = file_lines(filepath('planet0.dat',root_dir='.',subdir=[loc]))
+  info=dblarr(11,nlines)
+  openr,3,filepath('planet0.dat',root_dir='.',subdir=[location])
+  readf,3,info
+  close,3
+
+  a0=info(1,0)
+  dt=info(7,1)
+  p0=2.*!dpi*(a0)^(3./2.)
+;;;;;;;;;;;;;;;;;;
+;ARRAY FOR RADIUS:
+;;;;;;;;;;;;;;;;;;
+  radtmp=dblarr(nrad+1)
+  radius=dblarr(nrad)
+
+  openr,1,filepath('used_rad.dat',root_dir='.',subdir=[location])
+  readf,1,radtmp
+  close,1
+  radius(0:nrad-1)= 0.5*(radtmp(0:nrad-1)+radtmp(1:nrad))
+  
+  temp = min(abs(radius - rrange(0)*r0),x1)
+  temp = min(abs(radius - rrange(1)*r0),x2)
+
+  phi = 2d0*!dpi*dindgen(nsec)/(nsec - 1d0) 
+;;;;;;;;;;
+;GET DATA;
+;;;;;;;;;;
+  data   = dblarr(nsec,nrad)
+  data1d = dblarr(nrad) 
+
+  time_norm = dblarr(finish-start+1) 
+
+  mode_amp  = dblarr(nmodes,finish-start+1)
+  mode_ang  = dblarr(nmodes,finish-start+1)
+
+  m0_amp = dblarr(finish-start+1)
+
+  tot_ang = dblarr(finish-start+1)
+  tot_ke  = dblarr(finish-start+1)
+  
+;use axisymmetric component of t=0 as normalization
+  openr,2,filepath(strcompress('gasdens'+string(basic)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+  readu,2,data
+  close,2
+  sigma0_fft = fft(data, -1, dimension=1,/double)
+  real = real_part(sigma0_fft(0,*))*radius 
+  norm = dcomplex(int_tabulated(radius(x1:x2),real(x1:x2)), 0d0)
+  czero = abs(norm)
+
+  openr,2,filepath(strcompress('gasvtheta'+string(basic)+'.dat',/remove_all),root_dir='.',subdir=[location])
+  readu,2,data
+  close,2
+  vtheta0_fft = fft(data, -1, dimension=1,/double)
+
+  angmom0 = int_tabulated(radius(x1:x2), 2d0*!dpi*radius(x1:x2)*radius(x1:x2)*real_part(vtheta0_fft(0,x1:x2))*real_part(sigma0_fft(0,x1:x2)))
+
+  for k=start, finish do begin
+;time array
+     time_norm(k-start) = info(7,k)/p0
+     
+;read data
+     if (k lt 1000) then begin
+        ks=string(k,format='(I03)')  
+     endif else ks=string(k,format='(I04)')
+     
+     openr,2,filepath(strcompress('gasdens'+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+     readu,2,data
+     close,2
+     sigma=data
+
+     openr,2,filepath(strcompress('gasvtheta'+string(k)+'.dat',/remove_all),root_dir='.',subdir=[location]) 
+     readu,2,data
+     close,2
+     vtheta=data ;staggered 
+     vphi = data ;centered with surface density 
+     for i = 0, nsec-2 do vphi(i,*) = (data(i,*) + data(i+1,*))/2.0
+     vphi(nsec-1,*) = (data(nsec-1,*) + data(0,*))/2.0 
+     
+
+;fft      
+     sigma_fft    = fft(sigma, -1, dimension=1,/double)
+     vtheta_fft   = fft(vtheta, -1, dimension=1,/double)
+     
+     for j=0, nmodes-1 do begin
+        m = azimodes(j)
+;amplitude of density fourier components
+        real = real_part(sigma_fft(m,*))*radius
+        imag = imaginary(sigma_fft(m,*))*radius
+
+        if not keyword_set(max) then begin
+        amp =  dcomplex(int_tabulated(radius(x1:x2),real(x1:x2)), int_tabulated(radius(x1:x2),imag(x1:x2)))
+        mode_amp(j, k-start) = alog10( abs(amp)/czero + 1d-16)
+
+        endif else begin
+        mode_amp(j, k-start) = max(alog10( abs(sigma_fft(m,x1:x2)/sigma0_fft(0, x1:x2)) + 1d-16 ))
+        endelse        
+
+        if (m lt 1) then begin
+           mode_ang(j, k-start) = 2d0*!dpi*int_tabulated(radius(x1:x2), radius(x1:x2)^2*real_part(sigma_fft(0,x1:x2))*real_part(vtheta_fft(0,x1:x2)))
+        endif else begin
+           mode_ang(j, k-start) = 4d0*!dpi*int_tabulated(radius(x1:x2), radius(x1:x2)^2*real_part(sigma_fft(m,x1:x2)*conj(vtheta_fft(m,x1:x2))))
+        endelse
+;           mode_ang(j, k-start)/= angmom0 
+
+
+     endfor
+
+     m0_amp(k-start) = max(abs(sigma_fft(0,*)-sigma0_fft(0,*)))
+     m0_amp(k-start) /=max( abs(sigma0_fft(0,*)) )
+;compute total angular momentum 
+     sigma_vtheta = sigma*vphi 
+  for i=0, nrad-1 do begin
+  data1d(i) = int_tabulated(phi(*), sigma_vtheta(*,i))  
+  endfor
+  tot_ang(k-start) = int_tabulated(radius(x1:x2), data1d(x1:x2)*radius(x1:x2)^2)
+
+;total mass
+  mass = 2d0*!dpi*int_tabulated(radius(x1:x2), real_part(sigma_fft(0,x1:x2))*radius(x1:x2))
+ 
+  print, k , tot_ang(k-start)/angmom0 - 1d0, total(mode_ang(*,k-start))/angmom0 - 1d0 , mass, format='(I03,x,3(e22.15,x))' 
+
+
+;  for i=0, nrad-1 do begin
+;  data1d(i) = int_tabulated(phi(*), radius(i)*sigma(*,i));*vphi(*,i)^2*0.5)
+;  endfor
+;  tot_ke(k-start)  = int_tabulated(radius, data1d)
+;  if(k-start gt 0) then begin
+;  tot_ke(k-start) -= tot_ke(0)
+;  tot_ke(k-start) /= tot_ke(0)
+;  endif 
+;  print, k, tot_ke(k-start)
+
+  endfor
+  
+
+  if not keyword_set(max) then begin
+  ytitle=textoidl('log_{10}(C_m/C_{0,t=0})')
+  endif else begin
+  ytitle=textoidl('max(log_{10}|\Sigma_m/\Sigma_{0,t=0}|)') 
+  endelse
+
+
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  if not keyword_set(yrange) then begin 
+  yrange1=[min(mode_amp),max(mode_amp)]
+  endif else yrange1=yrange 
+
+  plot, time_norm(*), mode_amp(0,*), xmargin=[6.5,1.5], ymargin=[3.5,0.5] , ytitle=ytitle, ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=yrange1, xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time_norm(*), mode_amp(j,*), thick=4, linestyle=j
+  endfor 
+   if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif
+  device,/close
+
+  tot = mode_ang(0,*)
+  for i=0, finish-start do tot(i) = total(mode_ang(*,i))
+
+  for j=0, nmodes-1 do begin
+  m=azimodes(j)
+  if (m lt 1) then mode_ang(j,*) = mode_ang(j,*) - angmom0;the reference state only has ang mom in m=0
+  endfor
+  mode_ang /= angmom0
+
+  if not keyword_set(yrange) then begin 
+  yrange1=[min(mode_ang),max(mode_ang)]
+  endif else yrange1=yrange
+
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol_ang.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time_norm(*), mode_ang(0,*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\DeltaJ_m/J_{ref}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=yrange1, xstyle=1
+  for j=1, nmodes-1 do begin
+  oplot, time_norm(*), mode_ang(j,*), thick=4, linestyle=j
+  endfor
+  oplot, time_norm(*), tot/angmom0-1., thick=1, linestyle=0
+;  oplot, time_norm(*), tot_ang/angmom0-1., thick=1, linestyle=0
+   if keyword_set(legend) then begin
+   x0=legend(0)
+   x1=legend(1)
+   y0=legend(2)
+   dy=legend(3)
+        for j=0, n_elements(label)-1 do begin
+    oplot, [x0,x1], [y0,y0]-dy*j, thick=4, linestyle=j
+    xyouts, x1, y0-dy*j,textoidl(label(j)),charsize=1.5
+    endfor
+    endif 
+  device,/close
+
+  openw,1,filepath('nonaxi_evol_ang.dat',root_dir='.',subdir=[location])
+  for i=0, finish-start do begin
+  printf, 1, time_norm(i), mode_ang(0:nmodes-1,i), tot(i), format='(4(e22.15,x))'
+  endfor
+  close,1  
+
+  tot_ang /= angmom0
+  tot_ang -= 1d0 
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol_totj.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time_norm(*), tot_ang(*), xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\Delta J_{tot}/J_{ref}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(tot_ang),max(tot_ang)], xstyle=1
+  device,/close
+
+  set_plot, 'ps'
+  device, filename=filepath('nonaxi_evol_m0.ps',root_dir='.',subdir=[location]) $
+          , xsize=8, ysize=4.5, xoffset=0, yoffset=0 $
+          , /inches,/color,bits_per_pixel=8
+  plot, time_norm(*),m0_amp, xmargin=[8.5,1.5], ymargin=[3.5,0.5] , ytitle=textoidl('\Delta J_{tot}/J_{ref}'), ystyle=1 $
+        , charsize=1.5,thick=4,linestyle=0, xtitle=textoidl('t/P_0'), xrange=xrange, yrange=[min(m0_amp),max(m0_amp)], xstyle=1
+  device,/close
+end 

@@ -1,0 +1,17 @@
+function profile, x
+return, 1.0+((F-1)/(F+1))*tanh(xi*(x-re))
+end
+PRO edgemodel, params=params, range=range
+; this procedure plot the initial disc configuration. variables is the
+; 1D array of input parameters=[nuplus,sigmaplus,F,xi,re].range is
+; range of disc to plot. first define the parameters
+params=double(params)
+nuplus=params(0)
+sigmaplus=params(1)
+F=params(2)
+xi=params(3)
+re=params(4)
+rin=range(0)
+rout=range(1)
+;generate array of r values
+r=rin+(dindgen(100)/100.)*(rout-rin)

@@ -1,0 +1,146 @@
+     dr1 = deadwidth*bigH(rdead1)
+      dr2 = deadwidth*bigH(rdead2)
+      do 290 k=ks,ke
+         azi = x3b(k)
+         do 280 j=js,je
+            theta = x2b(j)
+            do 270 i=is,ie
+               rad   = x1b(i)
+               cylind_rad = rad*sin(theta)
+               factor = exp(-0.5*(cylind_rad-rdead1)**2/dr1**2)
+               factor = factor+exp(-0.5*(cylind_rad-rdead2)**2/dr2**2)
+         v1(i,j,k)=v1(i,j,k)+sqrt(csq(cylind_rad))*rannum(i,j,k)*factor
+
+
+
+
+      do 290 k=ks,ke
+         azi = x3b(k)
+         do 280 j=js,je
+            theta = x2b(j)
+            do 270 i=is,ie
+               rad   = x1b(i)
+               cylind_rad = rad*sin(theta)
+               fr = sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))*hcut
+
+               if((cylind_rad.ge.rdead1).and.(cylind_rad.le.rdead2))then
+!               vpert = sqrt(csq(cylind_rad))*rannum(i,j,k)
+!               vpert = vpert*sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))
+!               v1(i,j,k)=v1(i,j,k)+vpert
+               rho_0  = d0(i,j)
+               vphi_0 = vphi0(i,j)
+
+               rho_1 = fr*rho_0
+               vphi_1=-fr*vphi_0
+
+               drho_0 = -2.0*rho_1*vphi_1/vphi_0
+
+               d(i,j,k) = rho_0 + drho_0 + 2d0*cos(azi)*fr
+               v3(i,j,k)= vphi_0 + 2d0*cos(azi)*fr
+
+               endif
+
+ 270        continue
+ 280     continue
+ 290  continue
+
+
+
+
+         do 280 j=js,je
+            theta = x2b(j)
+            do 270 i=is,ie
+               rad   = x1b(i)
+               cylind_rad = rad*sin(theta)
+               fr = sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))*hcut
+
+               if((cylind_rad.ge.rdead1).and.(cylind_rad.le.rdead2))then
+!               vpert = sqrt(csq(cylind_rad))*rannum(i,j,k)
+!               vpert = vpert*sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))
+!               v1(i,j,k)=v1(i,j,k)+vpert
+               rho_0  = 0.0
+               vphi_0 = 0.0
+
+               do 290 k=ks,ke
+                rho_0 = rho_0 + d(i,j,k)
+                vphi_0= vphi_0+ v3(i,j,k)
+290  continue
+                rho_0 = rho_0/(ke-ks+1d0)
+                vphi_0= vphi_0/(ke-ks+1d0)
+
+               do 300 k=ks, ke
+               rho_1 = fr*rho_0
+               vphi_1=-fr*vphi_0
+
+               drho_0 = -2.0*rho_1*vphi_1/vphi_0
+
+               d(i,j,k) = rho_0 + drho_0 + 2d0*cos(azi)*fr
+               v3(i,j,k)= vphi_0 + 2d0*cos(azi)*fr
+300  continue
+
+               endif
+
+ 270        continue
+ 280     continue
+      return
+
+
+      do 290 k=ks,ke
+         azi = x3b(k)
+         do 280 j=js,je
+            theta = x2b(j)
+            do 270 i=is,ie
+               rad   = x1b(i)
+               cylind_rad = rad*sin(theta)
+               fr = sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))*hcut
+
+               if((cylind_rad.ge.rdead1).and.(cylind_rad.le.rdead2))then
+!               vpert = sqrt(csq(cylind_rad))*rannum(i,j,k)
+!               vpert = vpert*sin(pi*(cylind_rad-rdead1)/(rdead2-rdead1))
+!               v1(i,j,k)=v1(i,j,k)+vpert
+               rho_0  = d(i,j,k) !assume axisymmetric when doing pert
+               vphi_0 = v3(i,j,k)!assume axisymmetric when doing pert
+
+               rho_1 = fr*rho_0
+               vphi_1=-fr*vphi_0
+
+               drho_0 = -2.0*rho_1*vphi_1/vphi_0
+
+               d(i,j,k) = rho_0 + drho_0 + 2d0*cos(azi)*fr                
+               v3(i,j,k)= vphi_0 + 2d0*cos(azi)*fr
+
+               endif
+
+ 270        continue
+ 280     continue
+ 290  continue
+u
+
+
+
+
+            if((cylind_rad.ge.rdead1).and.(cylind_rad.le.rdead2))then
+               rho_0  = 0d0
+               vphi_0 = 0d0
+
+               do 261 k=ks,ke
+                  rho_0  = rho_0 + d(i,j,k)
+                  vphi_0 = vphi_0 + v3(i,j,k)
+261            continue
+
+               rho_0 = rho_0/dble(ke - ks + 1)
+               vphi_0= vphi_0/dble(ke - ks + 1)
+
+               do 265 k=ks,ke
+                  azi = x3b(k)
+
+                  rho_1 = fr*rho_0
+                  vphi_1=-fr*vphi_0
+
+                  drho_0 = -2.0*rho_1*vphi_1/vphi_0
+
+                  d(i,j,k) = rho_0 + drho_0 + 2d0*cos(x3b(k))*rho_1      
+                  v3(i,j,k)= vphi_0 + 2d0*cos(x3a(k))*vphi_1 !phi vel on edge
+ 265           continue
+            endif
+

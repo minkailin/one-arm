@@ -1,0 +1,1496 @@
+c=======================================================================
+c
+c    \\\\\\\\\\      B E G I N   S U B R O U T I N E      //////////
+c    //////////                 B L A S T                 \\\\\\\\\\
+c
+c                            Developed by
+c                Laboratory of Computational Astrophysics
+c               University of Illinois at Urbana-Champaign
+c
+c=======================================================================
+c     
+      subroutine blast
+c     Setup an accretion disk with 3D density as
+c     
+c     rho(R,z) = den0*R^(-sig)*(1-sqrt(Rin/(R + Hin)))*Z
+c     Z = exp(pot/cs^2 - 1/h**2) 
+c     
+c     R = cylindrical radius
+c     z = cylindrical z
+c     sig = surface density power law
+c     Rin = inner radial boundary
+c     Hin = H(Rin), scale-height at inner radius
+c     cs  = locally isothermal sound-speed
+c     h   = constant aspect-ratio 
+c
+c     Other parameters explained below.
+c-----------------------------------------------------------------------
+
+      use real_prec
+      use config
+      use param
+      use field
+      use bndry
+      use grid
+      use root
+      use scratch
+      use cons
+      use domain
+#ifdef MPI_USED
+      use mpiyes
+#else
+      use mpino
+#endif
+      use mpipar
+      use planet
+      use gboundary
+c
+      implicit none
+c
+      logical :: get_omega_out
+      integer  :: i, j, k, ip1, jp1, kp1, m, l
+      real*8   :: rad, theta, diff, diffnew, 
+     .     hin, dtheta, radp1, radm1,
+     .     gr, mass, discmass, cylindrad, zaxis,
+     .     beta, surfD, dlogsurfD
+      real*8 :: dsg(in,jn,kn)
+      real*8, external :: subkepvel, initialdens, bump
+      real*8, external :: sound_speed_sq, omega_k
+      integer  :: iin (ijkn), iout(ijkn), jin (ijkn),
+     .     jout(ijkn), kin (ijkn), kout(ijkn)
+
+      namelist / pgen     /
+     .              qout, sig, smallh, planet_on, switch_on,
+     .              planetmass, planetrad, innerhole, hplanet,
+     .              softeps, ttq, dttq, hcut, release, alpha, nu,
+     .              godonbc, tsg, sg_on, lmax, mmax, sgzsymm, beta_trial
+
+
+c-----------------------------------------------------------------------c	
+c     Set default parameter values for DISK  				c
+c     Planet parameters NOT set to any default, they must be input 	c
+c-----------------------------------------------------------------------c
+
+      qout      = 4.0 		! Keplerian Toomre Q at outer boundary. Used to set density scale
+      sig       = 1.5		! Power law for surface density
+      smallh    = 0.05		! Constant aspect-ratio 
+      innerhole =  1d0	! Taper density to zero towards inner boundary? Should always be .true. for SG simulations
+      hplanet   = -1d0		! Use Peplinski's special EOS? Negative values means NO. Positive means h_p in this EOS. 
+      softeps   = 0.3		! Softening in units of Hill radius for the planet potential
+      gr        = 0.0	        ! ***NOT USED AS PARAMETER. TO DELETE***
+      ttq       = 1d10		! When to start logging disk-planet torque information? (Must update it in zmp_inp when re-starting)
+      dttq      = 1d10		! Time interval between output disk-planet torque information 
+      hcut      = 1.0d0		! Tapering parameter when calculating disk-planet forces (fraction of Hill radius). 
+      release   = 1d10 		! When to release the planet (allowing migration)?
+      alpha     = 0d0		! constant alpha viscosity     ***VISCOSITY MODULE NOT TESTED, SHOULD NEVER USE (SET TO ZERO)*** 
+      nu      	= 0d0		! constant kinematic viscosity ***VISCOSITY MODULE NOT TESTED, SHOULD NEVER USE (SET TO ZERO)***
+      godonbc 	= .false.	! Use Godon's non-relfecting outer boundary? ***DUBIOUS, SHOULD NOT USE, TO DELETE***
+      tsg     	= 0d0		! When do we turn on self-gravity? 
+      sg_on   	= 0d0		! Over what time interval do we switch on self-gravity in the theta direction? 
+      lmax    	= 64		! Maximum l in multipole expansion of boundary disk potential
+      mmax    	= 6		! Maximum m in multipole expansion of boundary disk potential
+      sgzsymm 	= .true.	! Do we assume symmetry about the midplane? ***DEFAULT SHOULD BE "YES" FROM NOW ON***
+      beta_trial= 1.5           ! Guess for midplane enhancement
+
+c----------------------------------------------------------------------------------------c
+c     CPU0 reads in parameters into buffer, then sends the information to other CPUs     c
+c----------------------------------------------------------------------------------------c
+      if (myid .eq. 0) then
+         read (1, pgen)
+         write (2, pgen)
+         
+#ifdef MPI_USED
+         buf_in( 1) = qout   
+         buf_in( 2) = sig
+         buf_in( 3) = smallh 
+         buf_in( 4) = rin		! Everyone needs to know the inner radial boundary. 
+         buf_in( 5) = rout		! Everyone needs to know the outer radial boundary. 
+         buf_in( 6) = thetamin		! Everyone needs to know the minimum theta (upper disk boundary). 
+         buf_in( 7) = thetamax		! Everyone needs to know the maximum theta (lower disk boundary). 
+					! rin, rout, thetamin, thetamax are read in during grid setup (ggen.F) 
+         buf_in( 8) = planet_on		! When to insert planet? In units of P_0/2pi (i.e. r_p^1.5)
+         buf_in( 9) = switch_on		! Turn on planet mass over this time interval (same units as above)
+         buf_in( 10)= planetmass	! FINAL planet mass
+         buf_in( 11)= planetrad		! INITIAL planet orbital radius 
+         buf_in( 12)= innerhole
+         buf_in( 13)= hplanet
+         buf_in( 14)= softeps
+         buf_in( 15)= ttq
+         buf_in( 16)= dttq
+         buf_in( 17)= hcut
+         buf_in( 18)= release
+         buf_in( 19)= alpha
+         buf_in( 20)= nu
+         buf_in( 21)= godonbc
+         buf_in( 22)= tsg
+         buf_in( 23)= sg_on
+         buf_in( 25)= sgzsymm
+         buf_in( 26)= beta_trial
+#endif
+      endif
+#ifdef MPI_USED
+      call MPI_BCAST( buf_in, 26,
+     &     MPI_FLOAT, 0, comm3d, ierr )        
+      if (myid .ne. 0) then
+         qout      = buf_in( 1)
+         sig       = buf_in( 2) 
+         smallh    = buf_in( 3)
+         rin       = buf_in( 4)
+         rout      = buf_in( 5)
+         thetamin  = buf_in( 6)
+         thetamax  = buf_in( 7)
+         planet_on = buf_in( 8)
+         switch_on = buf_in( 9)
+         planetmass= buf_in( 10)
+         planetrad = buf_in( 11)
+         innerhole = buf_in( 12)
+         hplanet   = buf_in( 13)
+         softeps   = buf_in( 14)
+         ttq       = buf_in( 15)
+         dttq      = buf_in( 16)
+         hcut      = buf_in( 17)
+         release   = buf_in( 18)
+         alpha     = buf_in( 19)
+         nu        = buf_in( 20)
+         godonbc   = buf_in( 21)
+         tsg       = buf_in( 22)
+         sg_on     = buf_in( 23)
+         sgzsymm   = buf_in( 25)
+         beta_trial= buf_in( 26)
+      endif          
+#endif
+
+
+c----------------------------------------------------------------------------------------c
+c       Initialize the planet for a fresh run. Setup output file.                        c
+c----------------------------------------------------------------------------------------c
+
+        planet_info(1) = planetrad 		!xp
+        planet_info(2) = 0d0       		!yp
+        planet_info(3) = 0d0       		!zp
+        
+        planet_info(4) = 0d0                   	!vxp
+        planet_info(5) = planetrad**(-1d0/2d0) 	!vyp (Keplerian)	
+        planet_info(6) = 0d0                   	!vzp
+
+        planetomega = planetrad**(-3d0/2d0) 	!omega_p
+
+c     	Write planet data into file
+
+        if(myid.eq.0) then
+           open(unit=924, file="planetxy_hdf.dat",     status="replace") ! Planet info at hdf     files
+           open(unit=925, file="planetxy_restart.dat", status="replace") ! Planet info at restart files 
+           open(unit=926, file="planetxy_dt.dat",      status="replace") ! Planet info at fine-time intervals
+           open(unit=928, file="dptorque.dat",         status="replace") ! Disk-planet torque information at fine-time intervals 
+           
+           write(924, fmt="(1x,7(E22.15,1x))") 0d0, planet_info(1), 
+     &          planet_info(2), planet_info(3), 
+     &          planet_info(4), planet_info(5),
+     &          planet_info(6)
+           
+           write(925, fmt="(1x,7(E22.15,1x))") 0d0, planet_info(1), 
+     &          planet_info(2), planet_info(3), 
+     &          planet_info(4), planet_info(5),
+     &          planet_info(6)
+           
+           write(926, fmt="(1x,7(E22.15,1x))") 0d0, planet_info(1), 
+     &          planet_info(2), planet_info(3), 
+     &          planet_info(4), planet_info(5),
+     &          planet_info(6)
+           
+        close(924)
+        close(925)
+        close(926)
+        close(928)
+        
+c     1st column is time 
+c     planet_info(1:3) is x_p,  y_p,  z_p 
+c     planet_into(4:6) is vx_p, vy_p, vz_p
+
+        endif
+
+
+c----------------------------------------------------------------------------------------c
+c     Initialize the disk for a fresh run.                                               c
+c----------------------------------------------------------------------------------------c
+
+
+c     Determine density scale, den0, given qout 
+     
+c        hin  = smallh*rin*sin(thetamin)    !rin ---> Rin
+c        dtheta = (thetamax - thetamin)/2d0 ! dtheta is the integration range from midplane to upper disk boundary
+                                           ! if we simulation -z to +z, then dtheta is HALF the entire theta-domain 
+c        if(sgzsymm .eqv. .true.) then      
+c          dtheta = dtheta*2d0              ! we are simulating upper disk only so theta-domain is the correct integration range.
+                                           ! thetamax = pi/2 in this case 
+c        endif
+
+c        den0 = smallh*rout**(sig-2d0)/(pi*qout)
+c        if(innerhole .eqv. .true.) then 
+c           den0 = den0/(1d0 - sqrt(rin*sin(thetamin)/(rout + hin)))
+c        endif
+c        den0 = den0/bump(rout)
+c        zmax = (tan(dtheta)/smallh)
+c        den0 = den0/erf(zmax/sqrt(2d0))
+
+       
+        den0 = sqrt(sound_speed_sq(rout))*omega_k(rout)/(pi*qout)
+
+        get_omega_out = .true. 
+        call vortensity(rin*sin(thetamin), 
+     &                  surfD, dlogsurfD, get_omega_out) !get omega_out   
+
+!        stop
+
+c      Save den0, rin, rout and zmax to file, for use in restarts
+
+        if(myid.eq.0) then
+           open(unit=927, file="disc_param.dat", status="replace")
+           write(927, fmt="(1x, 5(E22.15))") den0, rin, rout, zmax, 
+     &                                       thetamin
+           close(927)
+        endif
+
+c      Set initial disc density. Calculate global disk mass (sanity check, make sure mass is reasonable!)
+     
+       mass = 0d0 
+c       do 90 k=ks,ke
+           do 80 j=js,je
+              do 70 i=is,ie
+                 rad = x1b(i) 
+                 theta = x2b(j)
+                 d(i,j,ks:ke) = initialdens(rad, theta, sig, den0, 
+     &                innerhole)
+                 mass = mass+sum(d(i,j,ks:ke)*rad**2*sin(theta)*dx1a(i)
+     &                        *dx2a(j)*dx3a(ks:ke))
+ 70           continue
+ 80        continue
+c 90     continue
+        
+	call MPI_allREDUCE(mass, discmass, 1, MPI_DOUBLE_PRECISION,
+     &                MPI_SUM, comm3d, ierr )
+        if(sgzsymm .eqv. .true.) discmass = 2d0*discmass ! If only simulate upper disk, need to double up to get physical disk mass 
+        if(myid .eq. 0) print*, 'disk mass=', discmass
+             
+c     Fill the velocity field
+
+c        do 150 k=ks,ke
+           do 140 j=js,je
+              do 130 i=is,ie
+                 rad = x1b(i) 
+                 theta = x2b(j)
+                 v1(i,j,ks:ke)= 0.0                                      !vr     = 0
+                 v2(i,j,ks:ke)= 0.0                                      !vtheta = 0           
+                 v3(i,j,ks:ke)= sqrt(subkepvel(rad,theta,sig,innerhole)) !Sub-keplerian azimuthal velocity because of pressure. NO SG EFFECT HERE. 
+ 130          continue
+ 140       continue
+c 150    continue
+          
+
+c     Set ghost zone values of vphi (=v3) at the inner and outer radius . Save boundary densities as well. 
+c
+c     The boundary v3 (vphi) are used for the Godon BC, which I'm going to stop using in the future. 
+c
+c     The boundary density are used for the OPEN BC implemented in FARGO. We will probably revert to the 
+c     traditional open boundary in the future (which does not use the intial density field, it just copies the density to
+c     ghost zones)
+
+c        do 100 k=ks-2, ke+3
+           do 110 j=js-2, je+3
+              theta = x2b(j)
+              do 120 i=1, 2
+                 ! inner boundary
+                 rad = x1b(is-i)
+                 radp1 = x1b(is-i+1)
+                 diib(j,ks-2:ke+3,i)=initialdens(rad, theta, sig, den0, 
+     &                innerhole)
+                 v3iib(j,ks-2:ke+3,i)=
+     &                        sqrt(subkepvel(rad,theta,sig,innerhole)) 
+                 
+                 !sqrt(1d0/rad - smallh**2/(rad*sin(theta)))
+
+                 ! outer boundary
+                 rad = x1b(ie+i)
+                 radm1 = x1b(ie+i-1)
+                 doib(j,ks-2:ke+3,i)=initialdens(rad, theta, sig, den0, 
+     &                innerhole)                 
+                 v3oib(j,ks-2:ke+3,i)=
+     &                       sqrt(subkepvel(rad,theta,sig,innerhole))
+               
+              !sqrt(1d0/rad - smallh**2/(rad*sin(theta))) 
+ 120          continue
+ 110       continue
+c 100    continue
+        
+
+c   
+c     If we are too close to the inner boundary, set upper j boundary to "open"
+c      
+c      do i=is-1, ie+1
+c         rad = x1b(i)*sin(x2b(js))
+c         if(rad.le.rin) nijb(i,:) = 2
+c      enddo
+
+
+
+
+c----------------------------------------------------------------------------------------c
+c     Prepare for self-gravity                                                           c
+c     WE MUST USE LOGARITHMIC RADIAL SPACING FOR SG PROBLEMS!                            c
+c----------------------------------------------------------------------------------------c
+
+      if(xgrav.eq..true.) then
+         nrad_loc = izones      ! size of local radial grid (active zones)  
+         ntab_j = je - js + 1   ! size of local theta  grid
+         ntab_k = ke - ks + 1   ! size of local phi    grid
+
+c     Get the global number of radial grid points 
+c     Figure out the constant logarithmic spacing
+
+         nrad = nrad_loc*ntiles(1)
+         dlogri    = 1d0/(log(rout/rin)/nrad)
+
+c     Let everyone know lmax and mmax 
+
+         if(myid.eq.0) then
+            ibuf_in(1) = lmax
+            ibuf_in(2) = mmax
+         endif
+         call MPI_BCAST(ibuf_in, 2, MPI_INTEGER
+     &        , 0, comm3d, ierr )
+         if(myid.ne.0) then
+            lmax   = ibuf_in(1)
+            mmax   = ibuf_in(2)
+         endif
+
+c
+c     After multipole expansion the Poission equation becomes 1D. 
+c     Everyone solves this. Before doing so we need to communicate between 
+c     CPUs to get the global information (the rho_ml's, which extends the global
+c     radial grid)
+     
+         allocate(thetaaxis(1:ntab_j))		! Local theta array
+         allocate(phiaxis(1:ntab_k))		! Local phi   array	
+         
+         thetaaxis(1:ntab_j) = vol2b(js:je) 	! = -cos(theta)  , was used for integrating density over angles ***NOT USED ANYMORE***
+         phiaxis(1:ntab_k)   =   x3b(ks:ke) 	! dphi, 	 , used for integrating density over angles  
+         
+c	Grids for solving 1D Poission. There are nrad active zones globally, indexed 1:nrad. 
+c	So we extend the global grid to have indices 0 and nrad+1 to set radial boundary conditions. 
+c	rhs = right hand side = rho_ml(r_global). See below. 
+c
+c	The discretized linear equation is a tri-diagonal matrix. We only store:
+c	diag  : diagonal
+c	udiag : upper diagonal
+c	ldiag : lower diagonal	
+         
+         allocate(rhs(0:nrad+1)) 		! 0 and nrad+1 is for boundary condition
+         allocate(rho_ml(nrad)) 		! For receving the sum of rho_ml from all processcors. 
+         allocate(diag(0:nrad+1)) 		! 0 and nrad+1 is for BC 
+         allocate(udiag(0:nrad)) 		! 0      is for inner BC
+         allocate(ldiag(1:nrad+1)) 		! nrad+1 is for outer BC
+         
+c	Now define some arrays to carry out the integration of density*Y_ml_star*sin(theta)*dtheta*dphi,
+c 	over angular range. Integration over the entire domain is needed by each processor but each 
+c	CPU only does the integration over its sub-angular domain. Then use MPI to sum over all CPU/angles. 
+
+         allocate(rho_ml_1d_loc(nrad_loc)) 	! For local phi-theta integration of rho*Y_ml_star
+         allocate(rho_ml_1d_glob(nrad)) 	! For global 1D array of rho_ml. each CPU fills its appropriate subarray of this.
+						! E.g. globally 16 radial points spread over 4 CPU's. 
+						! CPU0 and CPU1 are both responsible for radial grids 1:8  but they are 
+						! allocated different angular ranges. 
+						! CPU2 and CPU3 are both responsible for radial grids 9:16 but they are
+						! allocated different angular ranges. 						  
+						! Now each CPU performs integration over its local angular range, then:
+						!
+						! CPU 0 and CPU1 fills their rho_ml_1d_glob(1:8), leaves other cells zero
+						! CPU 2 and CPU3 fills their 9:16               , leaves other cells zero
+						!
+						! Now we add up all the rho_ml_glob vectors from all the CPU's, then send the result to everyone.
+						! Everyone will have rho_ml(r_global) needed to solve Poission.  
+						!
+						! Global reduction adds these up. CPU's with the same radial co-ordinate in MPI space fills the
+						! same cell numbers so global sum accounts for all cells with at the same radius
+         
+         allocate(pot_ml_3d_loc(-mmax:mmax, lmin:lmax, is-1:ie+1))	! Local Phi_ml components needed to reconstruct potential
+									! Only sub-region of global array needed because each CPU controls. 
+									! Basically, the global angular coordinates have been turned into
+									! multiply moments (theta, phi) -> (l, m). Every CPU has the same (l,m)
+									! range. So everyone knows about the global angular information 
+         allocate(pot_ml_3d_glob(-mmax:mmax, lmin:lmax, 0:nrad+1)) 	! Stores Phi_ml's for each time-step for use as initial guess in the next
+									! time-step if choosing SOR. ***NOT USED, TO DELETE*****
+
+         allocate(rho_ml_3d(-mmax:mmax, lmin:lmax, is:ie)) 	! The rho_ml are only needed to solve Poisson to get potential. 
+								! But we can store the rho_ml's for diagonstic. 
+								! Use rho_ml to re-construct rho to see how good. Of course, each CPU only needs
+								! the part of rho_ml(r_global) which corresponds to its local radial range.
+         allocate(rho_recons(is:ie, js:je, ks:ke))  		! To hold the re-constructed density field, see above. 
+         
+         allocate(gracc(jn,kn)) 		! For storing sg modification to vphi at the outer radial boundary. ***TO REMOVE***
+						! I think this is used by the Godon BC routine, which I'm going to stop using anyway.
+
+c    	Set up the constant parts of the tridiagonal matrix. 
+c    	Assume unform spacing in log space. 
+c	The boundary conditions, and the entire diagonal depends on (l,m) so we will fill those out at each time we solve Poisson 
+         
+        	 ldiag(1:nrad) = dlogri**2 - 0.5*dlogri 	! lower diagonal
+        	 udiag(1:nrad) = dlogri**2 + 0.5*dlogri 	! upper diagonal 
+c     
+c     	Most importantly, we need to compute the spherical harmonics! 
+c	     
+        allocate(Y_ml(-mmax:mmax, lmin:lmax, js-1:je+1, ks-1:ke+1))
+        allocate(Y_ml_star(-mmax:mmax, lmin:lmax, js-1:je+1))
+      	call  get_sph_harm_array	   
+         
+
+
+c
+c 	Preparation for SG numerics is now finished. Can proceed to solve Poission as required. 
+c
+
+c
+c	Adjust the vertical density structure to be consistent with self-gravity
+c
+        do 180 j=js,je
+           do 170 i=is,ie
+              rad = x1b(i) 
+              theta = x2b(j)
+              
+              cylindrad = rad*sin(theta)
+              zaxis     = rad*cos(theta)
+              
+              call vsgiso(cylindrad, zaxis, beta)
+              d(i,j,ks:ke) = d(i,j,ks:ke)*beta 
+              
+ 170       continue
+ 180    continue
+        
+        mass = 0d0    
+        do 290 k=ks,ke
+           do 280 j=js,je
+              do 270 i=is,ie
+                 rad = x1b(i) 
+                 theta = x2b(j)
+                 
+                 mass = mass + d(i,j,k)*rad**2*sin(theta)*dx1a(i)
+     &                *dx2a(j)*dx3a(k)
+ 270          continue
+ 280       continue
+ 290    continue
+        
+         call MPI_allREDUCE(mass, discmass, 1, MPI_DOUBLE_PRECISION,
+     &        MPI_SUM, comm3d, ierr )
+         if(sgzsymm .eqv. .true.) discmass = 2d0*discmass ! If only simulate upper disk, need to double up to get physical disk mass 
+         if(myid .eq. 0) print*, 'disk mass, post SG tweak=', discmass
+
+
+c 
+c    	Account for self-gravity on initial azimuthal velocity. Note that ZEUS's convention is POSITIVE POTENTIAL
+c      	so it has a NEGATIVE SIGN when it's in the expression for equilibrium azimuthal speed 
+
+      call gravity
+
+       do k=ks,ke
+          do j=js,je
+             do i=is,ie
+                rad = x1b(i)
+                theta = x2b(j)
+                
+                gr = 0.5*(gp(i,j,k) - gp(i-1,j,k))*dx1bi(i-1)
+     &               +0.5*(gp(i+1,j,k) - gp(i,j,k))*dx1bi(i)
+                gr = -gr*x1b(i)
+                
+                v3(i,j,k) = v3(i,j,k)**2 + gr
+                v3(i,j,k) = sqrt(v3(i,j,k))
+    
+             enddo
+          enddo
+       enddo
+       
+c
+c     	Account for self-gravity on boundary arrays. What the hell, I'm just going to redo these. 
+c	We won't be needing these anyway, since I'm going to ditch the Godon BC stuff, and the
+c	FARGO-type open BC. ***SHOULD DELETE THESE LOOPS AFTER REVERTING TO 'TRADITIONAL' BCS***
+      
+      do 3100 k=ks-2, ke+3
+         do 3110 j=js-2, je+3
+            theta = x2b(j)
+c	inner radius
+            diib(j,k,1)  = d(is, j, k)
+            diib(j,k,2)  = diib(j,k,1)
+            
+            rad = x1b(is-1)
+            gr = (gp(is,j,k) - gp(is-1,j,k))*dx1bi(is-1)
+            gr = -gr*rad
+            v3iib(j,k,1)=sqrt(1d0/rad - smallh**2/(rad*sin(theta))
+     &           + gr)
+            v3iib(j,k,2) = v3iib(j,k,1)
+c     outer radius     
+            doib(j,k,1)  = d(ie, j ,k)
+            doib(j,k,2)  = doib(j,k,1)
+            
+            rad = x1b(ie+1)
+            gr = (gp(ie+1,j,k) - gp(ie,j,k))*dx1bi(ie)
+            gr = -gr*rad
+            v3oib(j,k,1)=sqrt(1d0/rad - smallh**2/(rad*sin(theta))
+     &           +gr)
+            v3oib(j,k,2) = v3oib(j,k,1)
+c
+c  SG  modification to eqm vphi at the last outer radial active zone. 
+c
+               gr = 0.5*(gp(ie,j,k) - gp(ie-1,j,k))*dx1bi(ie-1)
+     &               +0.5*(gp(ie+1,j,k) - gp(ie,j,k))*dx1bi(ie)
+               gr = -gr*x1b(ie)
+               gracc(j,k) = gr
+ 3110    continue
+ 3100 continue
+     
+
+      endif
+ 
+      return
+      end
+
+c=======================================================================
+c
+c    \\\\\\\\\\        E N D   S U B R O U T I N E        //////////
+c    //////////                 B L A S T                 \\\\\\\\\\
+c
+c=======================================================================
+
+
+c----------------------------------------------------------------------------------------c
+c     Subroutines and functions for initial disk density and azimuthal velocity          c
+c     WITHOUT SELF-GRAVITY. We assume bigG = 1 = Mstar                                   c
+c----------------------------------------------------------------------------------------c
+
+
+      real*8 function initialdens(radius, polarang, powerlaw, denscale, 
+     &     hole)
+      use planet
+      use domain
+      use param
+      use grid
+      implicit none
+
+      logical, parameter :: get_omega_out=.false.
+      real*8 :: radius, polarang, powerlaw, denscale
+      real*8 :: cylind_rad, zaxis, bigH, hin,
+     .     vertical, index, surfD, dlogsurfD, hole
+      real*8, external :: bump 
+c
+c     Set the initial density field. Need to know the density scale before hand, either 
+c     previously calculated (fresh run) or
+c     read from file (restart)
+
+      hin = smallh*rin*sin(thetamin)
+
+      cylind_rad = radius*sin(polarang)
+      zaxis = radius*cos(polarang)
+      bigH = smallh*cylind_rad
+      
+      index = (cylind_rad/radius - 1d0)/smallh**2 !(GM/r)/cs^2 - 1/h^2
+      vertical =  exp(index)/sqrt(2d0*pi*bigH**2)      
+
+      call vortensity(cylind_rad, surfD, dlogsurfD, get_omega_out)
+  
+      initialdens = surfD*vertical  
+
+c      initialdens = denscale*cylind_rad**(-powerlaw)*vertical 
+
+c      initialdens = initialdens*bump(cylind_rad)
+c
+c      if(hole .eqv. .true.) then
+c         initialdens = initialdens*(1d0 - 
+c     &        sqrt(rin*sin(thetamin)/(cylind_rad + hin))) ! Taper the density to zero at the inner boundary. This should be
+c                                            ! default setting for SG simulations. 
+c      endif
+
+
+      return
+      end
+
+      real*8 function bump(cylind_rad)
+      use planet
+      implicit none
+      real*8 :: cylind_rad, x, drad
+      !planetmass plays the role of bump amplitude
+      !softeps plays the role of bump width
+      !planetrad plays the role of bump radius
+   
+      drad = softeps*planetrad
+         x = (cylind_rad - planetrad)/drad 
+      bump = 1d0 - (planetmass - 1d0)*exp(-0.5*x**2)
+    
+      return
+      end
+
+      real*8 function dlogbump_dr(cylind_rad)
+      use planet
+      implicit none
+      real*8 :: cylind_rad, x, drad, dxdr
+      real*8, external :: bump
+      !planetmass plays the role of bump amplitude
+      !softeps plays the role of bump width
+      !planetrad plays the role of bump radius
+
+      drad = softeps*planetrad
+         x = (cylind_rad - planetrad)/drad
+      dxdr = 1d0/drad 
+      dlogbump_dr = x*dxdr*(planetmass - 1d0)*exp(-0.5*x**2)
+      dlogbump_dr = dlogbump_dr/bump(cylind_rad)
+
+      return
+      end
+
+      real*8 function subkepvel(radius, polarang, powerlaw, hole) 
+      use planet
+      use domain
+      use grid
+      implicit none
+     
+      logical, parameter :: get_omega_out=.false. 
+      real*8 :: radius, polarang, powerlaw
+      real*8 :: cylind_rad, zaxis, bigH, dlogsigma_dR,
+     .     dlogZ_dR, dlogZ_dz, csq, hin, surfD, dlogsurfD, hole
+      real*8, external :: dlogbump_dr
+c
+c     Set the initial azimithal velocity. Balance between stellar gravity, pressure and centrifugal force 
+c     NO SELF-GRAVITY HERE. 
+C
+      hin = smallh*rin*sin(thetamin)
+ 
+      cylind_rad = radius*sin(polarang)
+      zaxis = radius*cos(polarang)      
+      bigH = smallh*cylind_rad
+      csq = smallh**2/cylind_rad
+
+      call vortensity(cylind_rad, surfD, dlogsurfD, get_omega_out)
+
+      dlogsigma_dR = cylind_rad*dlogsurfD
+
+c      dlogsigma_dR = -(1d0 + powerlaw)
+c      if(hole .eqv. .true.) then
+c       dlogsigma_dR=dlogsigma_dR+0.5*cylind_rad*sqrt(rin*sin(thetamin)) ! If tapering density to zero at inner boundary, then need this
+c     &        *(cylind_rad+hin)**(-1.5d0)/                  ! extra term for balance
+c     &        (1d0 - sqrt(rin*sin(thetamin)/(cylind_rad + hin)))
+c      endif
+              
+c      dlogsigma_dR = dlogsigma_dR + cylind_rad*dlogbump_dr(cylind_rad)
+
+      subkepvel = -csq + csq*dlogsigma_dR + 1d0/radius      ! vphi^2 
+      return
+      end
+
+
+c=======================================================================
+c
+c    \\\\\\\\\\      B E G I N   S U B R O U T I N E      //////////
+c    //////////                 B L A S T -RESTART        \\\\\\\\\\
+c
+c                            Developed by
+c                Laboratory of Computational Astrophysics
+c               University of Illinois at Urbana-Champaign
+c
+c=======================================================================
+c
+       subroutine blastres
+
+c     This is the restart routine for the problem above. It is mostly a repeat of
+c     the above. Except since the planet (if present) has moved, its position and velocity
+c     needs to be read from file. 
+c-----------------------------------------------------------------------
+c
+      use real_prec
+      use config
+      use param
+      use field
+      use bndry
+      use grid
+      use root
+      use scratch
+      use cons
+      use domain
+#ifdef MPI_USED
+      use mpiyes
+#else
+      use mpino
+#endif
+      use mpipar
+      use planet
+      use gboundary
+c
+      implicit none
+c
+      logical :: get_omega_out
+      real*8, parameter :: tol=1d-4
+      integer  :: i, j, k, ip1, jp1, kp1, m, l
+
+      real*8   :: rad, theta,
+     .     hin, dtheta, radp1, radm1,
+     .     gr, mass, discmass, tinp, beta,
+     .     cylindrad, zaxis, surfD, dlogsurfD
+      real*8   :: densave(in, jn, kn), dsg(in,jn,kn)
+      real*8, external :: subkepvel, initialdens
+      integer  :: iin (ijkn), iout(ijkn), jin (ijkn),
+     .     jout(ijkn), kin (ijkn), kout(ijkn)
+
+      namelist / pgen     /
+     .              qout, sig, smallh, planet_on, switch_on,
+     .              planetmass, planetrad, innerhole, hplanet,
+     .              softeps, ttq, dttq, hcut, release, alpha, nu,
+     .              godonbc, tsg, sg_on, lmax, mmax, sgzsymm, beta_trial
+
+c
+c-----------------------------------------------------------------------
+c
+      
+      qout   = 4.0
+      sig    = 1.5
+      smallh = 0.05
+      innerhole = 1d0
+      hplanet = -1d0
+      softeps = 0.3
+      gr      = 0.0
+      ttq     = 1d10
+      dttq    = 1d10
+      hcut    = 1.0d0
+      release = 1d10
+      alpha   = 0d0
+      nu      = 0d0
+      godonbc = .false.
+      tsg     = 0d0
+      sg_on   = 0d0
+      lmax    = 64
+      mmax    = 6
+      sgzsymm   = .true.
+      beta_trial= 1.5      
+c     
+c     CPU0 read in parameters again and send out to everyone
+c     
+      
+      if (myid .eq. 0) then
+         read (1, pgen)
+         write (2, pgen)
+         
+#ifdef MPI_USED
+         buf_in( 1) = qout   
+         buf_in( 2) = sig
+         buf_in( 3) = smallh 
+         buf_in( 7) = thetamax
+         buf_in( 8) = planet_on
+         buf_in( 9) = switch_on
+         buf_in( 10)= planetmass
+         buf_in( 11)= planetrad
+         buf_in( 12)= innerhole
+         buf_in( 13)= hplanet
+         buf_in( 14)= softeps
+#endif
+         
+         open(unit=924, file="planetxy_hdf.dat", status="old"
+     &        ,position="append") 
+         open(unit=925, file="planetxy_restart.dat", status="old"
+     &        ,position="append")
+         open(unit=926, file="planetxy_dt.dat", status="old"
+     &        ,position="append")        
+         open(unit=928, file="dptorque.dat", status="old"
+     &        ,position="append") 
+         
+c     
+c     Read in planet information
+c     
+         backspace(unit=925)
+         read(unit=925, fmt="(1x,7(E22.15,1x))") tinp, xp, yp,
+     &        zp, vxp, vyp,
+     &        vzp
+         
+         buf_in( 15) = xp
+         buf_in( 16) = yp
+         buf_in( 17) = zp
+         buf_in( 18) = vxp
+         buf_in( 19) = vyp
+         buf_in( 20) = vzp
+         
+c     
+c     Read in disk information 
+c     
+         open(unit=927, file="disc_param.dat", status="old")
+         read(unit=927, fmt="(1x,5(E22.15))") den0, rin, rout, zmax, 
+     &                                        thetamin 
+         
+         buf_in( 6) = thetamin
+         buf_in( 21) = den0
+         buf_in( 4) = rin
+         buf_in( 5) = rout
+         buf_in( 31) = zmax
+         close(unit=927)
+        
+c
+c     Other parameters 
+c 
+         buf_in( 22)= ttq
+         buf_in( 23)= dttq
+         buf_in( 24)= hcut
+         buf_in( 25)= release
+         buf_in( 26)= alpha
+         buf_in( 27)= nu
+         buf_in( 28)= godonbc
+         buf_in( 29)= tsg
+         buf_in( 30)= sg_on
+         buf_in( 32)= sgzsymm
+         buf_in( 33)= beta_trial           
+         close(924)
+         close(925)
+         close(926)
+         close(928)
+         
+      endif
+#ifdef MPI_USED
+        call MPI_BCAST( buf_in, 33, MPI_FLOAT
+     &                , 0, comm3d, ierr )
+        if (myid .ne. 0) then
+         qout      = buf_in( 1)
+         sig       = buf_in( 2) 
+         smallh    = buf_in( 3)
+         rin       = buf_in( 4)
+         rout      = buf_in( 5)
+         thetamin  = buf_in( 6)
+         thetamax  = buf_in( 7)
+         planet_on = buf_in( 8)
+         switch_on = buf_in( 9)
+         planetmass= buf_in( 10)
+         planetrad = buf_in( 11)
+         innerhole = buf_in( 12)
+         hplanet   = buf_in( 13)
+         softeps   = buf_in( 14)
+
+         xp        = buf_in( 15)
+         yp        = buf_in( 16) 
+         zp        = buf_in( 17)
+         vxp       = buf_in( 18)
+         vyp       = buf_in( 19)
+         vzp       = buf_in( 20)
+
+         den0      = buf_in( 21)
+         zmax      = buf_in( 31)
+
+         ttq       = buf_in( 22)
+         dttq      = buf_in( 23)
+         hcut      = buf_in( 24)
+         release   = buf_in( 25)
+         alpha     = buf_in( 26)
+         nu        = buf_in( 27)
+         godonbc   = buf_in( 28)
+         tsg       = buf_in( 29)
+         sg_on     = buf_in( 30)
+         sgzsymm   = buf_in( 32)
+         beta_trial= buf_in( 33)
+        endif                   
+#endif
+
+        get_omega_out = .true.
+        call vortensity(rin, surfD, dlogsurfD, get_omega_out) !get omega_out 
+
+c
+c     initialise the planet
+c     
+
+        planet_info(1) = xp       !xp
+        planet_info(2) = yp       !yp
+        planet_info(3) = zp       !zp
+        
+        planet_info(4) = vxp      !vxp
+        planet_info(5) = vyp      !vyp
+        planet_info(6) = vzp      !vzp
+
+        planetomega = planetrad**(-3d0/2d0) ! omega_p at the INITIAL RADIUS (T=0).
+                                            ! This line is needed if the planet is held on fixed orbit
+                                            ! In this case we use analytic expressions for the planet's position as function of time. 
+                                            
+
+
+c       
+c      Boundary values of density and azimuthal velocity. Again, these will probably be deleted. 
+c
+c        do 100 k=ks-2, ke+3
+           do 110 j=js-2, je+3
+              theta = x2b(j)
+              do 120 i=1, 2
+                 rad = x1b(is-i)
+                 radp1 = x1b(is-i+1)
+                 diib(j,ks-2:ke+3,i)=
+     &                 initialdens(radp1, theta, sig, den0, innerhole)
+                 v3iib(j,ks-2:ke+3,i)=
+     &                        sqrt(subkepvel(rad,theta,sig,innerhole))
+
+
+                 rad = x1b(ie+i)
+                 radm1 = x1b(ie+i-1)
+                 doib(j,ks-2:ke+3,i)= 
+     &                  initialdens(radm1, theta, sig, den0, innerhole)
+                 v3oib(j,ks-2:ke+3,i)=
+     &                   sqrt(subkepvel(rad,theta,sig,innerhole))
+
+ 120          continue
+ 110    continue
+c 100  continue
+    
+
+
+
+c----------------------------------------------------------------------------------------c
+c     Prepare for self-gravity if required.                                              c
+c----------------------------------------------------------------------------------------c
+
+      if(xgrav.eq..true.) then
+         nrad_loc = izones 
+         ntab_j = je - js + 1
+         ntab_k = ke - ks + 1
+            
+         nrad = nrad_loc*ntiles(1)
+         dlogri    = 1d0/(log(rout/rin)/nrad)
+         
+         if(myid.eq.0) then    
+            ibuf_in(1) = lmax
+            ibuf_in(2) = mmax
+         endif
+         call MPI_BCAST(ibuf_in, 2, MPI_INTEGER
+     &        , 0, comm3d, ierr )
+         if(myid.ne.0) then
+            lmax   = ibuf_in(1)
+            mmax   = ibuf_in(2)
+         endif
+
+c
+c     Allocate arrays again
+c
+         allocate(thetaaxis(1:ntab_j))
+         allocate(phiaxis(1:ntab_k))
+         
+         thetaaxis(1:ntab_j) = vol2b(js:je) 
+         phiaxis(1:ntab_k)   =   x3b(ks:ke)
+
+         allocate(rhs(0:nrad+1)) 
+         allocate(rho_ml(nrad)) 
+         allocate(diag(0:nrad+1))
+         allocate(udiag(0:nrad)) 
+         allocate(ldiag(1:nrad+1)) 
+         
+         allocate(rho_ml_1d_loc(nrad_loc)) 
+         allocate(rho_ml_1d_glob(nrad))
+                    
+         allocate(pot_ml_3d_loc(-mmax:mmax, lmin:lmax, is-1:ie+1))                                                   
+         allocate(pot_ml_3d_glob(-mmax:mmax, lmin:lmax, 0:nrad+1))  
+                                                             
+         allocate(rho_ml_3d(-mmax:mmax, lmin:lmax, is:ie))
+       
+         allocate(rho_recons(is:ie, js:je, ks:ke)) 
+         
+         allocate(gracc(jn,kn)) 
+
+         ldiag(1:nrad) = dlogri**2 - 0.5*dlogri 
+         udiag(1:nrad) = dlogri**2 + 0.5*dlogri 
+         
+         allocate(Y_ml(-mmax:mmax, lmin:lmax, js-1:je+1, ks-1:ke+1))
+         allocate(Y_ml_star(-mmax:mmax, lmin:lmax, js-1:je+1))
+         call  get_sph_harm_array	   
+
+
+c
+c     We need to compute boundary arrays. need to know the conditions at t=0. Just repeat initialisation here. 
+c     First save the current density field to another copy. Then operate on "d" as in initialisation. 
+c     Again, the routine below is needed by the Godon BC and the FARGO open BC, which we shall ditch soon. These BCs
+c     use the t=0 density and velocity fields. 
+
+         densave = d
+         
+         mass = 0d0
+c         do k=ks,ke
+            do j=js,je
+               do i=is,ie
+                  rad = x1b(i) 
+                  theta = x2b(j)
+                  d(i,j,ks:ke) = initialdens(rad, theta, sig, den0, 
+     &                 innerhole) !"d" is now the NSG inital densit field for which we can operate on
+                  mass = mass+sum(d(i,j,ks:ke)*rad**2*sin(theta)*dx1a(i)
+     &                 *dx2a(j)*dx3a(ks:ke))
+               enddo
+            enddo
+c         enddo       
+
+c
+c	Adjust the vertical density structure (at t=0) to be consistent with self-gravity
+c
+     
+   
+        do 180 j=js,je
+           do 170 i=is,ie
+              rad = x1b(i) 
+              theta = x2b(j)
+              
+              cylindrad = rad*sin(theta)
+              zaxis     = rad*cos(theta)
+              
+              call vsgiso(cylindrad, zaxis, beta)
+              d(i,j,ks:ke) = d(i,j,ks:ke)*beta 
+              
+ 170       continue
+ 180    continue
+        
+        mass = 0d0    
+        do 290 k=ks,ke
+           do 280 j=js,je
+              do 270 i=is,ie
+                 rad = x1b(i) 
+                 theta = x2b(j)
+                 
+                 mass = mass + d(i,j,k)*rad**2*sin(theta)*dx1a(i)
+     &                *dx2a(j)*dx3a(k)
+ 270          continue
+ 280       continue
+ 290    continue
+        
+         call MPI_allREDUCE(mass, discmass, 1, MPI_DOUBLE_PRECISION,
+     &        MPI_SUM, comm3d, ierr )
+         if(sgzsymm .eqv. .true.) discmass = 2d0*discmass ! If only simulate upper disk, need to double up to get physical disk mass 
+         if(myid .eq. 0) print*, 'disk mass, post SG tweak=', discmass
+
+         
+
+         call gravity           ! Operating on "d", which for now is the t=0 field. So that we have the potential at t=0 
+                                ! In order to tweak azimuthal velocity AT BOUNDARY
+
+c
+c     Account for self-gravity on boundary array for azimuthal velocity. Save density field at boundary. 
+c     
+         do  k=ks-2, ke+3
+            do j=js-2, je+3
+               theta = x2b(j)
+               diib(j,k,1)  = d(is, j, k)
+               diib(j,k,2)  = diib(j,k,1)
+               
+               rad = x1b(is-1)
+               gr = (gp(is,j,k) - gp(is-1,j,k))*dx1bi(is-1)
+               gr = -gr*rad
+               v3iib(j,k,1)=sqrt(1d0/rad - smallh**2/(rad*sin(theta))
+     &              + gr)
+               
+               v3iib(j,k,2) = v3iib(j,k,1)   
+               doib(j,k,1)  = d(ie, j ,k)
+               doib(j,k,2)  = doib(j,k,1)
+               
+               
+               rad = x1b(ie+1)
+               gr = (gp(ie+1,j,k) - gp(ie,j,k))*dx1bi(ie)
+               gr = -gr*rad
+               v3oib(j,k,1)=sqrt(1d0/rad - smallh**2/(rad*sin(theta))
+     &              +gr)
+               v3oib(j,k,2) = v3oib(j,k,1)
+c     
+c  SG  modification to eqm vphi at the last outer radial active zone. 
+c
+               gr = 0.5*(gp(ie,j,k) - gp(ie-1,j,k))*dx1bi(ie-1)
+     &              +0.5*(gp(ie+1,j,k) - gp(ie,j,k))*dx1bi(ie)
+               gr = -gr*x1b(ie)
+               gracc(j,k) = gr
+          enddo
+       enddo
+
+c
+c     Restore d to current density field at time t
+c
+
+       d = densave
+
+      endif
+      return
+      end
+      
+
+
+
+
+
+c----------------------------------------------------------------------------------------c
+c     Source term subroutines:                                                           c 
+c     Indirect potential                                                                 c     
+c     Disk-on-planet forces                                                              c
+c----------------------------------------------------------------------------------------c
+
+
+
+      subroutine indirect_disc_pot
+      use field
+      use planet
+      use grid
+      use mpiyes
+      use mpipar
+      use gboundary      
+      implicit none
+c
+c     Obtain the integrals over the computational domain for the 
+c     disk indirect potential, Phi_d_in = x*Ix + y*Iy + z*Iz
+c
+      integer:: i,j,k
+      real*8 :: sintheta, sinphi, costheta, cosphi 
+      real*8 :: dx3, Ix, Iy, Iz
+
+      Ix = 0.0
+      Iy = 0.0
+      Iz = 0.0
+
+      do 50 k=ks, ke
+         cosphi = cos(x3b(k))
+         sinphi = sin(x3b(k))
+         do 60 j=js, je
+            sintheta = sin(x2b(j))
+            costheta = cos(x2b(j))
+            do 70 i=is, ie
+               dx3 =  dx1a(i)*dx2a(j)*dx3a(k)*d(i,j,k) ! Assumed G=1
+               Ix = Ix + sintheta**2*cosphi*dx3
+               Iy = Iy + sintheta**2*sinphi*dx3
+               Iz = Iz + sintheta*costheta*dx3
+ 70         continue
+ 60      continue
+ 50   continue
+      local_I(1) = Ix
+      local_I(2) = Iy
+      local_I(3) = Iz
+
+c     Global summation
+      
+      call MPI_ALLREDUCE(local_I, global_I, 3, 
+     &     MPI_DOUBLE_PRECISION,
+     &     MPI_SUM, comm3d, ierr )
+
+c     If the computational domain is upper half disk only, 
+c     then double up Ix, Iy and reset Iz -> 0. 
+
+      if(sgzsymm.eq..true.) then
+        global_I = 2d0*global_I
+        global_I(3) = 0d0
+      endif
+
+
+      return
+      end
+
+
+      subroutine disc_planet_torques(planetx, planety, planetz)
+      use field
+      use grid
+      use planet
+      use mpiyes
+      use mpipar
+      use gboundary
+c      
+c     Given the planet position, get DISK-ON-PLANET forces from this CPU. 
+c     At the end, sum up forces from all CPUs. 
+c     Write into dptorque and dpforce for use later (info output and integrator)
+c
+c     DO NOT MODIFY ANYTHING ELSE IN PLANET MODULE. ONLY DIRECT DISK FORCES ARE DONE HERE.  
+
+      implicit none
+            
+      integer :: i, j, k
+      real*8 :: planetx, planety, planetz
+      real*8 :: fx, fx_ex, fy, fy_ex, fz, fz_ex ! Specific force on planet including and excluding Hill sphere contribution
+      real*8 :: tqin, tqout, tqin_ex, tqout_ex  ! z-torques from inner and outer disk, including and excluding Hill sphere contribution
+      real*8 :: rcell, xcell, ycell, zcell, dsq, mcell,
+     .     fxcell, fycell, fzcell, hillcutfactor, hillrad,
+     .     plrad, tqcell, tqcell_ex, fxcell_ex, fycell_ex,
+     .     fzcell_ex, dsqsoft, hillmass, tqtot, tqtot_ex
+      real*8 :: sintheta, sinphi, costheta, cosphi 
+      real*8 :: dpforce_local(13)
+
+      fx   = 0d0
+      fx_ex= 0d0
+      fy   = 0d0
+      fy_ex= 0d0
+      fz   = 0d0
+      fz_ex= 0d0
+
+      tqin     = 0d0
+      tqin_ex  = 0d0
+      tqout    = 0d0
+      tqout_ex = 0d0
+      tqtot    = 0d0
+      tqtot_ex = 0d0      
+
+      hillmass = 0d0
+
+      plrad   = sqrt(planetx**2 + planety**2 + planetz**2)
+      hillrad = plrad*(planetmass/3d0)**(1d0/3d0)
+
+      do 50 k=ks, ke
+         cosphi = cos(x3b(k))
+         sinphi = sin(x3b(k))
+         do 60 j=js, je
+            sintheta = sin(x2b(j))
+            costheta = cos(x2b(j))
+            do 70 i=is, ie
+               rcell = x1b(i)
+               xcell = rcell*sintheta*cosphi
+               ycell = rcell*sintheta*sinphi
+               zcell = rcell*costheta
+
+c               mcell = rcell**2*sintheta*dx1a(i)*dx2a(j)*dx3a(k)
+c     &              *d(i,j,k)
+               mcell = d(i,j,k)*dvl1a(i)*dvl2a(j)*dvl3a(k)
+
+               dsq = (xcell-planetx)**2 + (ycell-planety)**2
+     &              +(zcell-planetz)**2
+               dsqsoft = dsq + (softeps*hillrad)**2 
+
+               hillcutfactor = 1d0 - exp(-0.5*dsq
+     &              /((hcut*hillrad)**2)) ! hcut controls the amount of tapering, 
+                                          ! the default value being unity implying the entire Hill sphere is subject to tapering. 
+
+               fxcell   = (xcell - planetx)*mcell*dsqsoft**(-3d0/2d0) ! x-force from cell
+               fxcell_ex= fxcell*hillcutfactor                        ! x-force from cell, tapered 
+               fx     = fx + fxcell                                   ! Update the total fx force
+               fx_ex  = fx_ex + fxcell_ex                             ! Update the total tapered fx force
+               
+               fycell   = (ycell - planety)*mcell*dsqsoft**(-3d0/2d0)
+               fycell_ex= fycell*hillcutfactor
+               fy     = fy + fycell
+               fy_ex  = fy_ex + fycell_ex
+
+               fzcell   = (zcell - planetz)*mcell*dsqsoft**(-3d0/2d0)
+               fzcell_ex= fzcell*hillcutfactor
+               fz     = fz + fzcell
+               fz_ex  = fz_ex + fzcell_ex
+
+               tqcell    = planetx*fycell - planety*fxcell        ! z-torque
+               tqcell_ex = planetx*fycell_ex - planety*fxcell_ex  ! z-torque, using tapered forces 
+
+               tqtot    = tqtot + tqcell
+               tqtot_ex = tqtot_ex + tqcell_ex
+
+c
+c     Store the torque from inner/outer disk for diagostics 
+c
+               if(rcell.lt.plrad) then
+                  tqin   = tqin + tqcell
+                  tqin_ex= tqin_ex + tqcell_ex
+               else if(rcell.gt.plrad) then 
+                  tqout   = tqout + tqcell
+                  tqout_ex= tqout_ex + tqcell_ex
+               endif
+               
+c     Mass in Hill sphere 
+
+               if(sqrt(dsq).lt.hillrad) hillmass = hillmass + mcell
+
+ 70         continue
+ 60      continue
+ 50   continue              
+
+c
+c     Collect the above information from the local grid into 1D array
+c
+      dpforce_local(1) = fx
+      dpforce_local(2) = fy
+      dpforce_local(3) = fz
+
+      dpforce_local(4) = fx_ex
+      dpforce_local(5) = fy_ex
+      dpforce_local(6) = fz_ex
+
+      dpforce_local(7) = tqin
+      dpforce_local(8) = tqout
+      dpforce_local(9) = tqtot
+      
+      dpforce_local(10) = tqin_ex
+      dpforce_local(11) = tqout_ex
+      dpforce_local(12) = tqtot_ex
+
+      dpforce_local(13)= hillmass
+      
+c
+c   Global sum to get total forces
+c
+      call MPI_ALLREDUCE(dpforce_local,dpforce,13,MPI_DOUBLE_PRECISION,
+     &     MPI_SUM, comm3d, ierr )
+
+c     If we are only simulating the upper half disk, then double up x and y forces, and reset z forces/torques
+c     to zero 
+
+      if(sgzsymm.eq..true.) then
+        dpforce = 2d0*dpforce
+        dpforce(3) = 0d0
+        dpforce(6) = 0d0
+      endif
+
+      return
+      end 
+
+
+
+
+      subroutine other_forces_on_planet(planetx, planety, planetz)
+      use planet
+      implicit none
+c
+c     Get all forces-on-planet from NON-DISKS
+c
+      real*8 :: planetx, planety, planetz
+      real*8 :: starfx, starfy, starfz             ! Star force
+      real*8 :: plt_ind_fx, plt_ind_fy, plt_ind_fz ! Indirect force from planet
+      real*8 :: dsc_ind_fx, dsc_ind_fy, dsc_ind_fz ! indirect force from disk
+      
+      real*8 :: plrad
+
+      otherforces(:) = 0d0
+
+      plrad = sqrt(planetx**2 + planety**2 + planetz**2)
+
+      starfx = -planetx/(plrad**3) ! Star has unit mass 
+      starfy = -planety/(plrad**3)
+      starfz = -planetz/(plrad**3)
+
+      plt_ind_fx = -mplanet*planetx/(plrad**3)
+      plt_ind_fy = -mplanet*planety/(plrad**3)
+      plt_ind_fz = -mplanet*planetz/(plrad**3)
+
+      dsc_ind_fx = -global_I(1)
+      dsc_ind_fy = -global_I(2)
+      dsc_ind_fz = -global_I(3)
+
+      otherforces(1) = starfx + plt_ind_fx + dsc_ind_fx
+      otherforces(2) = starfy + plt_ind_fy + dsc_ind_fy
+      otherforces(3) = starfz + plt_ind_fz + dsc_ind_fz
+
+      return
+      end
+
+
+
+
+
+
+
+      subroutine godon_nrbc
+      use config
+      use grid
+      use param
+      use field
+      use bndry
+      use planet
+      use mpiyes
+      use mpipar
+      use gboundary
+      implicit none
+
+c
+c     This routine was used to calculate boundary information needed for Godon's
+c     non-reflecting boundary. The comments below were not updated since
+c     the routine was first written, since I plan to stop using it in the future. 
+c
+      integer :: i, j, k 
+      integer :: bvstat_save(8,nbvar)
+      real*8 :: rad, theta, rho0, vphi0, cs0, radp1, cs1, v1cen
+      real*8 :: dW, dU, dV, coeff1, coeff2, coeff3, v1edge, rhoedge
+      real*8, external :: subkepvel, initialdens
+      real*8 :: dummy_v1(in,jn,kn), dummy_d(in,jn,kn),dummy_v3(in,jn,kn)
+
+      dummy_v1 = v1
+      dummy_d  = d
+      dummy_v3 = v3
+      bvstat_save = bvstat 
+!     we use dummy arrays v1, v2 and d to compute the godon inflow variables at the outer radial boundary
+!     so that we don't affect field variables in any way. 
+!     however, bvstat gets updated during communications. save the array before communication
+!     then reset bvstat -> bvstat_save after communication.                      
+
+!
+!    communcate boundaries. this is needed to compute edge centered density/v1's
+
+      nreq = 0 
+      nsub = nsub + 1
+      call bvalv1(0,0,1,1,3,1,dummy_v1)
+      call bvalv3(0,0,1,1,1,1,dummy_v3) 
+      call bvald( 0,0,1,1,3,1, dummy_d)
+      if(nreq.ne.0) call MPI_WAITALL(nreq, req, stat, ierr)
+      bvstat = bvstat_save
+      
+     
+      do  k=ks-1, ke+1
+           do  j=js-1, je+1
+              theta = x2b(j)
+
+              i= 1 
+              rad   = x1b(ie + i - 1)
+              radp1 = x1b(ie + i)
+              rho0    = initialdens(rad, theta, sig, den0,
+     &                   innerhole)
+              vphi0 = sqrt(subkepvel(rad,theta,sig,innerhole)) 
+              if(xgrav.eq..true.) vphi0 =sqrt(vphi0**2+gracc(j,k))
+              cs0 = sqrt(smallh**2/(rad*sin(theta)))
+              cs1 = sqrt(smallh**2/(radp1*sin(theta)))
+
+              v1cen = (dummy_v1(ie+i-1,j,k)+godon_v1oib(j,k,1))/2d0 
+
+              dW = dummy_d(ie+i-1,j,k) - rho0
+              dU = dummy_d(ie+i-1,j,k)*v1cen
+
+              coeff1 = (cs0*dW-dU)/(2d0*cs0)
+              coeff3 = (cs0*dW+dU)/(2d0*cs0)
+
+!              if((dummy_v1(ie+i-1,j,k)+cs0).lt. 0.0) coeff3 = 0d0
+!              if((dummy_v1(ie+i-1,j,k)-cs0).lt. 0.0) coeff1 = 0d0
+
+              if((v1cen+cs0).lt. 0.0) coeff3 = 0d0
+              if((v1cen-cs0).lt. 0.0) coeff1 = 0d0
+
+              godon_doib(j,k,i) = rho0 + (coeff1 +coeff3)             
+              godon_v1oib(j,k,i)= (-cs1*coeff1 + cs1*coeff3)
+     &             /(godon_doib(j,k,i))
+        
+
+              rhoedge = 0.5*(dummy_d(ie+i-1,j,k)+
+     &             dummy_d(ie+i-1,j,k-1))
+              v1edge = (godon_v1oib(j,k,1)!+dummy_v1(ie+i-1,j,k)
+     &                    +dummy_v1(ie+i-1,j,k-1))/2d0!3d0
+ 
+              dW = rhoedge - rho0
+              dU = rhoedge*v1edge 
+              dV = dummy_v3(ie+i-1,j,k)
+     &             *dummy_d(ie+i-1,j,k-1)-rho0*vphi0 !assume flow is nearly keplerian here, so flow is anti-clockwise (positive in phi)
+
+              coeff1 = (cs0*dW-dU)/(2d0*cs0)
+              coeff2 = -vphi0*dW+dV
+              coeff3 = (cs0*dW+dU)/(2d0*cs0)
+
+              if((v1edge+cs0).lt.0.0) coeff3 = 0d0
+              if( v1edge.lt. 0.0)     coeff2 = 0d0
+              if((v1edge-cs0).lt. 0.0)coeff1 = 0d0
+
+!              if((dummy_v1(ie+i-1,j,k)+cs0).lt.0.0) coeff3 = 0d0
+!              if(dummy_v1(ie+i-1,j,k).lt. 0.0)      coeff2 = 0d0
+!              if((dummy_v1(ie+i-1,j,k)-cs0).lt. 0.0)coeff1 = 0d0
+
+
+              godon_v3oib(j,k,i)=(rho0*vphi0+vphi0*coeff1+vphi0*coeff3+
+     &             coeff2)/(rho0 + (coeff1 +coeff3))
+
+
+              godon_doib(j,k,2) = godon_doib( j,k,1)
+              godon_v1oib(j,k,2)= godon_v1oib(j,k,1)
+              godon_v3oib(j,k,2)= godon_v3oib(j,k,1)
+           enddo
+        enddo
+
+
+
+
+      return
+      end
+        
+
+
+    
+
+
+
+

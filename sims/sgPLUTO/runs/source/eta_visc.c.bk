@@ -1,0 +1,51 @@
+#include "pluto.h"
+#include <stdio.h>
+
+/*---------------------------------------------------------------------------*/
+/*---- Specification of explicit first and second viscosity coefficients ----*/
+/*---------------------------------------------------------------------------*/
+
+void eta_visc_func(real *v, real x1, real x2, real x3, 
+                   real *eta1_visc, real *eta2_visc )
+{
+  /*assume spherical polars*/
+  double z, fz, R, transition_height, transition_radius;
+  double visc, vert_coord;
+  
+  R = x1*sin(x2);
+  
+  /*normal, smooth viscosity*/
+  visc = 0.0; 
+  if(g_inputParam[nu] > 0.0)       visc  = g_inputParam[nu]*g_unitLength*g_unitLength*omega_k(g_unitLength);
+  if(g_inputParam[nu_alpha] > 0.0) visc  = g_inputParam[nu_alpha]*sqrt(csq(R))*bigH(R);
+  
+  
+  if(g_inputParam[visc_jump_H]>0.0){/*vertical jump as a function of normalized height Z = z/(scaleheight) */ 
+    z = x1*cos(x2);  
+    vert_coord = z/bigH(R);  
+  } else {/*vertical jump as function of angle from midplane*/
+    vert_coord = CONST_PI/2.0 - x2;
+  }
+ 
+  if(g_inputParam[visc_jump_psimax] > 0.0){ 
+  /*transition height depends cylindrical radius, but transition
+    radius also depends on height */
+  
+  transition_radius = (1.0 + vert_coord/g_inputParam[visc_jump_psimax])*g_unitLength;  
+  
+  transition_height = 0.5*(1.0 + tanh((R -  
+				       transition_radius)/(g_inputParam[bump_width]*bigH(g_unitLength))));  
+  transition_height*= g_inputParam[visc_jump_height];  
+      
+  fz = 0.5*(1.0 + tanh((vert_coord - transition_height)/g_inputParam[visc_jump_width]));  
+  fz+= 0.5*(1.0 - tanh((vert_coord + transition_height)/g_inputParam[visc_jump_width]));   
+    
+  fz*= g_inputParam[visc_jump_amp] - 1.0;  
+  fz+= 1.0;  
+  } else { /*transition radius is independent of height*/
+  fz = 1.0 + 0.5*(g_inputParam[visc_jump_amp] - 1.0)*(1.0 - tanh( (R - g_unitLength )/(g_inputParam[bump_width]*bigH(g_unitLength)) )); 
+  }
+
+  *eta1_visc = v[RHO]*visc*fz;
+  *eta2_visc = 0.0;
+}

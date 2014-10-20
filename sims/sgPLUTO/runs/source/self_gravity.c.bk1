@@ -1,0 +1,311 @@
+/* ///////////////////////////////////////////////////////////////////// */
+/*! 
+  \file  
+  \brief initialization for self-gravity [assume spherical]
+*/
+/* ///////////////////////////////////////////////////////////////////// */
+#include "pluto.h"
+#include <gsl/gsl_sf_legendre.h>
+
+#define   LMAX   6
+#define   MMAX   4
+#define   Re     0
+#define   Im     1
+
+/* ********************************************************************* */
+void Startup_sg (Data *d, Grid *G)
+/*! 
+ *
+ *
+ *
+ *
+ *********************************************************************** */
+{
+  int j, k, l, m, n, counter, nstar, nprev, two_n;
+  int Nlm;
+  double x2, x3, cos_theta, m_phi, test;
+  double P_left[NX2_TOT], P_right[NX2_TOT], P_bar[NX2_TOT]
+  double cos_theta_left, cos_theta_right, x2r, x2l;
+  struct GRID *GY, *GZ;
+  
+  print1 ("> Initializing self-gravity ...\n");
+
+  /*
+    ---allocate memory for the Plm array
+    Plm is array[theta, (l,m)]. the l,m part is stored as 1D. only l+m
+    = even are stored, and only l,m >= 0 stored, and only l<=LMAX,
+    m<=MMAX. there are Nlm number of such elements. 
+    in the (l,m) plane these elements form the locus of points
+    ******************************
+    m = l, for l=0....LMAX
+    m = l-2, for l=2...LMAX
+    .
+    .
+    .
+    m = l-2n, for l=2n...LMAX
+    .
+    .
+    .
+    m = l-LMAX, for l=LMAX (i.e. n=LMAX/2)
+    ******************************
+    But m<= MMAX so not every line accepts the fill l range
+    for n < nstar, some higher l modes are disgarded (because they
+    imply m > MMAX)
+    
+    so there are n lines with cut-off, each has MMAX + 1 elements
+    for n>=nstar is no cut-off, full range of l applies
+  */
+  nstar = (LMAX - MMAX)/2;
+  Nlm = nstar*(MMAX + 1) + (LMAX/2 + 1 - nstar)*(LMAX/2 + 1 - nstar);
+  d->Plm = ARRAY_2D(NX2_TOT, Nlm, double);
+ 
+  /* --------------------------------------------------------------
+   Fill Plm with associated legendre polynomials
+   -------------------------------------------------------------- */
+  GY = G + 1;
+  JTOT_LOOP(j) { 
+    x2 = GY->x[j];
+    cos_theta = cos(x2);
+    
+    for(n=0; n<=nstar-1; n++){/*go through each line with cut-off*/
+      nprev = n*(MMAX+1);
+      two_n = 2*n;
+      
+      for(l=two_n; l<=MMAX+two_n; l++){   
+	m = l - two_n;
+	counter = nprev + m;
+	
+	d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+    }
+    
+    for(n=nstar; n<=LMAX/2; n++){/*go through each line without cut-off*/
+      nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+      two_n = 2*n;
+      
+      for(l=two_n; l<=LMAX; l++){   
+	m = l - two_n;
+	counter = nprev + m;
+	
+	d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+    }
+  }
+  
+/*
+  x2 = GY->x[GY->lbeg];
+  print1 ("> theta is %f \n", x2);
+  print1 ("> P42_array is %f \n", d->Plm[GY->lbeg][7]);
+  
+  l = 4;
+  m = 2;
+  cos_theta = cos(x2);
+  test = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+  print1 ("> P42  is %f \n", test);
+*/
+
+/*
+  Allocate array for weights in the theta integration
+  for each (l,m). Need weights for the active zones js:je, plus
+  one ghost on either side. reverse storage order from above, as this
+  will be used for getting the rho_lm's (fixed l,m and loop over theta for integration)
+*/
+  d->theta_weights_lm = ARRAY_2D(Nlm, NX2_TOT, double);
+
+  for(n=0; n<=nstar-1; n++){/*go through each line with cut-off*/
+      nprev = n*(MMAX+1);
+      two_n = 2*n;
+
+      for(l=two_n; l<=MMAX+two_n; l++){
+        m = l - two_n;
+        counter = nprev + m;
+        
+        for(j=JBEG-1;j<=JEND+1;j++){
+         x2l = GY->xl[j];
+         x2r = GY->xr[j];
+ 
+         cos_theta_left = cos(x2l);
+         cos_theta_right= cos(x2r);
+
+         P_left[j]  = gsl_sf_legendre_sphPlm(l, m, cos_theta_left); 
+         P_right[j] = gsl_sf_legendre_sphPlm(l, m, cos_theta_right);       
+        }
+
+        theta_weights_lm[counter][JBEG-1] = 0.25*P_left[JBEG]*GY->dV[JBEG];
+
+        theta_weights_lm[counter][JBEG] = 0.25*(P_left[JBEG]+P_right[JBEG])*GY->dV[JBEG];
+        theta_weights_lm[counter][JBEG]+= 0.25*P_left[JBEG+1]*GY->dV[JBEG+1];
+
+        for(j=JBEG+1;j<=JEND-1;j++){
+        theta_weights_lm[counter][j] = 0.25*(P_left[j]+P_right[j])*GY->dV[j];
+        theta_weights_lm[counter][j]+= 0.25*P_left[j+1]*GY->dV[j+1];
+        theta_weights_lm[counter][j]+= 0.25*P_right[j-1]*GY->dV[j-1];
+        }
+
+        theta_weights_lm[counter][JEND] = 0.25*(P_left[JEND]+P_right[JEND])*GY->dV[JEND];
+        theta_weights_lm[counter][JEND]+= 0.25*P_right[JEND-1]*GY->dV[JEND-1];
+ 
+        theta_weights_lm[counter][JEND+1] = P_right[JEND]*GY->dV[JEND];
+
+       }
+
+  }
+    
+
+
+  for(n=nstar; n<=LMAX/2; n++){/*go through each line without cut-off*/
+      nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+      two_n = 2*n;
+
+      for(l=two_n; l<=LMAX; l++){
+        m = l - two_n;
+        counter = nprev + m;
+
+        for(j=JBEG-1;j<=JEND+1;j++){
+         x2l = GY->xl[j];
+         x2r = GY->xr[j];
+
+         cos_theta_left = cos(x2l);
+         cos_theta_right= cos(x2r);
+
+         P_left[j]  = gsl_sf_legendre_sphPlm(l, m, cos_theta_left);
+         P_right[j] = gsl_sf_legendre_sphPlm(l, m, cos_theta_right);
+        }
+
+        theta_weights_lm[counter][JBEG-1] = 0.25*P_left[JBEG]*GY->dV[JBEG];
+
+        theta_weights_lm[counter][JBEG] = 0.25*(P_left[JBEG]+P_right[JBEG])*GY->dV[JBEG];
+        theta_weights_lm[counter][JBEG]+= 0.25*P_left[JBEG+1]*GY->dV[JBEG+1];
+
+        for(j=JBEG+1;j<=JEND-1;j++){
+        theta_weights_lm[counter][j] = 0.25*(P_left[j]+P_right[j])*GY->dV[j];
+        theta_weights_lm[counter][j]+= 0.25*P_left[j+1]*GY->dV[j+1];
+        theta_weights_lm[counter][j]+= 0.25*P_right[j-1]*GY->dV[j-1];
+        }
+
+        theta_weights_lm[counter][JEND] = 0.25*(P_left[JEND]+P_right[JEND])*GY->dV[JEND];
+        theta_weights_lm[counter][JEND]+= 0.25*P_right[JEND-1]*GY->dV[JEND-1];
+
+        theta_weights_lm[counter][JEND+1] = P_right[JEND]*GY->dV[JEND];
+
+       }  
+
+      }
+    }
+  }
+      
+
+
+
+
+/*
+    ---allocate memory for sin(m*phi) and cos(m*phi) arrays
+  */
+  d->cos_mphi = ARRAY_2D(NX3_TOT, MMAX + 1, double);
+  d->sin_mphi = ARRAY_2D(NX3_TOT, MMAX + 1, double);
+  
+  /* --------------------------------------------------------------
+   Fill the sine and cosine array
+   -------------------------------------------------------------- */
+  GZ = G + 2;
+  
+  KTOT_LOOP(k) { 
+    x3 = GZ->x[k];
+    
+    for(m=0; m<=MMAX; m++){
+      m_phi = x3*(double)m;
+      
+      d->cos_mphi[k][m] = cos(m_phi);
+      d->sin_mphi[k][m] = sin(m_phi);
+    }
+  }
+  
+/*
+    ---allocate memory for rho_m(r, theta) = integral[rho*exp(i*m*phi)] dphi
+*/ 
+  d->rho_m = ARRAY_4D(2, MMAX+1, NX2_TOT, NX1_TOT, double);
+
+}
+
+
+void get_rho_m (Data *d, Grid *G)
+/*! 
+ * for each (r, theta) integrate in azimuthal direction to get m
+ *
+ *
+ *
+ *********************************************************************** */
+{
+  int i, j, k, m, nbeg;
+  double dphi, contrib_real, contrib_imag;
+  double filon_corr, dblem, mphi;
+  struct GRID *GX, *GY, *GZ;
+
+  GX = G;
+  GY = G + 1;
+  GZ = G + 2;
+
+  nbeg = GZ->lbeg;
+  dphi = GZ->dx[nbeg]; /*assume constant phi spacing*/
+  
+  /* print1 ("> nbeg is %d \n", nbeg); */
+  /* print1 ("> dphi is %f \n", dphi); */
+
+  /* print1 ("> rho_m is %f \n", d->rho_m[0][0][0][0]); */
+
+  /*axisymmetric mode*/ 
+  m = 0;
+  for(j=JBEG-1;j<=JEND+1;j++){
+    IDOM_LOOP(i){
+
+      d->rho_m[Re][m][j][i] = 0.0;
+      d->rho_m[Im][m][j][i] = 0.0;
+     
+ 
+      KDOM_LOOP(k){
+      	contrib_real = d->Vc[RHO][k][j][i];
+      	d->rho_m[Re][m][j][i] += contrib_real;
+      }
+      d->rho_m[Re][m][j][i] *= dphi;
+      
+    }
+  }
+  
+  /*non-axisymmetric modes, with Filon-trapezoidal correction for each
+    phi-integration (no endpoint corrections for perioidic function)*/
+  
+  for(m=1; m<=MMAX; m++){
+    dblem      = (double)m;
+    filon_corr = dphi*dblm/2.0;
+    filon_corr = sin(filon_corr)/filon_corr;
+    filon_corr*= filon_corr*dphi; /*mesh size included here*/
+   
+    for(j=JBEG-1;j<=JEND+1;j++){/*need to include one ghost on either side for theta integration*/ 
+      IDOM_LOOP(i){
+  	d->rho_m[Re][m][j][i] = 0.0;
+  	d->rho_m[Im][m][j][i] = 0.0;
+	
+  	KDOM_LOOP(k){
+          mphi = dblem*GZ->x[k];
+
+  	  contrib_real = d->Vc[RHO][k][j][i]*d->cos(mphi);
+  	  contrib_imag =-d->Vc[RHO][k][j][i]*d->sin(mphi);
+	  
+  	  d->rho_m[Re][m][j][i] += contrib_real;
+  	  d->rho_m[Im][m][j][i] += contrib_imag;
+  	}
+	
+  	d->rho_m[Re][m][j][i] *= filon_corr;
+  	d->rho_m[Im][m][j][i] *= filon_corr;
+      }
+    }
+  }
+  
+  /* print1 ("> rho_m is %f \n", d->rho_m[Re][3][GY->lbeg][GX->lbeg]); */
+  /* print1 ("> rho_m is %f \n", d->rho_m[Im][3][GY->lbeg][GX->lbeg]); */
+
+}
+
+
+
+

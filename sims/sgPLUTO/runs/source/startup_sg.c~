@@ -1,0 +1,75 @@
+/* ///////////////////////////////////////////////////////////////////// */
+/*! 
+  \file  
+  \brief initialization for self-gravity 
+
+
+  \author A. Mignone (mignone@ph.unito.it)
+  \date   Aug 16, 2012
+*/
+/* ///////////////////////////////////////////////////////////////////// */
+#include "pluto.h"
+#define   LMAX  16
+
+/* ********************************************************************* */
+void Startup_sg (Data *d, Grid *G)
+/*! 
+ *
+ *
+ *
+ *
+ *********************************************************************** */
+{
+  int i, j, k, l, m;
+  int isub, jsub, ksub, nsub = 5;
+  int nv,  l_convert;
+  static double **ucons, **uprim;
+  double x1,  x2,  x3;
+  double x1p, x2p, x3p;
+  double x1s, x2s, x3s;
+  double dx1, dx2, dx3;
+  double us[256], u_av[256], b[3]; 
+  double cos_theta;
+  struct GRID *GX, *GY, *GZ;
+
+  /*---allocate memory for the Plm 3D array*/
+  /*Plm  is [0...MMAX, 0...LMAX, theta] */ 
+  /* LMAX = MMAX for now*/
+  data->Plm = ARRAY_3D(LMAX+1, LMAX+1, N2_TOT, double);
+
+  GX = G;
+  GY = G + 1;
+  GZ = G + 2;
+
+/* --------------------------------------------------------------
+   Fill Plm with associated legendre polynomials
+   -------------------------------------------------------------- */
+
+  JTOT_LOOP(j) { 
+     x2 = GY->x[j];
+     cos_theta = cos(x2);
+ 
+     for(l = 0, l<= LMAX, l++){
+         for(m=0, m<=l, m++){   
+     
+
+
+
+     x2 = GY->x[j]; 
+     cos_theta = cos(x2);    
+
+
+    d->Plm[nv][k][i][j] = u_av[nv] = 0.0;
+
+
+
+    Init (u_av, x1, x2, x3);
+  
+
+    for (nv = NVAR; nv--;  ) d->Vc[nv][k][j][i] = u_av[nv];
+
+
+  }}}
+
+}
+

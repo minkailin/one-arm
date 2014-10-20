@@ -1,0 +1,396 @@
+/* ///////////////////////////////////////////////////////////////////// */
+/*! 
+  \file  
+  \brief Disk-Planet problem.
+
+  Disk-Planet setup.
+ 
+  Reference paper:
+   "A Conservative orbital advection scheme for simulations
+    of magnetized shear flows with the PLUTO Code"
+    Mignone et al, A&A (2012)
+ 
+  -------------------------------------------------------------
+   Independent of the coordinate system (polar/spherical), we
+   adopt the following conventions:
+ 
+    r = spherical radius
+    R = cylindrical radius
+    z = cylindrical height
+   th = meridional angle
+
+  \author A. Mignone (mignone@ph.unito.it)
+  \date   Aug 16, 2012
+*/
+/* ///////////////////////////////////////////////////////////////////// */
+
+#include "pluto.h"
+#define MIN_DENSITY 0.0
+#define g_OmegaZ  0.0
+#define bigG 1.0
+#define mstar 1.0
+
+static void NormalizeDensity (const Data *d, Grid *g);
+
+/*MKL: accretion disk functions*/
+static Real grav_pot3_cylin(const Real bigR, const Real z)
+static Real omega_k(const Real bigR);
+static Real csq(const Real bigR);
+static Real bigH(const Real bigR);
+static Real surface_density(const Real bigR);
+static Real bump(const Real bigR);
+static Real density3D(const Real bigR, const Real z);
+static Real dlog_rho0(const Real bigR);
+static Real azivel(const Real bigR, const Real z);
+
+static Real sig0i, bwidth;
+
+/* ********************************************************************* */
+void Init (double *us, double x1, double x2, double x3)
+/*
+ *
+ *
+ *
+ *********************************************************************** */
+{
+  double r, th, R, z, H, OmegaK, cs;
+  double scrh;
+
+  #if EOS == IDEAL
+   g_gamma = g_inputParam[gmma];
+  #endif
+
+  g_unitLength   = g_inputParam[r0];
+  g_unitDensity  = density3D(g_unitLength, 0.0);
+  g_unitVelocity = g_unitLength*omega_k(g_unitLength);
+
+  
+  #if GEOMETRY == POLAR
+   R  = x1;
+   #if DIMENSIONS == 2
+    z  = 0.0;
+    r  = R;
+    th = 0.5*CONST_PI;
+   #else
+    z  = x3;
+    r  = sqrt(R*R + z*z);
+    th = atan2(R,z);
+   #endif
+  #elif GEOMETRY == SPHERICAL
+   r  = x1;
+   th = x2;
+   R  = r*sin(th);
+   z  = r*cos(th);
+  #endif
+  
+  sig0      = sqrt(csq(g_inputParam[rout]))*omega_k(g_inputParam[rout]);
+  sig0     /= CONST_PI*bigG*pow(rout/r0, -g_inputParam[smallp]);
+  sig0     /= bump(rout);
+
+  bwidth = g_inputParam[bump_width]*g_unitLength;
+
+  us[RHO] = density3D(R, z);
+  us[VX1] = us[VX2] = us[VX3] = 0.0;
+  us[iVPHI] = azivel(R, z);
+
+  #if EOS == IDEAL
+   us[PRS] = us[RHO]*csq(R);
+  #elif EOS == ISOTHERMAL
+   g_isoSoundSpeed = sqrt(csq(g_unitLength));
+  #endif
+}
+
+static Real grav_pot3_cylin(const Real bigR, const Real z)
+{
+  Real d;
+  Real star_pot;
+  
+  d =sqrt(bigR*bigR + z*z);
+
+  star_pot  = -bigG*mstar/d;
+  return star_pot;
+}
+
+static Real omega_k(const Real bigR)
+{
+  Real omega_sq;
+
+  omega_sq = bigG*mstar/pow(bigR, 3.0);
+  return sqrt(omega_sq);
+}
+
+static Real csq(const Real bigR)
+{
+  Real soundspeed_sq;
+
+  soundspeed_sq = pow(g_inputParam[smallh], 2.0);
+  soundspeed_sq*= bigG*mstar/g_unitLength; 
+  soundspeed_sq*= pow(bigR/g_unitLength, -g_inputParam[smallq]); 
+
+  return soundspeed_sq;
+}
+
+static Real bigH(const Real bigR)
+{
+  return sqrt(csq(bigR))/omega_k(bigR);
+}
+
+static Real bump(const Real bigR)
+{  
+  return 1.0 + (g_inputParam[amp] - 1.0)*exp(-0.5*pow((bigR - g_unitLength)/bwidth, 2.0)); 
+}
+
+
+static Real surface_density(const Real bigR)
+{
+  Real sig_s;
+
+  sig_s = sig0*pow(bigR/g_unitLength, -g_inputParam[smallp]);
+  return sig_s*bump(bigR); 
+}
+
+static Real density3D(const Real bigR, const Real z)
+{
+  Real vertical, sigma;
+
+  vertical = -(grav_pot3_cylin(bigR, z) - grav_pot3_cylin(bigR,0.0));
+  vertical/= csq(bigR); 
+ 
+  sigma = surface_density(bigR);
+  sigma/= sqrt(2.0*PI)*bigH(bigR);
+  
+  return sigma*exp(vertical);
+}
+
+static Real dlog_rho0(const Real bigR)
+{
+  Real dsigma_s, dbump, dbigH, dtaper, dtaper_in;
+  Real dcs, domega_k;
+
+  dsigma_s = -g_unitParam[smallp]/bigR;
+
+  dbump   = (bump(bigR) - 1.0);
+  dbump  *=-(bigR - g_unitLength)/pow(bump_width, 2.0);
+  dbump  /= bump(bigR);
+
+  dcs     =  -0.5*g_inputParam[smallq]/bigR;
+  domega_k = -1.5/bigR;
+
+  dbigH   = dcs - domega_k;
+  
+  return dsigma_s + dbump - dbigH;
+}
+
+static Real azivel(const Real bigR, const Real z)
+{
+  Real dcs2, cs2, dphi0, vsq; 
+  
+  cs2     = csq(bigR);
+  dcs2    =-g_inputParam[smallq]/bigR;
+  dphi0   = bigR*SQR(omega_k(bigR));
+  
+  vsq     = cs2*dlog_rho0(bigR) +
+    dcs2*(grav_pot3_cylin(bigR,z)-grav_pot3_cylin(bigR,0.0)+cs2) +
+    dphi0; 
+  vsq    *= bigR;
+  return sqrt(vsq); 
+}
+
+
+/* ********************************************************************* */
+void Analysis (const Data *d, Grid *grid)
+/* 
+ *
+ *
+ *********************************************************************** */
+{
+
+}
+/* ********************************************************************* */
+void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid) 
+/*! 
+ *  Assign user-defined boundary conditions.
+ *
+ * \param [in,out] d  pointer to the PLUTO data structure containing
+ *                    cell-centered primitive quantities (d->Vc) and 
+ *                    staggered magnetic fields (d->Vs, when used) to 
+ *                    be filled.
+ * \param [in] box    pointer to a RBox structure containing the lower
+ *                    and upper indices of the ghost zone-centers/nodes
+ *                    or edges at which data values should be assigned.
+ * \param [in] side   specifies the boundary side where ghost zones need
+ *                    to be filled. It can assume the following 
+ *                    pre-definite values: X1_BEG, X1_END,
+ *                                         X2_BEG, X2_END, 
+ *                                         X3_BEG, X3_END.
+ *                    The special value side == 0 is used to control
+ *                    a region inside the computational domain.
+ * \param [in] grid  pointer to an array of Grid structures.
+ *
+ *********************************************************************** */
+{
+  int   i, j, k, nv;
+  double *x1, *x2, *x3, R, OmegaK, v[256];
+  static int do_once = 1;
+  
+  x1 = grid[IDIR].x;
+  x2 = grid[JDIR].x;
+  x3 = grid[KDIR].x;
+
+  #if DIMENSIONS == 3
+  if (side == 0){
+    if (do_once){
+      NormalizeDensity(d, grid);
+      do_once = 0;
+    }
+  }
+  #endif
+
+  if (side == X1_BEG){
+    X1_BEG_LOOP(k,j,i){
+      for (nv = 0; nv < NVAR; nv++){
+        d->Vc[nv][k][j][i] = d->Vc[nv][k][j][2*IBEG - i - 1];
+      }
+      d->Vc[VX1][k][j][i] *= -1.0;
+      #if GEOMETRY == POLAR
+       R = x1[i];
+      #elif GEOMETRY == SPHERICAL
+       R = x1[i]*sin(x2[j]);
+      #endif
+      OmegaK = 2.0*CONST_PI/(R*sqrt(R));
+      d->Vc[iVPHI][k][j][i] = R*(OmegaK - g_OmegaZ);
+    }
+  }
+
+  if (side == X1_END){
+    X1_END_LOOP(k,j,i){
+      for (nv = 0; nv < NVAR; nv++){
+        d->Vc[nv][k][j][i] = d->Vc[nv][k][j][IEND];
+      }
+      #if GEOMETRY == POLAR
+       R = x1[i];
+//       d->Vc[iVR][k][j][i] = 0.0;
+      #elif GEOMETRY == SPHERICAL
+       R = x1[i]*sin(x2[j]);
+       d->Vc[iVR][k][j][i]  = 0.0;
+       d->Vc[iVTH][k][j][i] = 0.0;
+      #endif
+      OmegaK = 2.0*CONST_PI/(R*sqrt(R));
+      d->Vc[iVPHI][k][j][i] = R*(OmegaK - g_OmegaZ);
+    }
+  }
+}
+
+/* ************************************************************** */
+void NormalizeDensity (const Data *d, Grid *grid)
+/*
+ *
+ * Normalize density and pressure as   rho -> K*rho, where
+ *
+ *   K = M/(\sum rho*dV)
+ *
+ **************************************************************** */
+{
+  int   i, j, k;
+  double *dV1, *dV2, *dV3;
+  double dV, mass, gmass, mc;
+        
+  dV1 = grid[IDIR].dV; 
+  dV2 = grid[JDIR].dV; 
+  dV3 = grid[KDIR].dV;
+
+  mass = 0.0;
+  DOM_LOOP(k,j,i){
+    dV    = dV1[i]*dV2[j]*dV3[k];
+    mass += dV*d->Vc[RHO][k][j][i];
+  }
+                        
+#ifdef PARALLEL
+  gmass = 0.;
+  MPI_Allreduce (&mass, &gmass, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  mass = gmass;
+#endif
+        
+  mc  = 0.5*g_inputParam[Mdisk]*CONST_Msun;
+  mc /= g_unitDensity*g_unitLength*g_unitLength*g_unitLength*mass;
+  DOM_LOOP(k,j,i){
+    d->Vc[RHO][k][j][i] *= mc;
+    #if EOS == IDEAL
+     d->Vc[PRS][k][j][i] *= mc;
+    #endif
+  }
+
+}
+
+#if (BODY_FORCE & VECTOR)
+/* ************************************************************************ */
+void BodyForceVector(double *v, double *g, double x1, double x2, double x3)
+/*
+ *
+ *
+ *
+ *************************************************************************** */
+{
+  g[IDIR] = 0.0;
+  g[JDIR] = 0.0;
+  g[KDIR] = 0.0;
+}
+#endif
+
+#if (BODY_FORCE & POTENTIAL)
+/* ************************************************************************ */
+double BodyForcePotential(double x1, double x2, double x3)
+/*
+ *
+ *
+ *
+ *************************************************************************** */
+{
+  double d, R, r, z, th, x, y, phiplanet, rsm;
+  double xp, yp, t, phi;
+
+  #if GEOMETRY == POLAR
+   R  = x1;
+   #if DIMENSIONS == 2
+    z  = 0.0;
+    r  = R;
+    th = 0.5*CONST_PI;
+   #else
+    z  = x3;
+    r  = sqrt(R*R + z*z);
+    th = atan2(R,z);
+   #endif
+   x  = R*cos(x2);
+   y  = R*sin(x2);
+  #elif (GEOMETRY == SPHERICAL)
+   r  = x1;
+   th = x2;
+   R = r*sin(th);
+   z = r*cos(th);
+   x = r*sin(th)*cos(x3);
+   y = r*sin(th)*sin(x3);
+  #endif
+
+/* ---------------------------------------------
+             planet position
+   --------------------------------------------- */
+
+   double omega_p;
+   t = g_time;
+   if (t > 0.0) t += g_dt;
+
+   omega_p = omega_k(g_unitLength);
+   xp = g_unitLength*cos(omega_p*t);
+   yp = g_unitLength*sin(omega_p*t);
+
+   rsm = g_unitLength*pow(g_inputParam[mplanet]/mstar/3.0, 1.0/3.0);
+   rsm *= 0.1; /*hard-wired softening for now*/
+   d = sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp) + z*z + rsm*rsm);
+
+   phiplanet = -bigG*g_inputParam[mplanet]/d;
+
+   phi = grav_pot3_cylind(bigR, z) + phiplanet;
+  return phi;
+}
+
+

@@ -1,0 +1,2 @@
+these are the first attemps at numerical differnetiation to get sigma/voriticity. i forgot mesh is staggered and
+assumed variables are defined at the same point. new algoritm now used. 21/11/2008

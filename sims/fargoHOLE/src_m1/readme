@@ -1,0 +1,6 @@
+restore axisymmetric component of fields to initial,
+
+keep only m=1 nonaxi component
+
+
+apply filter before substep 1

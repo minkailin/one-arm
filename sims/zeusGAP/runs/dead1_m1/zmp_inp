@@ -1,0 +1,74 @@
+ &GEOMCONF  LGEOM    = 3,
+            LDIMEN   = 3 /
+ &PHYSCONF  LRAD     = 0,
+            XHYDRO   = .TRUE.,
+            XFORCE   = .TRUE.,
+            XMHD     = .false.,
+            XTOTNRG  = .false.,
+            XGRAV    = .TRUE.,
+            XGRVFFT  = .false.,
+            XPTMASS  = .TRUE.,
+            XISO     = .TRUE.,
+            XSUBAV   = .false.,
+            XVGRID   = .false. /
+ &IOCONF    XASCII   = .false.,
+            XHDF     = .TRUE.,
+            XRESTART = .TRUE.,
+            XTSL     = .false. /
+ &PRECONF   SMALL_NO = 1.0D-99,
+            LARGE_NO = 1.0D+99 /
+ &ARRAYCONF IZONES   = 16,
+            JZONES   = 16,
+            KZONES   = 256,
+            MAXIJK   = 256/
+ &mpitop ntiles(1)=16,ntiles(2)=2,ntiles(3)=1,periodic=.false., .false., .true. /
+ &rescon irestart=1, resfile='resaa000000.001',tdump=0.628318530000000E+02, dtdump=62.831853 /
+ &pcon nlim=1000000000, tlim=628.31853, cpulim= 1000000.0, mbatch=1 /
+ &hycon qcon=2.0,courno=0.5 /
+ &iib niis(1)= 1, niis(3)=3 /
+ &oib nois(1)= 1, nois(3)=3 /
+ &ijb nijs(1)= 1, nijs(3)=3 /
+ &ojb nojs(1)= 1, nojs(3)=1 /
+ &ikb niks(1)= 4, niks(3)=4 /
+ &okb noks(1)= 4, noks(3)=4 /
+ &ggen1 nbl=256, x1min=0.4,    x1max=10.0,               igrid=1, x1rat=1.012573733925819e+00, lgrid=.true.  /
+ &ggen2 nbl=32,  x2min=1.47d0, x2max=1.570796326794897D0,igrid=1,x2rat=1.,                     lgrid=.true.  /
+ &ggen3 nbl=256, x3min=0.0,    x3max=6.2831853071795862, igrid=1,x3rat=1.,                     lgrid=.true.  /
+ &grvcon guniv=1.0, tgrav=0.0, ptmass=1.0, x1ptm=0.0, x2ptm=0.0, x3ptm=0.0  /
+ &RADCON ipcflag=2,cgerrcrit=1/
+ &EQOS   gamma=1.4, mmw=1.0D0, ciso=0.05 /
+ &pgen  qout            = 2.0,         !toomre parameter at outer boundary or outer dead zone rad (whichever is smaller)
+        sig             = 2.0,         !power-law part of surface density
+        smallh          = 0.05,        !H/R at reference radius
+        planet_on       = 0.0,         !when do we add planet/bump?
+        switch_on       = 10.1,         !time-scale over which the above is done (units of 2pi)
+        planetmass      = 0.0,         !final planet mass or bump amp
+        planetrad       = 1d0          !initial planet radius or reference radius
+        innerhole       = .true.       !OBSOLETE
+        hplanet         = -1           ! >0 for peplinski eos
+        softeps         = 0.1,         !softening length or bump width
+        ttq             = 0.628318530000000E+02          !last torque log time
+        dttq            = 0.62831854,  !time interval for torque log
+        hcut            = 1d-3         !torque tapering or pert amp
+        release         = 1d10,        !when to release planet?
+        alpha           = 0.d0,        !viscosity module NOT tested, do not use
+        nu              = 0.d0,        !viscosity module NOT tested, do not use
+        godonbc         = .false.,     !OBSOLETE
+        tsg             = 0d0,         !when to switch on SG?
+        sg_on           =-1d10,        !if switching on sg over time, over what time scale? (units of 2pi)
+        lmax            = 32           !gravity multipole expansion param
+        mmax            = 32           !gravity multipole expansion param
+        sgzsymm         =.true.        !symmetry across midplane? (should always be TRUE)
+        beta_trial      = 1.2,         !guess for midplane density enhancement due to SG
+        frin            = 0.1,         !radial damping zone (in units of inner rad), damp meridional vel (set >>1 [with frout >1] to apply damping everywhere)
+        frout           = 8.4,         !radial damping zone (in units of outer rad), damp meridional vel
+        make_bump       =.false.       !false -> initialize with dead zone, true-> initialize with smooth disk, introduce DZ over time
+        smallq          = 1d0          !temperature profile
+        tdamp           = 0.1          !damping timescale in units of local orbital time
+        rdead1          = 1.0          !inner radius of DZ
+        rdead2          = 2.0          !outer radius of DZ
+        fin             = 0.1          !density reduction from DZ to active zone
+        deadwidth       = 5.0          !DZone/AZone transition width in units of H
+        densbeta        =-1.0 /        !beta parameter in density field of PJ06
+ &gcon /
+ &iocon tusr=1.0, dtusr=1.0, thdf=0.628318530000000E+02, dthdf=62.831853/

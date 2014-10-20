@@ -1,0 +1,91 @@
+;construct array to hold cell edge radius
+
+;re = dblarr(nrad+1)
+;re(0) = rdomain(0)
+;re(nrad) = rdomain(1)
+;for i=0, nrad-2 do begin
+;    re(i+1) = 2d0*rad(i) - re(i)
+;endfor
+
+;    print, 'hill radius is', rhill
+
+;    mass = 0.0
+;    hillmass = 0.0
+;    for k=0, nz-1 do begin
+;        for j=0, ntheta-1 do begin
+;            for i=0, nrad-1 do begin
+;                dr= re(i+1) - re(i)
+;                dm = data(i,j,k)*rad(i)^2*sin(theta(j))*dr*dtheta*dphi
+
+;                xx = rad(i)*sin(theta(j))*cos(phi(k))
+;                yy = rad(i)*sin(theta(j))*sin(phi(k))
+;                zz = rad(i)*cos(theta(j))
+
+;               distp = (xx - plx)^2 + (yy - ply)^2 + (zz - plz)^2
+;                distp = sqrt(distp)
+
+;                if(rad(i)*sin(theta(j)) gt hole) then mass += dm
+;                if(distp lt rhill) then hillmass += dm
+
+;            endfor
+;        endfor
+;    endfor
+
+;    print, 'disc mass', mass
+;    print, 'mass inside Rh', hillmass
+
+
+;   contour,dataplot,rplot,phi/!dpi,/fill,levels=levels,title=time+textoidl('P_0, ')+ $ 
+;      textoidl('r_p='+string(plrad,format='(f5.2)')), xstyle=2, $
+;      xtitle=textoidl('r'), ytitle=textoidl('\phi/\pi'),charsize=1.5,xmargin=[7.0,6.0], ymargin=[3.5,2], $
+;      xtickinterval=xtickinterval,xrange=xrange, yrange=yrange,
+;      xminor=4
+
+
+  radnew=dblarr(nrad+2)
+  radnew(2:nrad+1) = rad(0:nrad-1)
+  radnew(0:1) = [0.0,rad(0)/2.0]
+
+
+   if keyword_set(vertavg) then begin
+        for i=0, nrad-1 do begin
+           for k = 0, nphi-1 do begin
+              data2d(i,k) = mean(data(i,*,k))
+           endfor
+           data1d(i) = mean(data2d(i,*))
+        endfor
+     endif
+
+
+     
+     stop
+     
+     
+;    print, 'integral def of averge gives estimate'
+     
+;    rhodot     = -(dvrad_dr + vphifft_2d)
+;    avg_rhodot = dcomplex( mean(real_part(rhodot)), mean(imaginary(rhodot)) )
+;    avg_rho    = dcomplex( mean(real_part(dfft_2d)), mean(imaginary(dfft_2d)) )
+
+;    complex_rate = avg_rhodot/avg_rho 
+
+;    real_rate = real_part(complex_rate)
+;    imag_rate = -imaginary(complex_rate)
+
+;    avg_growth = real_rate/(v0(r0,ntheta-1,0)/plrad)
+;    avg_patt   = imag_rate/(azimode*v0(r0,ntheta-1,0)/plrad)
+
+;    print, '<growth rate>/omega0=', avg_growth
+;    print, '<pattern speed>/m.omega0=', avg_patt
+;    print, 'average mode amp', mean(abs(dfft_2d))
+
+
+
+   if keyword_set(vertavg) then begin
+        for i=0, nrad-1 do begin
+            for k = 0, nphi-1 do begin
+                data2d(i,k) = mean(data(i,*,k))
+            endfor
+            data1d(i) = mean(data2d(i,*))
+        endfor
+    endif

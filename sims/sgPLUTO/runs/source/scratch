@@ -1,0 +1,1498 @@
+/*
+  x2 = GY->x[GY->lbeg];
+  print1 ("> theta is %f \n", x2);
+  print1 ("> P42_array is %f \n", d->Plm[GY->lbeg][7]);
+  
+  l = 4;
+  m = 2;
+  cos_theta = cos(x2);
+  test = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+  print1 ("> P42  is %f \n", test);
+*/
+
+
+
+	  d->rho_m[Re][m][j][i] += cosmphi;
+	  d->rho_m[Im][m][j][i] += sinmphi;
+
+
+
+
+	d->rho_m[Re][m][j][i] = cosmphi;
+  	d->rho_m[Im][m][j][i] = sinmphi;
+
+
+  re=d->rho_m[Re][MMAX-1][JBEG][IBEG];  
+  im=d->rho_m[Im][MMAX-1][JBEG][IBEG]; 
+  
+  MPI_Allreduce (&re, &g_re, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  MPI_Allreduce (&im, &g_im, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  
+  print1 ("> re_rho_m  is %f \n", g_re*1.0e6);
+  print1 ("> im_rho_m  is %f \n", g_im*1.0e6);
+
+
+
+  for(j=JBEG-1;j<=JEND+1;j++){
+	x2l = GY->xl[j];
+	x2r = GY->xr[j];
+	
+	cos_theta_left = cos(x2l);
+	cos_theta_right= cos(x2r);
+	
+	P_left[j]  = gsl_sf_legendre_sphPlm(l, m, cos_theta_left)*GY->dV[j]; 
+	P_right[j] = gsl_sf_legendre_sphPlm(l, m, cos_theta_right)*GY->dV[j];       
+      }
+      
+      d->theta_weights_lm[counter][JBEG-1] = 0.25*P_left[JBEG];
+      
+      d->theta_weights_lm[counter][JBEG] = 0.25*(P_left[JBEG]+P_right[JBEG]);
+      d->theta_weights_lm[counter][JBEG]+= 0.25*P_left[JBEG+1];
+      
+      for(j=JBEG+1;j<=JEND-1;j++){
+        d->theta_weights_lm[counter][j] = 0.25*(P_left[j]+P_right[j]);
+        d->theta_weights_lm[counter][j]+= 0.25*P_left[j+1];
+        d->theta_weights_lm[counter][j]+= 0.25*P_right[j-1];
+      }
+      
+      d->theta_weights_lm[counter][JEND] = 0.25*(P_left[JEND]+P_right[JEND]);
+      d->theta_weights_lm[counter][JEND]+= 0.25*P_right[JEND-1];
+      
+      d->theta_weights_lm[counter][JEND+1] = 0.25*P_right[JEND];
+      
+    } 
+
+
+
+      /* rho_lm_real[i] += gsl_sf_legendre_sphPlm(l, m,
+      cos(GY->x[j]))*GY->dV[j];  */
+
+
+
+ in = rho_lm_real[IBEG];
+  MPI_Allreduce (&in, &in_g, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  
+  print1 ("> integral of plm  is %.10lf \n", in_g);
+
+      rho_lm_real[i] += d->theta_weights_lm[counter][j];
+
+
+    rho_lm_real[i] = d->theta_weights_lm[counter][j];
+
+
+
+  
+  IDOM_LOOP(i){
+    work_real[rcoord + i - IBEG] = (double)(rcoord + i - IBEG)/(GY->nproc*GZ->nproc);
+
+    /* rho_lm_imag_global[rcoord + i - IBEG] = (rcoord + i - IBEG); */
+  }
+  
+  MPI_Allreduce (&work_real[0], &rho_lm_real_global[0], nrad, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+
+  for(i=0; i<nrad; i++){
+    print1 ("> rho_lm_glob %d, %f \n", i, rho_lm_real_global[i] );
+  }
+
+  FreeArray1D (work_real);
+  FreeArray1D (work_imag);
+
+
+ for(i=0; i<nrad; i++){
+    print1 ("> rho_lm_glob %d, %f, %f\n", i, GX->x_glob[i], rho_lm_real_global[i] );
+  }
+
+
+
+
+  double in, in_g;
+
+
+  double P_left[NX2_TOT], P_right[NX2_TOT], P_bar[NX2_TOT];
+  double cos_theta_left, cos_theta_right, x2r, x2l;
+
+
+	d->theta_weights_lm[counter][j] = gsl_sf_legendre_sphPlm(l, m,
+								 cos_theta)*sin(x2)*GY->dx[j];
+
+	d->theta_weights_lm[counter][j] = gsl_sf_legendre_sphPlm(l,
+								 m,
+								 cos_theta)*sin(x2)*GY->dx[j]; 
+
+
+
+
+      /* JTOT_LOOP(j){ */
+      /* 	x2 = GY->x[j]; */
+      /* 	cos_theta = cos(x2); */
+      /* 	d->theta_weights_lm[counter][j] = gsl_sf_legendre_sphPlm(l, */
+      /* 								 m, cos_theta)*GY->dV[j];	 */
+      /* } */
+
+
+      
+      /* JTOT_LOOP(j){ */
+      /* 	x2 = GY->x[j]; */
+      /* 	cos_theta = cos(x2); */
+      /* 	d->theta_weights_lm[counter][j] = gsl_sf_legendre_sphPlm(l, */
+      /* 								 m, cos_theta)*GY->dV[j]; */
+      /* } */
+
+
+   rho_lm_real[i]=d->theta_weights_lm[counter][j];
+
+      rho_lm_real[i]+=d->theta_weights_lm[counter][j];
+
+
+
+        
+  double in, in_g;
+
+  in = rho_lm_real[IBEG];
+  MPI_Allreduce (&in, &in_g, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  
+  print1 ("> integral of plm  is %.10lf \n", in_g);
+  
+
+
+  /* MPI_Allreduce (&re, &g_re, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD ); */
+  /* MPI_Allreduce (&im, &g_im, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD ); */
+
+  /* g_re *= 1.0e6; */
+  /* g_im *= 1.0e6; */
+
+
+
+     mphi = dblem*GZ->x[k];
+      cosmphi = cos(mphi)*filon_corr;
+      sinmphi = sin(mphi)*filon_corr;
+
+
+    mphi    = dblem*GZ->x[k];
+    cosmphi = cos(mphi)*filon_corr;
+    sinmphi = sin(mphi)*filon_corr;
+
+
+    dblem      = (double)m;
+    filon_corr = dphi*dblem/2.0;
+    filon_corr = sin(filon_corr)/filon_corr;
+    filon_corr*= filon_corr*dphi; /*mesh size included here*/
+
+
+
+
+
+
+      d->rho_m[Re][m][j][i] = d->phi_weights_m[Re][m][k];
+      d->rho_m[Im][m][j][i] = 0.0;
+
+
+
+        d->rho_m[Re][m][j][i] += d->phi_weights_m[Re][m][k];
+
+
+
+/*      
+        d->rho_m[Re][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+        d->rho_m[Im][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+*/
+
+
+
+/*        
+          d->rho_m[Re][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+          d->rho_m[Im][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+*/
+
+
+  double re=0.0, im=0.0;
+
+  re = d->rho_m[Re][test][JBEG][IBEG];
+  im = d->rho_m[Im][test][JBEG][IBEG];
+
+  print1 ("> test... %.16lf, %.16lf \n", re, im);
+int test=1;
+
+
+
+d->phi_weights_m[Re][m][k-1]
+      +=( x*xp1*dphi-0.5*(x+xp1)*(xr*xr-xl*xl) + (1.0/3.0)*(xr*xr*xr -
+                                                            xl*xl*xl) )/(2.0*dphi*dphi);
+
+    d->phi_weights_m[Re][m][k]
+      +=( 0.5*(xm1+xp1)*(xr*xr-xl*xl) - xm1*xp1*dphi -
+          (1.0/3.0)*(xr*xr*xr - xl*xl*xl) )/(dphi*dphi);
+
+    d->phi_weights_m[Re][m][k+1]
+      +=( (1.0/3.0)*(xr*xr*xr - xl*xl*xl) -
+          0.5*(x+xm1)*(xr*xr-xl*xl)+x*xm1*dphi)/( 2.0*dphi*dphi);
+x   = GZ->x[k];
+    xp1 = GZ->x[k+1];
+    xm1 = GZ->x[k-1];
+    xl  = GZ->xl[k];
+    xr  = GZ->xr[k];
+
+
+
+ int test = MMAX/4-1;
+
+
+        /* d->rho_m[Re][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k]; */
+        /* d->rho_m[Im][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k]; */
+
+          d->rho_m[Re][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+          d->rho_m[Im][m][j][i] +=
+          cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+
+
+
+  double re=0.0, im=0.0;
+
+  re = d->rho_m[Re][test][JBEG][IBEG]/d->Vc[RHO][KBEG][JBEG][IBEG];
+  im = d->rho_m[Im][test][JBEG][IBEG]/d->Vc[RHO][KBEG][JBEG][IBEG];
+
+  print1 ("> test... %.16lf, %.16lf \n", re, im);
+ 
+
+
+
+  int test=0;
+
+
+   test = exp(-0.5/pow(h*tan(GY->x[j]),2.0));
+
+
+
+  double h=0.1;
+  double test;
+
+
+   /* diag  =  ARRAY_1D(nrhs, double); */
+   /* upper =  ARRAY_1D(nrhs-1, double); */
+   /* lower =  ARRAY_1D(nrhs-1, double); */
+   
+   /* dblel = (double) l; */
+   /* /\*inner boundary condition*\/ */
+   /* i=0; */
+   /* diag[i] = -( 1.0/(raxis[i+1] - raxis[i]) + 0.5*dblel/rmin); */
+   /* upper[i]=  1.0/(raxis[i+1] - raxis[i]) - 0.5*dblel/rmin; */
+   /* /\*outer boundary condition*\/ */
+   /* i=nrhs-1; */
+   /* diag[i] = 1.0/(raxis[i] - raxis[i-1]) + 0.5*(dblel+1.0)/rmax; */
+   /* lower[i-1] = -1.0/(raxis[i] - raxis[i-1]) + 0.5*(dblel+1.0)/rmax; */
+   /* /\*interior active zones*\/ */
+   /* for(i=1; i<=nrhs-2; i++){ */
+   /*   idx = 1.0/GX->dx_glob[ngst-1+i]; */
+   /*   x  = raxis[i]; */
+   /*   xm1= raxis[i-1]; */
+   /*   xp1= raxis[i+1]; */
+
+   /*   diag[i]  = -( 1.0/(xp1-x) + 1.0/(x-xm1) )*idx; */
+   /*   diag[i] += -dblel*(dblel + 1.0)/(x*x); */
+
+   /*   upper[i]  = idx/(xp1-x); */
+   /*   upper[i] += (2.0/x)/(xp1-xm1); */
+     
+   /*   lower[i-1] = idx/(x-xm1); */
+   /*   lower[i-1]+=-(2.0/x)*(xp1-xm1); */
+   /* } */
+   /* STEP  4C: solve tri-diagonal system
+********************************/
+   /* /\*setup gsl vectors*\/ */
+   /* gsl_vector_view dd = gsl_vector_view_array(diag, nrhs); */
+   /* gsl_vector_view ud = gsl_vector_view_array(upper, nrhs-1); */
+   /* gsl_vector_view ld = gsl_vector_view_array(lower, nrhs-1); */
+   /* gsl_vector  re_sol = gsl_vector_alloc(nrhs); */
+   /* gsl_vector  im_sol = gsl_vector_alloc(nrhs); */
+
+   /* /\*real part*\/ */
+   /* for(i=0;i<nrhs;i++) rhs_real[i] = 0.0; */
+
+   /* gsl_vector_view rhs = gsl_vector_view_array(rhs_real, nrhs); */
+   /* gsl_linalg_solve_tridiag(&dd.vector, &ud.vector, &ld.vector, */
+   /* 			    &rhs.vector, re_sol); */
+   
+   /* for(i=0;i<nrhs;i++){ */
+   /*   print1 ("> rhs: %.d , %.6lf \n", i, re_sol[i]); */
+   /* } */
+
+     diag[i]  = -( 1.0/(xp1-x) + 1.0/(x-xm1) )*idx;
+     diag[i] += -dblel*(dblel + 1.0)/(x*x);
+
+     upper[i]  = idx/(xp1-x);
+     upper[i] += (2.0/x)/(xp1-xm1);
+     
+     lower[i-1] = idx/(x-xm1);
+     lower[i-1]+=-(2.0/x)*(xp1-xm1);
+
+
+
+ int nrhs, ngst;
+  double *rhs_real, *rhs_imag, *raxis;
+  
+  nrhs = GX->np_int_glob + 2;
+  ngst = GX->nghost;
+
+  rhs_real =  ARRAY_1D(nrhs, double);
+  rhs_imag =  ARRAY_1D(nrhs, double);
+
+  gsl_vector *rhs_real  = gsl_vector_alloc(nrhs);
+  gsl_vector *rhs_imag  = gsl_vector_alloc(nrhs-1);
+
+
+  raxis    =  ARRAY_1D(nrhs, double);
+  
+  for(i=0; i<nrhs; i++){/*initialize rhs and radial grid*/
+    rhs_real[i] = 0.0;
+    rhs_imag[i] = 0.0;
+    raxis[i]    = GX->x_glob[ngst-1+i];
+  }
+  
+  for(i=1; i<=nrhs-2; i++){/*fill the active zones of rhs with
+			     rho_lm. assume G=1. */
+    rhs_real[i] = 4.0*CONST_PI*rho_lm_real_global[ngst+i-1];
+    rhs_imag[i] = 4.0*CONST_PI*rho_lm_imag_global[ngst+i-1];
+  }
+
+  /*  for(i=0; i<nrhs; i++){ */
+  /*    print1 ("> rhs: %.d , %.6lf \n", i, rhs_real[i]); */
+  /* } */
+
+   FreeArray1D (rho_lm_real_global);
+   FreeArray1D (rho_lm_imag_global);
+
+
+double cosmphi, sinmphi, dblem;
+
+  JTOT_LOOP(j) {
+    x2 = GY->x[j];
+    cos_theta = cos(x2);
+
+    for(n=0; n<=nstar-1; n++){/*go through each line with cut-off*/
+      nprev = n*(MMAX+1);
+      two_n = 2*n;
+
+      for(l=two_n; l<=MMAX+two_n; l++){
+        m = l - two_n;
+        counter = nprev + m;
+
+        d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+    }
+
+    for(n=nstar; n<=LMAX/2; n++){/*go through each line without cut-off*/
+      nprev = nstar*(MMAX+1) + (n-nstar)*(LMAX + 2 - nstar - n);
+      two_n = 2*n;
+
+      for(l=two_n; l<=LMAX; l++){
+        m = l - two_n;
+        counter = nprev + m;
+
+        d->Plm[j][counter]  = gsl_sf_legendre_sphPlm(l, m, cos_theta);
+      }
+      }
+  }
+
+
+/*
+   for(i=0;i<nrhs;i++){     
+     gsl_vector_set(rhs_real, i, 4.0*CONST_PI/(raxis[i]*raxis[i]));
+     gsl_vector_set(rhs_imag, i, 0.0);
+   }
+   
+   gsl_vector_set(rhs_real, 0, 0.0);
+   gsl_vector_set(rhs_real, nrhs-1, 0.0);
+*/
+
+
+
+
+/*    double exact, err; */
+
+/*    for(i=0;i<nrhs;i++){ */
+/* /\* */
+/*      exact = raxis[i]*raxis[i]/2.0 + r1*r1*r1/raxis[i] - 1.5*r2*r2; */
+/*      exact*= 4.0*CONST_PI/3.0; */
+/* *\/ */
+
+/*      exact = (1.0 - pow(r1/raxis[i], dblel+1.0))/(dblel+1.0); */
+/*      exact+= (1.0 - pow(raxis[i]/r2, dblel))/dblel; */
+/*      exact*= -4.0*CONST_PI/(2.0*dblel + 1.0); */
+
+
+/*      err = (gsl_vector_get(re_sol,i) - exact)/exact; */
+/*      err = fabs(err); */
+
+/*      print1 ("%.16lf, %.16lf , %.16lf, %.16lf \n", raxis[i],   */
+/* 	     gsl_vector_get(re_sol,i), exact, err );  */
+/* /\* */
+/*     print1 ("%.16lf, %.16lf , %.16lf \n", raxis[i],   */
+/*              gsl_vector_get(rhs_real,i), 4.0*CONST_PI/raxis[i]/raxis[i]);  */
+/* *\/ */
+/*    } */
+
+   /* exit(1); */
+
+
+
+
+
+n = 0;/*initilize each i with contribution from line n=0 (the
+              m=l line)*/
+      for(i=IBEG-1; i<=IEND+1; i++){/*contrib from l=m=0**/
+        d->Phi[k][j][i] = d->Philm[Re][n][i]*d->Ylm[Re][k][j][n];
+      }
+
+      for(l=1; l<=MMAX; l++){/*contrib from l=m=1,2,3...*/
+        m = l;
+        counter = m;
+
+        for(i=IBEG-1; i<=IEND+1; i++){
+          d->Phi[k][j][i]+=
+            2.0*(d->Philm[Re][counter][i]*d->Ylm[Re][k][j][counter] -
+                 d->Philm[Im][counter][i]*d->Ylm[Im][k][j][counter]);
+            }
+      }
+
+/* ************************************************************** */
+void NormalizeDensity (const Data *d, Grid *grid)
+/*
+ *
+ * Normalize density and pressure as   rho -> K*rho, where
+ *
+ *   K = M/(\sum rho*dV)
+ *
+ **************************************************************** */
+{
+  int   i, j, k;
+  double *dV1, *dV2, *dV3;
+  double dV, mass, gmass, mc;
+
+/*        
+  dV1 = grid[IDIR].dV; 
+  dV2 = grid[JDIR].dV; 
+  dV3 = grid[KDIR].dV;
+
+  mass = 0.0;
+  DOM_LOOP(k,j,i){
+    dV    = dV1[i]*dV2[j]*dV3[k];
+    mass += dV*d->Vc[RHO][k][j][i];
+  }
+                        
+#ifdef PARALLEL
+  gmass = 0.;
+  MPI_Allreduce (&mass, &gmass, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+  mass = gmass;
+#endif
+        
+  mc  = 0.5*g_inputParam[Mdisk]*CONST_Msun;
+  mc /= g_unitDensity*g_unitLength*g_unitLength*g_unitLength*mass;
+  DOM_LOOP(k,j,i){
+    d->Vc[RHO][k][j][i] *= mc;
+    #if EOS == IDEAL
+     d->Vc[PRS][k][j][i] *= mc;
+    #endif
+
+  }
+*/
+}
+
+
+     print1 ("> dpot %.16lf \n", (pot1-pot));
+
+
+   /*print the potential*/   
+//   ITOT_LOOP(i){
+//     printn (1, "%d, %.16lf , %.16lf, %.16lf \n", i,
+//	     GX->x[i], d->Philm[Re][counter][i], AnalyticPhilm(GX->x[i], r1, r2)); 
+//   }
+
+
+
+  
+/*test purpose: single mode contribution:
+ *
+ */
+/*
+      counter = GetCounter(LTEST,MTEST);
+      for(i=IBEG-1; i<=IEND+1; i++){ 
+      d->Phi[k][j][i] =
+            2.0*(d->Philm[Re][counter][i]*d->Ylm[Re][k][j][counter] -
+                             d->Philm[Im][counter][i]*d->Ylm[Im][k][j][counter]);
+      }
+*/
+        /* work_real[rcoord + i - IBEG] = (1.0/(GX->x[i]*GX->x[i]))/(double)(GY->nproc*GZ->nproc); */
+    /* work_imag[rcoord + i - IBEG] = (double)i/(GY->nproc*GZ->nproc);
+    */
+
+
+  /* print1 ("> integral: %.16lf , %.16lf \n", GY->xr[JEND],
+  rho_lm_real[IBEG]); */
+
+
+ 
+      /* rho_lm_real[i] += d->theta_weights_lm[counter][j]; */
+
+ 
+    /* rho_lm_real[i] = d->theta_weights_lm[counter][j]; */
+
+
+
+
+  /* double *work_real, *work_imag; */
+  /* double *rho_lm_real_global, *rho_lm_imag_global; */
+
+
+ /* work_real = ARRAY_1D(nrad, double); */
+  /* work_imag = ARRAY_1D(nrad, double); */
+  
+  /* rho_lm_real_global = ARRAY_1D(nrad, double); */
+  /* rho_lm_imag_global = ARRAY_1D(nrad, double); */
+  
+
+  /* FreeArray1D (work_real); */
+  /* FreeArray1D (work_imag); */
+
+
+/*
+	 d->rho_m[Re][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k]; 
+	 d->rho_m[Im][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k]; 
+*/
+
+
+/*
+	  d->rho_m[Re][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k]; 
+          d->rho_m[Im][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k]; 
+*/
+
+  /* FreeArray1D (rho_lm_real_global); */
+   /* FreeArray1D (rho_lm_imag_global); */
+
+
+  /* nrhs = GX->np_int_glob + 2; */
+  /* ngst = GX->nghost; */
+
+
+    /* raxis[i]    = GX->x_glob[ngst-1+i]; */
+
+
+   FreeArray1D (raxis);
+
+
+   gsl_vector_free(rhs_real);
+   gsl_vector_free(rhs_imag);
+
+   gsl_vector_free(re_sol);
+   gsl_vector_free(im_sol);
+
+
+   /*print the potential*/   
+   ITOT_LOOP(i){
+     printn (1, "%d, %.16lf , %.16lf, %.16lf \n", i,
+	     GX->x[i], d->Philm[Re][counter][i], AnalyticPhilm(GX->x[i], r1, r2)); 
+   }
+
+
+    /*temporary, for test purposes*/
+     /* GetRhom(d, grid); */
+    /* GetPhilm(d, grid, 6, 4); */
+    /* TestPoisson(d, grid); */
+    
+
+
+   /* rho_lm_real[i] = d->theta_weights_lm[counter][j]; */
+
+
+
+ /* rho_lm_real[i] += d->theta_weights_lm[counter][j]; */
+
+
+ 
+  /* print1 ("> integral: %.16lf , %.16lf \n", GY->xr[JEND], rho_lm_real[IBEG]); */
+
+    
+    /* work_real[rcoord + i - IBEG] = (1.0/(GX->x[i]*GX->x[i]))/(double)(GY->nproc*GZ->nproc); */
+    /* work_imag[rcoord + i - IBEG] = (double)i/(GY->nproc*GZ->nproc);
+    */
+
+
+/*
+	 d->rho_m[Re][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+	 d->rho_m[Im][m][j][i] = cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+*/
+
+
+
+/*
+	  d->rho_m[Re][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Re][m][k];
+          d->rho_m[Im][m][j][i] += cos(test*GZ->x[k])*d->phi_weights_m[Im][m][k];
+*/
+
+
+/*
+else {
+    taper = 1.0;
+  }
+  
+  KTOT_LOOP(k){
+    JTOT_LOOP(j){
+      ITOT_LOOP(i){
+  	d->Phi[k][j][i] *= taper;
+      }
+    }
+  }
+*/
+
+
+
+
+   KTOT_LOOP(k){
+    JTOT_LOOP(j){
+    for(ii=IEND+1;ii<NX1_TOT-1; ii++){
+
+    i = ii-1;
+    R = x1[i]*sin(x2[j]);
+    z = x1[i]*cos(x2[j]);
+    rho_c = d->Vc[RHO][k][j][i];
+    vr_c  = d->Vc[VX1][k][j][i];
+    vphi_c= d->Vc[VX3][k][j][i];
+    rho_c0= density3D(R, z);
+    vphi_c0=azivel(R,z);
+    cs_c  = sqrt(csq(R));
+    abs_vr_c = fabs(vr_c);
+
+    i = ii+1;
+    R = x1[i]*sin(x2[j]);
+    z = x1[i]*cos(x2[j]);
+    rho_e = density3D(R, z)*rho_c/rho_c0;
+    vphi_e= azivel(R,z)*vphi_c/vphi_c0;
+
+    i = ii;
+    R = x1[i]*sin(x2[j]);
+    cs_e  = sqrt(csq(R));
+
+    if(abs_vr_c < cs_c) {
+    d->Vc[VX1][k][j][i] = 0.5*(vr_c + cs_e*log(rho_c/rho_e));
+    d->Vc[RHO][k][j][i] = sqrt(rho_c*rho_e)*exp(0.5*vr_c/cs_e);
+
+    if(vr_c > 0.0){
+      d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][i-1];
+      d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+    }
+    if(vr_c < 0.0){
+      d->Vc[VX2][k][j][i] = 0.0;
+      d->Vc[VX3][k][j][i] = vphi_e;
+    }
+    }
+
+    if(abs_vr_c > cs_c){
+       if(vr_c > 0.0){
+       d->Vc[RHO][k][j][i] = rho_c;
+       d->Vc[VX1][k][j][i] = vr_c;
+       d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][i-1];
+       d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+       }
+       if(vr_c < 0.0){
+       d->Vc[RHO][k][j][i] = rho_e;
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[VX2][k][j][i] = 0.0;
+       d->Vc[VX3][k][j][i] = vphi_e;
+       }
+    }
+
+    }
+    }
+ 
+
+
+ r = x1[i];
+      R = r*sin(x2[j]);
+
+      Rend = rend*sin(x2[j]);
+      Jend = rend*d->Vc[VX3][k][j][IEND]; //angular momentum of last active cell  
+
+
+    double rho_c, rho_e, vr_c, cs_e, vphi_e, cs_c, abs_vr_c, rho_c0, vphi_c0;
+    double vphi_c, Jend, Rend;
+
+
+      d->Vc[VX3][k][j][i] = Jend/R;
+
+
+
+  if (side == X1_END){
+    int ii;
+    double vphi_bound, rend;
+    double rho_c, rho_e, vr_c, cs_e, vphi_e, cs_c, abs_vr_c, rho_c0, vphi_c0;
+    double vphi_c, Jend, Rend;
+    rend = x1[IEND];
+
+    X1_END_LOOP(k,j,i){
+      r = x1[i];
+      R = r*sin(x2[j]);
+
+      Rend = rend*sin(x2[j]);
+      Jend = rend*d->Vc[VX3][k][j][IEND]; //angular momentum of last active cell  
+
+      for (nv = 0; nv < NVAR; nv++){
+        d->Vc[nv][k][j][i] = d->Vc[nv][k][j][IEND];
+      }
+
+/*
+      vphi_bound = -g_inputParam[smallq]*csq(rend);
+      vphi_bound+= mstar*bigG/rend;
+      vphi_bound+= rend*(d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - rend);
+      d->Vc[VX3][k][j][i] = sqrt(vphi_bound);
+*/
+      d->Vc[VX3][k][j][i] = Jend/R;
+
+      if(d->Vc[VX1][k][j][IEND] < 0.0) d->Vc[VX1][k][j][i] = 0.0;
+
+
+//assume vphi^2 due to self-g drops like 1/r^2. extrapolate boundary value
+//r*dphi/dr = r*(dphi/dr)_maxr * (maxr /r )^2
+//      vphi_bound+= r*(d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - rend)*pow(x1r[IEND]/r, 2.0);
+
+
+
+/*
+       r = x1[i]; 
+       R = r*sin(x2[j]); 
+       z = r*cos(x2[j]); 
+      
+       d_zero = density3D(R, z); 
+      
+       d->Vc[VX1][k][j][i] = 0.0; 
+       d->Vc[VX2][k][j][i] = 0.0; 
+      
+       d->Vc[RHO][k][j][i] = d_zero; 
+       d->Vc[VX3][k][j][i] = azivel(R,z); 
+      
+ #if EOS == IDEAL 
+       d->Vc[PRS][k][j][i] = d_zero*csq(R); 
+ #endif  
+*/
+
+
+
+/*
+      for (nv = 0; nv < NVAR; nv++){
+        d->Vc[nv][k][j][i] = d->Vc[nv][k][j][IBEG];
+      }
+      if(d->Vc[VX1][k][j][IBEG] > 0.0 ) d->Vc[VX1][k][j][i] = 0.0;
+*/
+
+
+/*
+//nrbc assuming isothermal 
+     r = x1[IEND];  
+     R = r*sin(x2[j]); 
+     z = r*cos(x2[j]);
+     cs_a = sqrt(csq(R)); 
+     d_zero = density3D(R, z)*d->beta2d[j][i];   
+
+     vphi_bound = mstar*bigG/rend;
+     vphi_bound+= rend*(d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - rend);
+     vphi_bound = sqrt(vphi_bound);
+
+     if(abs(d->Vc[VX1][k][j][IEND]) < cs_a){//subsonic
+
+      d->Vc[VX1][k][j][i] = 0.5*(d->Vc[VX1][k][j][IEND] + cs_a*log(d->Vc[RHO][k][j][IEND]/d_zero));
+      d->Vc[RHO][k][j][i] = sqrt(d->Vc[RHO][k][j][IEND]*d_zero)*exp(0.5*d->Vc[VX1][k][j][IEND]/cs_a);
+
+     if(d->Vc[VX1][k][j][IEND] > 0.0){
+
+       d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IEND];
+       d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IEND];
+
+     } else {
+       d->Vc[VX3][k][j][i] = vphi_bound;
+       d->Vc[VX2][k][j][i] = 0.0;
+     }
+     } else { //supersonic
+
+      if(d->Vc[VX1][k][j][IEND] > 0.0){
+
+       d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IEND];
+       d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IEND];
+       d->Vc[VX1][k][j][i] = d->Vc[VX1][k][j][IEND];
+       d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][IEND]; 
+
+     } else {
+       d->Vc[VX3][k][j][i] = vphi_bound;
+       d->Vc[VX2][k][j][i] = 0.0;
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[RHO][k][j][i] = d_zero;  
+     }
+     }
+*/
+
+
+
+/*initial state
+       r = x1[i];  
+       R = r*sin(x2[j]); 
+       z = r*cos(x2[j]); 
+      
+       d_zero = density3D(R, z); 
+      
+       d->Vc[VX1][k][j][i] = 0.0; 
+       d->Vc[VX2][k][j][i] = 0.0; 
+      
+       d->Vc[RHO][k][j][i] = d_zero; 
+       d->Vc[VX3][k][j][i] = azivel(R,z); 
+      
+ #if EOS == IDEAL 
+       d->Vc[PRS][k][j][i] = d_zero*csq(R); 
+ #endif 
+*/
+
+
+//      if(d->Vc[VX1][k][JBEG][i] < 0.0) {
+//       d->Vc[VX1][k][j][i] = d->Vc[VX1][k][JBEG][i];
+//      } else
+
+
+/*initial non-sg state
+      r = x1[i];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+      
+      d_zero = density3D(R, z);
+      
+      d->Vc[VX1][k][j][i] = 0.0;
+      d->Vc[VX2][k][j][i] = 0.0;
+      
+      d->Vc[RHO][k][j][i] = d_zero;
+      d->Vc[VX3][k][j][i] = azivel(R,z);
+      
+#if EOS == IDEAL
+      d->Vc[PRS][k][j][i] = d_zero*csq(R);
+#endif
+*/
+
+
+
+
+
+
+    // isothermal nrbc, only update first active cell
+    double rm1, Rm1, zm1;
+    double cs_a;
+    
+    //ghost cell, to be updated 
+    i = IBEG - 1;
+    
+    KTOT_LOOP(k) {
+      JTOT_LOOP(j){
+	
+	//first active  
+	r   = x1[IBEG];
+	R   = r*sin(x2[j]);
+	cs_a= sqrt(csq(R));
+	
+	//second ghost, eqm values
+	rm1 = x1[i-1];
+	Rm1 = rm1*sin(x2[j]);
+	zm1 = rm1*cos(x2[j]);
+	d_zero = density3D(Rm1, zm1)*d->beta2d[j][i-1];
+	
+	if(abs(d->Vc[VX1][k][j][IBEG]) < cs_a){//subsonic
+	  
+	  d->Vc[VX1][k][j][i] = 0.5*(d->Vc[VX1][k][j][IBEG] + cs_a*log(d_zero/d->Vc[RHO][k][j][IBEG]));
+	  d->Vc[RHO][k][j][i] = sqrt(d->Vc[RHO][k][j][IBEG]*d_zero)*exp(-0.5*d->Vc[VX1][k][j][IBEG]/cs_a);
+	  
+	  if(d->Vc[VX1][k][j][IBEG] < 0.0){//copy from active
+	    
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IBEG];
+	    d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IBEG];
+	    
+	  } else {//copy from second ghost (eqm)
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+	    d->Vc[VX2][k][j][i] = 0.0;
+	  }
+	} else { //supersonic
+	  
+	  if(d->Vc[VX1][k][j][IBEG] < 0.0){//copy from active
+	    
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IBEG];
+	    d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IBEG];
+	    d->Vc[VX1][k][j][i] = d->Vc[VX1][k][j][IBEG];
+	    d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][IBEG];
+	    
+	  } else {//copy from second ghost
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+	    d->Vc[VX2][k][j][i] = 0.0;
+	    d->Vc[VX1][k][j][i] = 0.0;
+	    d->Vc[RHO][k][j][i] = d_zero;
+	  }
+	}
+      }
+    } 
+
+
+    // isothermal nrbc, only update first active cell
+    double rp1, Rp1, zp1;
+    double cs_a;  
+    //ghost cell, to be updated 
+    i = IEND+1;
+    
+    KTOT_LOOP(k) {
+      JTOT_LOOP(j){
+	
+	//last active  
+	r   = x1[IEND];
+	R   = r*sin(x2[j]);
+	cs_a= sqrt(csq(R));
+	
+	//second ghost, eqm values
+	rp1 = x1[i+1];
+	Rp1 = rp1*sin(x2[j]);
+	zp1 = rp1*cos(x2[j]);
+	d_zero = density3D(Rp1, zp1)*d->beta2d[j][i+1];
+	
+	if(abs(d->Vc[VX1][k][j][IEND]) < cs_a){//subsonic
+	  
+	  d->Vc[VX1][k][j][i] = 0.5*(d->Vc[VX1][k][j][IEND] + cs_a*log(d->Vc[RHO][k][j][IEND]/d_zero));
+	  d->Vc[RHO][k][j][i] = sqrt(d->Vc[RHO][k][j][IEND]*d_zero)*exp(0.5*d->Vc[VX1][k][j][IEND]/cs_a);
+	  
+	  if(d->Vc[VX1][k][j][IEND] > 0.0){//copy from active
+	    
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IEND];
+	    d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IEND];
+	    
+	  } else {//copy from second ghost (eqm)
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i+1];
+	    d->Vc[VX2][k][j][i] = 0.0;
+	  }
+	} else { //supersonic
+	  
+	  if(d->Vc[VX1][k][j][IEND] > 0.0){//copy from active
+	    
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IEND];
+	    d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IEND];
+	    d->Vc[VX1][k][j][i] = d->Vc[VX1][k][j][IEND];
+	    d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][IEND];
+	    
+	  } else {//copy from second ghost
+	    d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i+1];
+	    d->Vc[VX2][k][j][i] = 0.0;
+	    d->Vc[VX1][k][j][i] = 0.0;
+	    d->Vc[RHO][k][j][i] = d_zero;
+	  }
+	}
+      }
+    }
+
+
+
+
+
+
+    // modified open boundary        
+    X1_END_LOOP(k,j,i){
+
+      r = x1[i];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+
+      d_zero = density3D(R, z)*d->beta2d[j][i];
+
+//      for (nv = 0; nv < NVAR; nv++){
+//	d->Vc[nv][k][j][i] = d->Vc[nv][k][j][IEND];
+//      }
+      
+  
+      d->Vc[RHO][k][j][i] = d_zero;
+
+      vphi_bound = -g_inputParam[smallq]*csq(R);
+      vphi_bound+= mstar*bigG/r;
+      //linear extrapolation for dphi/dr
+      vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+      vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+      vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+      vphi_bound += r*vphi_sg;
+      
+      d->Vc[VX3][k][j][i] = sqrt(vphi_bound);
+      
+ //      if( (d->Vc[VX1][k][j][IEND] < 0.0) ) d->Vc[VX1][k][j][i] = 0.0;     
+      
+ //     if( (d->Vc[VX2][k][j][IEND] < 0.0) ) { 
+//       d->Vc[VX2][k][j][i] = 0.0;
+//      } else d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][IEND]; 
+
+      d->Vc[VX1][k][j][i] = 0.0;
+      d->Vc[VX2][k][j][i] = 0.0;
+
+
+
+    //nrbc copied from antares (set vtheta to zero)
+    X1_END_LOOP(k,j,i){
+
+      //eqm state of last radial active cell
+      r = x1[IEND];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+      
+      cs2 = csq(R); 
+      cs  = sqrt(cs2);
+      
+      csm1 = csq(   x1[i]*sin(x2[j])  ); 
+
+      d_zero = density3D(R, z)*d->beta2d[j][i];
+      
+      vphi_bound = -g_inputParam[smallq]*cs2;
+      vphi_bound+= mstar*bigG/r;
+      //linear extrapolation for dphi/dr
+      vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+      vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+      vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+      vphi_bound += r*vphi_sg;
+      vphi_bound = sqrt(vphi_bound); 
+      
+      dW = d->Vc[RHO][k][j][IEND] - d_zero; 
+      dU = d->Vc[RHO][k][j][IEND]*d->Vc[VX1][k][j][IEND];
+      dV = d->Vc[RHO][k][j][IEND]*d->Vc[VX3][k][j][IEND] - d_zero*vphi_bound;
+      
+      z1 = (cs*dW - dU)/(2.0*cs);
+      z2 = -vphi_bound*dW + dV;
+      z3 = (cs*dW + dU)/(2.0*cs);
+      
+      if( d->Vc[VX1][k][j][IEND] + cs < 0.0) z3 = 0.0;
+      if( d->Vc[VX1][k][j][IEND]      < 0.0) z2 = 0.0;
+      if( d->Vc[VX1][k][j][IEND] - cs < 0.0) z1 = 0.0;
+      
+      d->Vc[RHO][k][j][i] = d_zero + (z1 +z3);
+      d->Vc[VX1][k][j][i] = ( -csm1*z1  + csm1*z3)/d->Vc[RHO][k][j][i];
+      d->Vc[VX3][k][j][i] = (d_zero*vphi_bound + vphi_bound*z1 + vphi_bound*z3 + z2)/d->Vc[RHO][k][j][i];
+      
+      d->Vc[VX2][k][j][i] = 0.0;
+    }  
+
+
+
+
+
+
+
+
+    //godon nrbc
+    X1_END_LOOP(k,j,i){
+      
+      //approx const sound speed from last active cell onwards
+      r = x1[IEND];
+      R = r*sin(x2[j]);
+      cs  = sqrt(csq(R));
+      
+      //eqm state of current cell (ghost)
+      r = x1[i];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+      
+      d_zero = density3D(R, z)*d->beta2d[j][i];
+      vkep   = sqrt(mstar*bigG/R);
+
+      //rho and vrad
+      if( fabs(d->Vc[VX1][k][j][i-1]) < cs ){//subsonic radial flow
+	d->Vc[RHO][k][j][i] = sqrt(d_zero*d->Vc[RHO][k][j][i-1])*exp(0.5*d->Vc[VX1][k][j][i-1]/cs);
+	d->Vc[VX1][k][j][i] = 0.5*(d->Vc[VX1][k][j][i-1] + cs*log(d->Vc[RHO][k][j][i-1]/d_zero));
+      } else { //supersonic
+	if(d->Vc[VX1][k][j][i-1] > 0.0){//copy from active
+	  d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][i-1];
+	  d->Vc[VX1][k][j][i] = d->Vc[VX1][k][j][i-1];
+	}
+	if(d->Vc[VX1][k][j][i-1] < 0.0){//set to eqm 
+	  d->Vc[RHO][k][j][i] = d_zero;
+	  d->Vc[VX1][k][j][i] = 0.0; 
+	}
+      }
+      
+      //vtheta and vphi
+      if(d->Vc[VX1][k][j][i-1] > 0.0){//copy from active
+	d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][i-1];
+	d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+      }
+      if(d->Vc[VX1][k][j][i-1] < 0.0){//set to eqm 
+	d->Vc[VX2][k][j][i] = 0.0 ;
+	d->Vc[VX3][k][j][i] = vkep;
+      }
+      
+    } 
+
+
+
+/*
+    //godon nrbc
+    X1_END_LOOP(k,j,i){
+
+      //approx const sound speed from last active cell onwards
+      r = x1[IEND];
+      R = r*sin(x2[j]);
+      cs  = sqrt(csq(R));
+
+      //eqm state of current cell (ghost)
+      r = x1[i];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+
+      d_zero = density3D(R, z)*d->beta2d[j][i];
+
+      vphi_bound = azivel(R,z); //mstar*bigG/r;
+      //linear extrapolation for dphi/dr
+      vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+      vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+      vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+      vphi_bound += r*vphi_sg;
+      vphi_bound = sqrt(vphi_bound);
+
+      //rho and vrad
+      if( fabs(d->Vc[VX1][k][j][i-1]) < cs ){//subsonic radial flow
+        d->Vc[RHO][k][j][i] = sqrt(d_zero*d->Vc[RHO][k][j][i-1])*exp(0.5*d->Vc[VX1][k][j][i-1]/cs);
+        d->Vc[VX1][k][j][i] = 0.5*(d->Vc[VX1][k][j][i-1] + cs*log(d->Vc[RHO][k][j][i-1]/d_zero));
+      } else { //supersonic
+        if(d->Vc[VX1][k][j][i-1] > 0.0){//copy from active
+          d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][i-1];
+          d->Vc[VX1][k][j][i] = d->Vc[VX1][k][j][i-1];
+        }
+        if(d->Vc[VX1][k][j][i-1] < 0.0){//set to eqm
+          d->Vc[RHO][k][j][i] = d_zero;
+          d->Vc[VX1][k][j][i] = 0.0;
+        }
+      }
+      
+      //vtheta always zero, vphi always eqm
+      //      d->Vc[VX2][k][j][i] = 0.0 ;
+      //d->Vc[VX3][k][j][i] = vphi_bound;
+
+      //vtheta and vphi
+      if(d->Vc[VX1][k][j][i-1] > 0.0){//copy from active
+        d->Vc[VX2][k][j][i] = d->Vc[VX2][k][j][i-1];
+        d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][i-1];
+      }
+      if(d->Vc[VX1][k][j][i-1] < 0.0){//set to eqm
+        d->Vc[VX2][k][j][i] = 0.0 ;
+        d->Vc[VX3][k][j][i] = vphi_bound;
+      }
+
+
+    }
+*/
+
+
+    //modified open boundary
+    X1_END_LOOP(k,j,i){
+      r = x1[i];
+      R = r*sin(x2[j]);
+      z = r*cos(x2[j]);
+      
+      d_zero = density3D(R, z)*d->beta2d[j][i];
+
+      d->Vc[RHO][k][j][i] = d_zero;
+      
+
+      /*      vphi_bound = -g_inputParam[smallq]*csq(R);
+	      vphi_bound+= mstar*bigG/r;
+      */
+
+      
+      vphi_bound = azivel(R,z);
+      //linear extrapolation for dphi/dr
+      vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+      vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+      vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+      vphi_bound += r*vphi_sg;
+      d->Vc[VX3][k][j][i] = sqrt(vphi_bound);
+      
+      d->Vc[VX1][k][j][i] = 0.0;
+      d->Vc[VX2][k][j][i] = 0.0;
+    }
+
+
+
+
+       //vphi from centrifugal balance
+        Pplus = cs_e*cs_e*rho_e;
+        Pminus= cs_a*cs_a*rho_a;
+        d->Vc[VX3][k][j][i] = (Pplus - Pminus)/(x1[ip1]-x1[im1])/d->Vc[RHO][k][j][i];//pressure
+        d->Vc[VX3][k][j][i]+= 1.0/pow(x1[i],2.0);//star, G=M=1
+
+        vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+        vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+        vphi_sg  = vphi_sg2 - (x1r[IEND] - x1[i])*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+        d->Vc[VX3][k][j][i]+= vphi_sg;//self-g
+
+        d->Vc[VX3][k][j][i] = sqrt(x1[i]*d->Vc[VX3][k][j][i]);
+
+
+
+   X1_END_LOOP(k,j,i){//set ghosts (first ghost will be reset by nrbc again)
+       r        = x1[i];
+       R        = r*sin(x2[j]);
+       z        = r*cos(x2[j]);
+
+       d_zero = density3D(R, z)*d->beta2d[j][i];
+       d->Vc[RHO][k][j][i] = d_zero;
+
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[VX2][k][j][i] = 0.0;
+
+        vphi_bound = azivel(R,z);
+        //linear extrapolation for dphi/dr
+        vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]);
+        vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]);
+        vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND];
+        vphi_bound += r*vphi_sg;
+        d->Vc[VX3][k][j][i] = sqrt(vphi_bound);
+
+     }
+
+
+
+
+
+X1_END_LOOP(k,j,i){//first fill ghosts with vrad=0,vtheta=0,rho and vphi linear extrapolated
+       grad = (x1[i] - x1[IEND-1])/(x1[IEND] - x1[IEND-1]);
+
+       d->Vc[RHO][k][j][i] = d->Vc[RHO][k][j][IEND-1] + (d->Vc[RHO][k][j][IEND] - d->Vc[RHO][k][j][IEND-1])*grad;
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[VX2][k][j][i] = 0.0;
+       d->Vc[VX3][k][j][i] = d->Vc[VX3][k][j][IEND-1] + (d->Vc[VX3][k][j][IEND] - d->Vc[VX3][k][j][IEND-1])*grad;
+     }
+
+
+static double bump(const double bigR);
+static double dlogbump(const double bigR);
+static double d2logbump(const double bigR);
+
+static double bump(const double bigR)
+{  
+  return 1.0 + (g_inputParam[amp] - 1.0)*exp(-0.5*pow((bigR - g_unitLength)/bwidth, 2.0)); 
+}
+
+static double dlogbump(const double bigR)
+{
+  double dbump;
+
+  dbump   = (bump(bigR) - 1.0);
+  dbump  *=-(bigR - g_unitLength)/pow(bwidth, 2.0);
+  dbump  /= bump(bigR);
+
+  return dbump;
+}
+
+static double d2logbump(const double bigR)
+{
+  double DR2, d2bump, B;
+
+  DR2 = pow(bwidth, 2.0);
+  B   = bump(bigR);
+
+  d2bump = dlogbump(bigR)/B;
+  d2bump*= -(bigR - g_unitLength)/DR2;
+  d2bump += -(1.0 - 1.0/B)/DR2;
+
+  return d2bump;
+}
+
+double kinematic_visc(const double x1, const double x2)
+{
+  /*assume spherical polars*/
+  double z, fz, R, fr, csRmin, bigHmin ;
+  double visc, Rmin, sintheta;
+
+  R = x1*sin(x2);
+  z = x1*cos(x2);
+
+  sintheta = 1.0/sqrt(1.0 +
+                      pow(g_inputParam[max_H]*g_inputParam[smallh],2.0));
+  Rmin = g_inputParam[rmin]*sintheta;
+
+  //reference viscosity value 
+
+/*
+   if(g_inputParam[nu_alpha] > 0.0) {
+    csRmin = csq(Rmin);
+    csRmin = sqrt(csRmin);
+    bigHmin= bigH(Rmin);
+
+    visc  = g_inputParam[nu_alpha]*csRmin*bigHmin;
+
+    printf("here");
+   } 
+*/
+
+  if(g_inputParam[nu] > 0.0){
+    visc  = g_inputParam[nu]*g_unitLength*g_unitLength*omega_k(g_unitLength);
+  }
+
+  fz = 1.0;
+
+  // nu.sigma.r^3.omega' = constant  
+
+/*
+  visc *= pow(g_unitLength/R, -g_inputParam[smallp]); //surface_density(Rmin)*pow(Rmin,3.0)*domega0(Rmin,0.0);
+
+  print1("R %g visc %g\n", R,visc);
+*/
+
+//  visc /= pow(R,3.0);//*domega0(R, 0.0); 
+
+/*
+  //viscosity jump
+  if(g_inputParam[visc_rtrans] > 0.0){
+    double fr;
+    fr = 0.5*(1.0 + tanh((R - g_unitLength)/(g_inputParam[visc_width]*bigH(g_unitLength))));
+    fz *= fr;
+    fz += (1.0 - fr)*g_inputParam[visc_amp];
+  }
+  
+  if(g_inputParam[visc_rtrans] < 0.0){
+    double fr;
+    fr = 0.5*(1.0 + tanh((R - g_unitLength)/(g_inputParam[visc_width]*bigH(g_unitLength))));
+    fz *= 1.0 - fr;
+    fz += fr*g_inputParam[visc_amp];
+  }
+*/
+  return visc*fz;
+}
+
+
+
+
+
+
+
+//     }
+//    }
+
+    //nrbc copied from antares (set vtheta to zero) */
+    //     X1_END_LOOP(k,j,i){ 
+
+       //eqm state of last radial active cell */
+//       r = x1[IEND]; 
+//       R = r*sin(x2[j]); 
+//       z = r*cos(x2[j]); 
+
+//       cs2 = csq(R); 
+//       cs  = sqrt(cs2); 
+
+//       d_zero = density3D(R, z)*d->beta2d[j][i]; 
+
+//       vphi_bound = azivel(R,z); //non-sg part
+       //linear extrapolation for dphi/dr */
+//       vphi_sg1 = (d->Phi[k][j][IEND] - d->Phi[k][j][IEND-1])/(x1[IEND] - x1[IEND-1]); 
+//       vphi_sg2 = (d->Phi[k][j][IEND+1] - d->Phi[k][j][IEND])/(x1[IEND+1] - x1[IEND]); 
+//       vphi_sg  = vphi_sg2 - (x1r[IEND] - r)*(vphi_sg2 - vphi_sg1)/dx1[IEND]; 
+//       vphi_bound += r*vphi_sg; 
+//       vphi_bound = sqrt(vphi_bound); 
+
+//       dW = d->Vc[RHO][k][j][IEND] - d_zero; 
+//       dU = d->Vc[RHO][k][j][IEND]*d->Vc[VX1][k][j][IEND]; 
+//       dV = d->Vc[RHO][k][j][IEND]*d->Vc[VX3][k][j][IEND] - d_zero*vphi_bound; 
+
+//       z1 = (cs*dW - dU)/(2.0*cs); 
+//       z2 = -vphi_bound*dW + dV; 
+//       z3 = (cs*dW + dU)/(2.0*cs); 
+
+//       if( d->Vc[VX1][k][j][IEND] + cs < 0.0) z3 = 0.0; 
+//       if( d->Vc[VX1][k][j][IEND]      < 0.0) z2 = 0.0; 
+//       if( d->Vc[VX1][k][j][IEND] - cs < 0.0) z1 = 0.0; 
+
+//       d->Vc[RHO][k][j][i] = d_zero + (z1 +z3); 
+//       d->Vc[VX1][k][j][i] = ( -cs*z1  + cs*z3)/d->Vc[RHO][k][j][i]; 
+//       d->Vc[VX3][k][j][i] = (d_zero*vphi_bound + vphi_bound*z1 + vphi_bound*z3 + z2)/d->Vc[RHO][k][j][i]; 
+
+//       d->Vc[VX2][k][j][i] = 0.0; 
+//     } 
+
+
+
+
+
+
+
+
+   //time for random pert?
+    //  print1 ("time is %f \n",g_time);
+    if((planeton_switchon >= g_time) && (planeton_switchon <= g_time + g_dt) && (pert == 0)){
+      pert = 1;
+      iseed  =  x1[IEND/2]*x2[JEND/2]*x3[KEND/2]*1.0e4;
+      iseed_m= -iseed;
+      ran2(&iseed_m);
+
+      //random pert to radial velocity
+      print1 ("do random pert... \n");
+
+       dr1 = g_inputParam[visc_width]*bigH(g_inputParam[visc_rdead1]);
+       dr2 = g_inputParam[visc_width]*bigH(g_inputParam[visc_rdead2]);
+
+
+      TOT_LOOP(k,j,i){
+        R = x1[i]*sin(x2[j]);
+
+
+        dvrad = g_inputParam[pert_amp]*(2.0*ran2(&iseed) - 1.0)*sqrt(csq(R));
+        dvrad*= exp(-0.5*pow((R - g_inputParam[visc_rdead1])/dr1, 2.0)) + exp(-0.5*pow((R - g_inputParam[visc_rdead2])/dr2, 2.0));
+        d->Vc[VX1][k][j][i] += dvrad;
+
+      }
+    }
+
+
+
+      TOT_LOOP(k,j,i){
+        R = x1[i]*sin(x2[j]);
+        if( (R>=g_inputParam[visc_rdead1]) && (R<=g_inputParam[visc_rdead2])){
+        fr = sin(CONST_PI*(R-g_inputParam[visc_rdead1])/(g_inputParam[visc_rdead2]-g_inputParam[visc_rdead1]))*g_inputParam[pert_amp];
+
+//      dvrad = g_inputParam[pert_amp]*(2.0*ran2(&iseed) - 1.0)*sqrt(csq(R));
+//        dvrad*= sin(CONST_PI*(R-g_inputParam[visc_rdead1])/(g_inputParam[visc_rdead2]-g_inputParam[visc_rdead1]));
+//      d->Vc[VX1][k][j][i] += dvrad;
+
+        rho0 = d->Vc[RHO][k][j][i];
+        vphi0= d->Vc[VX3][k][j][i];
+
+        rho1 = fr*rho0;
+        vphi1=-fr*vphi0;
+
+        drho0= -2.0*rho1*vphi1/vphi0;
+
+        d->Vc[RHO][k][j][i] = rho0 + drho0 + 2.0*cos(x3[k])*rho1;
+        d->Vc[VX3][k][j][i] = vphi0 + 2.0*cos(x2[k])*vphi1;
+
+       }
+
+      }
+    }
+
+
+
+
+        fr = sin(CONST_PI*(R-g_inputParam[visc_rdead1])/(g_inputParam[visc_rdead2]-g_inputParam[visc_rdead1]))*g_inputParam[pert_amp];
+
+
+
+        if( (R>=g_inputParam[visc_rdead1]) && (R<=g_inputParam[visc_rdead2])){
+        fr = sin(CONST_PI*(R-g_inputParam[visc_rdead1])/(g_inputParam[visc_rdead2]-g_inputParam[visc_rdead1]))*g_inputParam[pert_amp];
+
+        rho0 = 0.0;
+        vphi0= 0.0;
+
+        KDOM_LOOP(k){
+        rho0 += d->Vc[RHO][k][j][i];
+        vphi0+= d->Vc[VX3][k][j][i];
+        }
+        rho0 /= (double) KEND-KBEG+1;
+        vphi0/= (double) KEND-KBEG+1;
+
+        KDOM_LOOP(k){
+        rho1 = fr*rho0;
+        vphi1=-fr*vphi0;
+
+        drho0= -2.0*rho1*vphi1/vphi0;
+
+        d->Vc[RHO][k][j][i] = rho0 + drho0 + 2.0*cos(x3[k])*rho1;
+        d->Vc[VX3][k][j][i] = vphi0 + 2.0*cos(x3[k])*vphi1;
+        }
+       }
+

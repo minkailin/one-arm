@@ -1,0 +1,6 @@
+      
+c        den0 = sqrt(sound_speed_sq(rout))*omega_k(rout)/(pi*qout)
+c        get_omega_out = .true. 
+c        call vortensity(rin*sin(thetamin), 
+c     &                  surfD, dlogsurfD, get_omega_out) !get omega_out   
+

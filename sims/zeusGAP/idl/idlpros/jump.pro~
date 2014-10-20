@@ -1,0 +1,116 @@
+;THIS IS A PROCEDURE FOR ESTIMATING POST-SHOCK INVERSE VORTENSITY
+;VALUES FOR THE PLANET-DISC SCENARIO. METHOD FOR VORTICITY JUMP
+;FOLLOWS KEVLAHAN (1997), WITH LOCAL ISOTHERMAL EQUATION OF STATE AND
+;ADDITIONAL CORIOLIS TERM. 
+function vy, x;y-velocity in shearing box. Keplerian.
+common params, r0, h
+result=double((r0+x)^(-0.5)-r0^(-0.5))
+return, result
+end
+function dvy, x;dvy/dx
+common params, r0, h
+result=double(-0.5*(r0+x)^(-1.5))
+return, result
+end
+function cs, x;Sound speed
+common params, r0, h
+result=double(h*(r0+x)^(-0.5))
+return, result
+end
+function dcs, x;dcs/dx
+common params, r0, h
+result=double(-0.5*h*(r0+x)^(-1.5))
+return, result
+end
+function alpha, x;Acute angle between shock and x-axis
+return, !pi/4.0
+end
+function ddy, x;d2y/dx2, shock curvature
+return, 0.0
+end
+function dA, x; dA/dS
+x=double(x)
+a=double(alpha(x))
+term1=dvy(x)*(cos(a))^2.0
+term2=ddy(x)*vy(x)*sin(a)*(cos(a))^3.0
+return, term1+term2
+end
+function BdB, x; BdB/dS
+x=double(x)
+a=double(alpha(x))
+term1=-vy(x)*vy(x)*(cos(a))^4.0*sin(a)*ddy(x)
+term2=vy(x)*dvy(x)*cos(a)*(sin(a))^2.0
+return, term1+term2
+end
+function dM, x; dM/dS
+a=double(alpha(x))
+result=dA(x)/cs(x)-vy(x)*(cos(a))^2.0*dcs(x)/(cs(x)*cs(x))
+return, result
+end
+function vorticity, x; Basic state vorticity distribution for Keplerian flow.
+common params, r0, h
+x=double(x)
+return, 0.5*(r0+x)^(-1.5)
+end
+function domega, x; Vorticity jump at x.
+common params, r0, h
+common disc, sigma
+a=double(alpha(x))
+aa=vy(x)*cos(a)
+mach=aa/cs(x)
+f1=mach^(-2.0)-1.0
+f2=-2.0*cs(x)*f1
+f3=aa/(cs(x)*cs(x))-1.0/aa
+term1=f1*(dA(x)+2.0*r0^(-1.5)/sigma);Assumed frame speed is Keperial value at r0 (=planet speed).
+term2=f2*dM(x)
+term3=f3*(2.0*cs(x)*cos(a)*dcs(x)+BdB(x))
+return, term1+term2+term3
+end
+pro jump, r; Input range in Hill radii.
+common params, r0, h
+common disc, sigma
+;Constants
+r0=double(2.0)
+h=double(0.05)
+sigma=double(7.0*10^(-4))
+mp=double(0.00028)
+rhill=(mp/3.0)^(1.0/3.0)*r0
+xs=2.0*rhill
+;Setup
+range=r(0)+(r(1)-r(0))*dindgen(100)/100.
+range=range*rhill; This is x.
+delta_omega=dblarr(100)
+omega_new=dblarr(100)
+vorten=dblarr(100)
+;Post shock vorticity
+delta_omega(0:99)=domega(range(0:99))
+omega_new(0:99)=vorticity(range(0:99))+delta_omega(0:99)
+;Prediction of observed inverse vortensity change. For x>xs observe
+;change at x, for x<xs observe change at -x because material switches
+;to other leg of horseshoe.
+turn=where(min(abs(range-xs)),ss)
+dvort_inner=dblarr(ss+1)
+dvort_outer=dblarr(99-ss)
+for i=0, 99 do begin
+x=range(i)
+angle=alpha(range(i))
+vorten(i)=sigma*(vy(x)*cos(angle)/cs(x))^2.0/omega_new(i)
+endfor
+for i=0, ss do dvort_inner(i)=vorten(i)-sigma/vorticity(-range(i))
+for j=ss+1, 99 do dvort_outer(i-ss-1)=vorten(i)-sigma/vorticity(range(i))
+;Plot results
+xaxis=dblarr()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
