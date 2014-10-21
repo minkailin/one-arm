@@ -82,7 +82,8 @@ smooth disc. We choose
     \tanh\left(\frac{R-R_{d2}}{\Delta_2}\right)\right]  + \epsilon,
 \end{align}
 where $\Delta_1 = \delta R_d \times H(R_{d1})$ and similarly for
-$R_{d2}$. The bump function mimicks mass built-up in a dead zone. 
+$R_{d2}$. The bump function mimicks mass built-up in a dead zone.
+
 
 In 3D, we assume vertical hydrostatic balance
 \begin{align}
@@ -101,7 +102,9 @@ equations.  This procedure is described in \cite{lin12b}.
 
 Our fiducial parameter values are: $s=2$, $R_{d1}=R_0$, $R_{d2}=2R_0$,
 $\epsilon=0.1$, $\delta R_d=5$, $h=0.05$ and
-$Q_\mathrm{out}=2$. Initially there is no vertical or radial velocity
+$Q_\mathrm{out}=2$. An example of the initial surface density and the
+Toomre parameter (see\ref{wkb}) is shown in Fig. \ref{initial_surf}. 
+Initially there is no vertical or radial velocity
 ($v_R = v_r = v_\theta = 0$). The azimuthal velocity is initialized to
 satisfy centrifugal balance with pressure and gravity,
 \begin{align}
@@ -109,6 +112,16 @@ satisfy centrifugal balance with pressure and gravity,
     \Phi_\mathrm{tot}}{\p r}
 \end{align}
 and similarly in 2D. The angular velocity is $\Omega = v_\phi/R$. 
+
+
+\begin{figure}
+  \includegraphics[width=\linewidth,clip=true,trim=0cm 1.7cm 0cm
+  0cm]{figures/compare_profiles_dens000} 
+  \includegraphics[width=\linewidth]{figures/compare_profiles_Q000}
+  \caption{Fiducial profiles of the surface density (top) and Toomre
+    parameter (bottom) used in this work.\label{initial_surf}}
+\end{figure}
+
 
 \section{Numerical methods}
 %We will mostly employ 2D simulations in favour of resolution, but have
@@ -128,7 +141,7 @@ contraint set by the inner disc boundary.
 The 2D Poisson equation is solved in integral form 
 \begin{align}\label{2d_grav}
   \Phi_{d,z=0}(R,\phi) = - \int
-  \frac{G\Sigma(R^\prime,\phi^\prime)}{\sqrt{R^2+R^{\prime 2} -
+  \frac{G\Sigma(R^\prime,\phi^\prime)R^\prime dR^\prime d\phi^\prime}{\sqrt{R^2+R^{\prime 2} -
       2RR^\prime\cos{(\phi - \phi^\prime)} + \epsilon_g^2}} 
 \end{align}
 using Fast Fouier Transform (FFT), where $\epsilon_g$ is a softening
@@ -195,13 +208,14 @@ where the $f_m$ may be obtained from Fourier transform in $\phi$.
 
 The non-axisymmetric surface density can be visualised with
 \begin{align}
-  \Delta \Sigma = \frac{\Sigma - \Sigma_{00}}{\Sigma_{00}}, 
+  \Delta \Sigma = \frac{\Sigma - \Sigma_{0}}{\Sigma_{0}}, 
 \end{align}
-where $\Sigma_{00} = \Sigma_0(t=0)$, while an individual mode as
+while an individual mode as
 \begin{align}
   \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
-      m\phi)}\right].
-\end{align}
+      m\phi)}\right]
+	\end{align}
+where $\Sigma_{00} = \Sigma_0(t=0)$.  
 
 The global mode amplitude is 
 \begin{align}
@@ -249,7 +263,7 @@ where $^*$ denotes complex conjugation, and we idenfity $J_m$ as the angular mom
 associated with the $m^\mathrm{th}$ mode, and $j_m$ the associated
 angular momentum per unit length. 
 
-\subsection{Linear density waves}
+\subsection{Linear density waves}\label{wkb}
 We will also use linear density wave theory to interpret
 simulation data. Here, we follow conventions in \cite{shu91} and quote
 results therein. The dispersion relation for tightly-wound density
