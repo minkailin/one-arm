@@ -125,10 +125,16 @@ Our primary code is FARGO with self-gravity \citep{baruteau08}. This
 is a popular, simple finite-difference code for 2D discs. `FARGO' refers
 to its azimuthal transport algorithm, which circumvents time-step
 contraint set by the inner disc boundary. 
-The 2D Poisson
-equation is solved in integral form using Fast Fouier Transform. This
-requires a softening length $\epsilon_g H$, where $\epsilon_g$ is an
-input parameter. 
+The 2D Poisson equation is solved in integral form 
+\begin{align}\label{2d_grav}
+  \Phi_{d,z=0}(R,\phi) = - \int
+  \frac{G\Sigma(R^\prime,\phi^\prime)}{\sqrt{R^2+R^{\prime 2} -
+      2RR^\prime\cos{(\phi - \phi^\prime)} + \epsilon_g^2}} 
+\end{align}
+using Fast Fouier Transform (FFT), where $\epsilon_g$ is a softening
+length to prevent a numerical singularity and the integration is taken
+over the disc. The FFT approach requires
+$\epsilon_g\propto R$ \citep{baruteau08}.  
 
 The 2D disc occupies
 $R\in[R_\mathrm{min},R_\mathrm{max}],\,\phi\in[0,2\pi]$ and is
@@ -174,21 +180,30 @@ that of ZEUS-MP and FARGO.
 
 %used in conference proceeding 
 
-\section{Fiducial simulations}
-Here we describe one numerical simulation from each code to give an
-overall picture of disc evolution. In the next section, we explore the
-effect of disc parameters using 2D simulations. 
-
+\section{Diagnostics}
+ 
+\subsection{Evolution of non-axisymmetirc modes}
 The disc evolution is quantified using mode amplitudes and angular
-momenta as follows. We list the 2D definitions with obvious 3D
-generalisations. The hydrodynamic variables are written as 
+momenta as follows. We list the 2D definitions with obvious 3D generalisations. 
+A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as 
 \begin{align}
   f(R,\phi) &= \sum_{m=-\infty}^{\infty}f_m(R)\exp{\ii m \phi} \notag\\
   &= f_0 + 2 \real\left[\sum_{m=1}^\infty f_m \exp{(\ii
       m\phi)}\right], 
 \end{align}
-where the $f_m$ may be obtained from Fourier transform in $\phi$. The
-mode amplitude is 
+where the $f_m$ may be obtained from Fourier transform in $\phi$. 
+
+The non-axisymmetric surface density can be visualised with
+\begin{align}
+  \Delta \Sigma = \frac{\Sigma - \Sigma_{00}}{\Sigma_{00}}, 
+\end{align}
+where $\Sigma_{00} = \Sigma_0(t=0)$, while an individual mode as
+\begin{align}
+  \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
+      m\phi)}\right].
+\end{align}
+
+The global mode amplitude is 
 \begin{align}
   A_m = \frac{|C_m|}{M_{d0}}
 \end{align}
@@ -198,6 +213,29 @@ where $M_{d0}$ is the initial disc mass and
 \end{align}
 with integration limits chosen later. 
 
+The time evolution of the $m^\mathrm{th}$ mode can be characterized by
+assuming 
+$\Sigma_m\propto\exp{(\ii \sigma t)}$, where
+$\sigma = \omega - \ii\gamma$ is the complex frequency, $\omega$ is
+the real frequency and $\gamma$ is the growth rate.
+We estimate the growth rate as
+\begin{align}
+  \gamma = \frac{d\ln{A_m}}{dt},
+\end{align}
+and we estimate the real frequency by calculating the pattern speed
+$\Omega_p = \omega/m$,
+\begin{align}
+  \Omega_p = \frac{d\phi_\mathrm{max}}{dt},
+\end{align}
+where $\phi_\mathrm{max}$ is the azimuthal co-ordinate of
+$\mathrm{max}(\Delta\Sigma_m)$. 
+%\begin{align}
+%  \mathrm{max}\left\{2 \real\left[ \Sigma_m \exp{(\ii m
+%        \phi)}\right]\right\},  
+
+%other methods possible too 
+
+\subsection{Angular momentum decomposition}
 The total disc angular momentum in $R\in[R_1,R_2]$ is
 \begin{align}
   J &= \int_{R_1}^{R_2}\int_0^{2\pi} \Sigma Rv_\phi RdRd\phi \notag\\
@@ -205,27 +243,27 @@ The total disc angular momentum in $R\in[R_1,R_2]$ is
   &\phantom{=}+
   \sum_{m=1}^\infty2\pi\int_{R_1}^{R_2} 2R\real\left[\Sigma_m v_{\phi
       m}^*\right] RdR, \notag\\
-  &= \sum_{m=0}^\infty 2\pi \int_{R_1}^{R_2} j_m R dR = \sum_{m=0}^\infty J_m. 
+  &= \sum_{m=0}^\infty \int_{R_1}^{R_2}  j_m(R) dR = \sum_{m=0}^\infty J_m. 
 \end{align}
 where $^*$ denotes complex conjugation, and we idenfity $J_m$ as the angular momentum 
-associated with the $m^\mathrm{th}$ mode, and $j_m$ its density. 
+associated with the $m^\mathrm{th}$ mode, and $j_m$ the associated
+angular momentum per unit length. 
 
-\subsection{WKB perturbations}
-We will use results from linear density wave theory to set up
-perturbations. 
-Here, we follow conventions in \cite{shu91}. Recall the
-dispersion relation for tightly-wound density waves of the form
-$\exp{(\ii \omega t - m \phi + kR)}$ in a razor-thin
-isothermal disc, 
+\subsection{Linear density waves}
+We will also use linear density wave theory to interpret
+simulation data. Here, we follow conventions in \cite{shu91} and quote
+results therein. The dispersion relation for tightly-wound density
+waves of the form 
+$\exp{[\ii(\omega t - m \phi + kR)]}$ in a razor-thin
+isothermal disc is 
 \begin{align}\label{dispersion}
   (\omega - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
-where $\omega$ is the mode frequency, $\kappa^2 =
-R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicycle frequency, and
-$k$ is a real wavenumber. 
+where $\kappa^2 = R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicycle frequency, 
+and $k$ is a real wavenumber such that $|kR|\gg1$. 
 
-If we specify the pattern speed $\Omega_p \equiv \omega/m$,
-Eq. \ref{dispersion} can be solved for $|k|$,
+Given the pattern speed $\Omega_p$,
+Eq. \ref{dispersion} can be solved for $|k|$, 
 \begin{align}\label{wavenumber}
   \frac{|k|}{k_T} = \frac{2}{Q^2}\left[1 \pm \sqrt{1 -
       Q^2(1-\nu^2)}\right], 
@@ -240,24 +278,75 @@ is a characteristic wavenumber,
 \end{align}
 is the usual Toomre parameter, and
 \begin{align}
-\nu \equiv \frac{(\omega - m\Omega)}{\kappa}
+  \nu \equiv \frac{(\omega - m\Omega)}{\kappa}
 \end{align}
-is a dimensionless frequency. 
-We use Eq. \ref{wavenumber} to set trailing long waves as
-perturbations, i.e. $k/k_T = -2Q^{-2}\left[1 - \sqrt{1 -
-    Q^2(1-\nu^2)}\right]$.  
-We only apply the perturbations where $Q^{-2}(1-\nu^2)<1$. 
+is a dimensionless frequency.  The upper (lower) signs in
+Eq. \ref{wavenumber} correspond to short (long) waves.  
 
-The amplitude of the surface density and velocity perturbations are
-related by
+The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
+the fluid rotation,
 \begin{align}
-  &\left(\omega - m\Omega\right)\delta\Sigma + k\Sigma\delta v_R= 0,\\
-  &\frac{\kappa^2}{2\Omega} \delta v_R + \ii (\omega - m\Omega)\delta
-  v_\phi=0. 
+  \Omega(R_c) = \Omega_p.
 \end{align}
-We set $\delta\Sigma = 10^{-3}\Sigma$ and $(\delta v_R, \delta
-v_\phi)$ accordingly.   
+\emph{Lindblad resonances} $R_L$ occurs where
+\begin{align}
+  \nu^2(R_L) = 1. 
+\end{align}
+Finally, \emph{Q-barriers} occur at radii $R_{Qb}$ where
+\begin{align}
+  Q^2(R_{Qb})\left[1-\nu^2(R_{Qb})\right] = 1.  
+\end{align}
+According to Eq. \ref{wavenumber}, purely wave-like solutions with
+real $k$ are only possible when $Q^2(1-\nu^2)\leq1$.  
 
-%Having chosen the wave frequency and set the wavenumber according to
-%the above,  
+% We use Eq. \ref{wavenumber} to set trailing long waves as
+% perturbations, i.e. $k/k_T = -2Q^{-2}\left[1 - \sqrt{1 -
+%     Q^2(1-\nu^2)}\right]$.  
+% We only apply the perturbations where $Q^{-2}(1-\nu^2)<1$. 
 
+% The amplitude of the surface density and velocity perturbations are
+% related by
+% \begin{align}
+%   &\left(\omega - m\Omega\right)\delta\Sigma + k\Sigma\delta v_R= 0,\\
+%   &\frac{\kappa^2}{2\Omega} \delta v_R + \ii (\omega - m\Omega)\delta
+%   v_\phi=0. 
+% \end{align}
+% We set $\delta\Sigma = 10^{-3}\Sigma$ and $(\delta v_R, \delta
+% v_\phi)$ accordingly.   
+
+% %Having chosen the wave frequency and set the wavenumber according to
+% %the above, 
+
+\section{Fiducial simulations}
+Here we describe one numerical simulation from each code to give an
+overall picture of disc evolution. In the next section, we analyse 2D
+simulations in more detail and explore parameter space. 
+
+In these simulations we subject the disc to random perturbations in
+cylindrical velocity,
+\begin{align}
+  \delta v_R = \frac{\delta}{M}c_s(R)\sum_{m=1}^M\cos{m\phi},
+\end{align}
+where $\delta\in[-10^{-3},10^{-3}]$ is chosen randomly but does not
+depend on $\phi$, and we set $M=10$. 
+
+\subsection{FARGO 2D}
+We consider a disc size $[R_\mathrm{min}, R_\mathrm{max}] =
+[0.4,10]R_0$ and resolution $N_R\times N_\phi = 1024\times 2048$ or
+about $16$ grids per $H$. We adopt $\epsilon_g=10^{-4}H$ for the 
+self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
+approximates for the vertical disc thickness. A more appropriate
+value would be $\sim H$ \citep{muller12}. However, because
+$\epsilon_g\propto R$ is needed in FARGO, the Poisson kernel
+(Eq. \ref{2d_grav}) is no longer symmetric. We choose a
+small  
+$\epsilon_g$ in favour of angular momentum conservation, keeping in
+mind that the strength of self-gravity will be over-estimated.}.
+
+\subsection{ZEUS-MP 3D}
+
+
+
+
+
+\subsection{PLUTO 3D}
