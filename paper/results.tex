@@ -9,8 +9,7 @@ cylindrical velocity,
 \begin{align}\label{randpert}
   \frac{\delta v_R}{c_s} = \frac{\delta}{M}\times T(R) \sum_{m=1}^M\cos{m\phi},
 \end{align}
-where $\delta\in[-10^{-3},10^{-3}]$ is chosen randomly but does not
-depend on $\phi$, and 
+where $\delta$ is an amplitude and 
 \begin{align}
   T(R) =
   \exp{\left[-\frac{1}{2}\left(\frac{R-\overline{R}_d}{\Delta
@@ -20,8 +19,10 @@ where $\overline{R}_d = (R_{d1}+R_{d2})/2$ and $\Delta R_d =
 (R_{d2}-R_{d1})/2$. 
 \subsection{FARGO 2D}\label{fargo_fiducial}
 We consider a disc size $[R_\mathrm{min}, R_\mathrm{max}] =
-[0.4,10]R_0$ and resolution $N_R\times N_\phi = 512\times 1024$ or
-about $8$ grids per $H$. We adopt $\epsilon_g=10^{-4}H$ for the 
+[0.4,10]R_0$. This gives a total disc mass $M_{d}=0.086M_*$, and the
+mass within $R\in[R_{d1},R_{d2}]$ is $0.049M_*$. 
+We use a resolution of $N_R\times N_\phi = 512\times 1024$ or
+about $8$ grids per $H$, and adopt $\epsilon_g=10^{-4}H$ for the 
 self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
   approximates for the vertical disc thickness, so a more appropriate
   value would be $\epsilon_g\sim H$ \citep{muller12}. However, because
@@ -29,12 +30,32 @@ self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
   (Eq. \ref{2d_grav}) is no longer symmetric in $(R,R^\prime)$. We
   choose a small  
   $\epsilon_g$ in favour of angular momentum conservation, keeping in
-  mind that the strength of self-gravity will be over-estimated.}, and 
-set $M=10$ for random perturbations (Eq. \ref{randpert}). 
+  mind that the strength of self-gravity will be over-estimated.}.
+Perturbations are set initially with $M=10$ and
+$\delta\in[-10^{-3},10^{-3}]$ chosen randomly but does not depend
+on $\phi$. 
 
-Snapshots from the disc evolution is shown in Fig. \ref{fargo_2d} in
-terms of the non-axisymmetric surface density. 
+%set $M=10$ for random perturbations (Eq. \ref{randpert}). 
 
+Snapshots from the disc evolution are shown in Fig. \ref{fargo_2d} in
+terms of the non-axisymmetric surface density. At early times
+$t\lesssim100P_0$ the disc is dominated by low-amplitude high-$m$
+perturbations centred in the dead zone. Eventually a $m=1$ spiral 
+grows and dominates inside the dead zone.  
+
+Fig. \ref{fargo_2d_angmom} compares the disc angular momenta
+evolution, most of which is contained in the $m=0$ and $m=1$ modes. 
+The $m=1$ spiral has an associated negative angular
+momentum. Its growth is correlated with an increase in the axisymmetric
+component of angular momentum, such that $\Delta J_0 \sim - \Delta
+J_1$. Note that FARGO does not explicitly conserve angular
+momentum. In addition, there may be an angular momentum flux due to
+self-gravity across disc boundaries since our domain size is finite. 
+Nevertheless, we find the total angular momentum is conserved to 
+$\Delta J = O(10^{-7}J)$, and is much smaller in magnitude than the change in the
+angular momenta components, $|\Delta J_m|$. 
+Fig. \ref{fargo_2d_angmom} then indicates a transfer of 
+angular momentum from the $m=1$ spiral to the background disc. 
 
 \begin{figure}
   \includegraphics[scale=0.27]{figures/polarxy_dens050}\includegraphics[scale=0.27,clip=true,trim=2.26cm 
@@ -56,6 +77,21 @@ terms of the non-axisymmetric surface density.
 \end{figure}
 
 \subsection{ZEUS-MP 3D}
+The 3D disc has radial size 
+$[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent
+$n_H=2$ scale-heights. The resolution is $N_r\times N_\theta\times
+N_\phi=256\times32\times256$. Because of the much reduced resolution
+compared to 2D, we use a smooth perturbation by setting
+$\delta = 10^{-3}$ and $M=1$. This corresponds to a single $m=1$
+spiral in the dead zone, which was found to dominate the 2D
+simulation. 
+
+Our 3D discs are initialised in approximate equilibrium only, so we
+first evolve the disc without perturbations using  
+$(\lmax,\mmax)=(32,0)$ up to $t=10P_0$, during which 
+meridional velocities are damped out. We then restart the simulation
+with the above perturbation and $(\lmax,\mmax)=(32,32)$. 
+
 
 
 
