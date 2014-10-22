@@ -71,7 +71,7 @@ the Keplerian Toomre parameter at $R=R_{d2}$,
 
 The bump function
 $B(R)$ represents a surface density boost between
-$R\in[R_{d1},R_{d2}]$ by a factor $\epsilon^{-1}$ ($\epsilon < 1$),
+$R\in[R_{d1},R_{d2}]$ by a factor $\epsilon^{-1}>1$,
 and $\delta R_d$ is the transition width between the bump and the
 smooth disc. We choose 
 \begin{align}
@@ -331,36 +331,4 @@ real $k$ are only possible when $Q^2(1-\nu^2)\leq1$.
 % %Having chosen the wave frequency and set the wavenumber according to
 % %the above, 
 
-\section{Fiducial simulations}
-Here we describe one numerical simulation from each code to give an
-overall picture of disc evolution. In the next section, we analyse 2D
-simulations in more detail and explore parameter space. 
 
-In these simulations we subject the disc to random perturbations in
-cylindrical velocity,
-\begin{align}
-  \delta v_R = \frac{\delta}{M}c_s(R)\sum_{m=1}^M\cos{m\phi},
-\end{align}
-where $\delta\in[-10^{-3},10^{-3}]$ is chosen randomly but does not
-depend on $\phi$, and we set $M=10$. 
-
-\subsection{FARGO 2D}
-We consider a disc size $[R_\mathrm{min}, R_\mathrm{max}] =
-[0.4,10]R_0$ and resolution $N_R\times N_\phi = 1024\times 2048$ or
-about $16$ grids per $H$. We adopt $\epsilon_g=10^{-4}H$ for the 
-self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
-approximates for the vertical disc thickness. A more appropriate
-value would be $\sim H$ \citep{muller12}. However, because
-$\epsilon_g\propto R$ is needed in FARGO, the Poisson kernel
-(Eq. \ref{2d_grav}) is no longer symmetric. We choose a
-small  
-$\epsilon_g$ in favour of angular momentum conservation, keeping in
-mind that the strength of self-gravity will be over-estimated.}.
-
-\subsection{ZEUS-MP 3D}
-
-
-
-
-
-\subsection{PLUTO 3D}
