@@ -206,43 +206,57 @@ A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as
 \end{align}
 where the $f_m$ may be obtained from Fourier transform in $\phi$. 
 
-The non-axisymmetric surface density can be visualised with
-\begin{align}
-  \Delta \Sigma = \frac{\Sigma - \Sigma_{0}}{\Sigma_{0}}, 
-\end{align}
-while an individual mode as
+% The non-axisymmetric surface density can be visualised with
+% \begin{align}
+%   \Delta \Sigma = \frac{\Sigma - \Sigma_{0}}{\Sigma_{0}}, 
+% \end{align}
+% while an individual mode as
+% \begin{align}
+%   \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
+%       m\phi)}\right]
+% 	\end{align}
+% where $\Sigma_{00} = \Sigma_0(t=0)$.  
+
+% The global mode amplitude is 
+% \begin{align}
+%   A_m = \frac{|C_m|}{M_{d0}}
+% \end{align}
+% where $M_{d0}$ is the initial disc mass and 
+% \begin{align}
+%   C_m = 2\pi\int_{R_1}^{R_2} \Sigma_m RdR, 
+% \end{align}
+% with integration limits chosen later. 
+
+The time evolution of the $m^\mathrm{th}$ mode can be characterized by
+assuming $\Sigma_m\propto\exp{(\ii \sigma t)}$, where
+$\sigma = \omega - \ii\gamma$ is the complex frequency, $\omega$ is
+the real frequency and $\gamma$ is the growth rate. In linear theory
+$\sigma$ is a constant eigenvalue. 
+To estimate $\sigma$ from simulation data, we first construct the real
+surface density 
 \begin{align}
   \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
       m\phi)}\right]
-	\end{align}
-where $\Sigma_{00} = \Sigma_0(t=0)$.  
-
-The global mode amplitude is 
-\begin{align}
-  A_m = \frac{|C_m|}{M_{d0}}
 \end{align}
-where $M_{d0}$ is the initial disc mass and 
+where $\Sigma_{00} = \Sigma_0(t=0)$. We then locate the maximum,
 \begin{align}
-  C_m = 2\pi\int_{R_1}^{R_2} \Sigma_m RdR, 
+  \mathrm{max}(\Delta\Sigma_m) \equiv
+  \Delta\Sigma_m(R_\mathrm{peak},\phi_\mathrm{peak}). 
 \end{align}
-with integration limits chosen later. 
-
-The time evolution of the $m^\mathrm{th}$ mode can be characterized by
-assuming 
-$\Sigma_m\propto\exp{(\ii \sigma t)}$, where
-$\sigma = \omega - \ii\gamma$ is the complex frequency, $\omega$ is
-the real frequency and $\gamma$ is the growth rate.
 We estimate the growth rate as
 \begin{align}
-  \gamma = \frac{d\ln{A_m}}{dt},
+  \gamma = \frac{d}{dt}\ln{\left[\mathrm{max}(\Delta\Sigma_m)\right]}, 
 \end{align}
 and we estimate the real frequency by calculating the pattern speed
 $\Omega_p = \omega/m$,
 \begin{align}
-  \Omega_p = \frac{d\phi_\mathrm{max}}{dt},
+  \Omega_p = \frac{d\phi_\mathrm{peak}}{dt}. 
 \end{align}
-where $\phi_\mathrm{max}$ is the azimuthal co-ordinate of
-$\mathrm{max}(\Delta\Sigma_m)$. 
+The total non-axisymmetric surface density can be visualised with
+\begin{align}
+  \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
+\end{align}
+
 %\begin{align}
 %  \mathrm{max}\left\{2 \real\left[ \Sigma_m \exp{(\ii m
 %        \phi)}\right]\right\},  
