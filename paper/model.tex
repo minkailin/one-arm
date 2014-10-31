@@ -206,64 +206,23 @@ A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as
 \end{align}
 where the $f_m$ may be obtained from Fourier transform in $\phi$. 
 
-% The non-axisymmetric surface density can be visualised with
-% \begin{align}
-%   \Delta \Sigma = \frac{\Sigma - \Sigma_{0}}{\Sigma_{0}}, 
-% \end{align}
-% while an individual mode as
-% \begin{align}
-%   \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
-%       m\phi)}\right]
-% 	\end{align}
-% where $\Sigma_{00} = \Sigma_0(t=0)$.  
-
-% The global mode amplitude is 
-% \begin{align}
-%   A_m = \frac{|C_m|}{M_{d0}}
-% \end{align}
-% where $M_{d0}$ is the initial disc mass and 
-% \begin{align}
-%   C_m = 2\pi\int_{R_1}^{R_2} \Sigma_m RdR, 
-% \end{align}
-% with integration limits chosen later. 
-
-The time evolution of the $m^\mathrm{th}$ mode can be characterized by
-assuming $\Sigma_m\propto\exp{(\ii \sigma t)}$, where
-$\sigma = \omega - \ii\gamma$ is the complex frequency, $\omega$ is
-the real frequency and $\gamma$ is the growth rate. In linear theory
-$\sigma$ is a constant eigenvalue. 
-To estimate $\sigma$ from simulation data, we first construct the real
-surface density 
+The normalised surface density associated with $m$ is
 \begin{align}
   \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
       m\phi)}\right]
 \end{align}
-where $\Sigma_{00} = \Sigma_0(t=0)$. We then locate the maximum,
-\begin{align}
-  \mathrm{max}(\Delta\Sigma_m) \equiv
-  \Delta\Sigma_m(R_\mathrm{peak},\phi_\mathrm{peak}). 
-\end{align}
-We estimate the growth rate as
-\begin{align}
-  \gamma = \frac{d}{dt}\ln{\left[\mathrm{max}(\Delta\Sigma_m)\right]}, 
-\end{align}
-and we estimate the real frequency by calculating the pattern speed
-$\Omega_p = \omega/m$,
-\begin{align}
-  \Omega_p = \frac{d\phi_\mathrm{peak}}{dt}. 
-\end{align}
-The total non-axisymmetric surface density can be visualised with
+where $\Sigma_{00} = \Sigma_0(t=0)$. The time evolution of the
+$m^\mathrm{th}$ mode can be characterized by 
+assuming $\Sigma_m\propto\exp{(-\ii \sigma t)}$, where
+$\sigma = \omega + \ii\gamma$ is the complex frequency, $\omega$ is
+the real frequency and $\gamma$ is the growth rate. The total
+non-axisymmetric surface density is 
 \begin{align}
   \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
 \end{align}
 
-%\begin{align}
-%  \mathrm{max}\left\{2 \real\left[ \Sigma_m \exp{(\ii m
-%        \phi)}\right]\right\},  
 
-%other methods possible too 
-
-\subsection{Angular momentum decomposition}
+\subsubsection{Angular momentum decomposition}
 The total disc angular momentum in $R\in[R_1,R_2]$ is
 \begin{align}
   J &= \int_{R_1}^{R_2}\int_0^{2\pi} \Sigma Rv_\phi RdRd\phi \notag\\
@@ -273,17 +232,64 @@ The total disc angular momentum in $R\in[R_1,R_2]$ is
       m}^*\right] RdR, \notag\\
   &= \sum_{m=0}^\infty \int_{R_1}^{R_2}  j_m(R) dR = \sum_{m=0}^\infty J_m. 
 \end{align}
-where $^*$ denotes complex conjugation, and we idenfity $J_m$ as the angular momentum 
-associated with the $m^\mathrm{th}$ mode, and $j_m$ the associated
-angular momentum per unit length. 
+where $^*$ denotes complex conjugation, and we idenfity $J_m$ as the 
+angular momentum associated with disc structure with
+$m^\mathrm{th}$-fold symmetry, and $j_m$ the associated angular
+momentum per unit length. We will use $J_m$ to monitor angular momentum 
+conservation for the disc as a whole.  
 
 \subsection{Linear density waves}\label{wkb}
-We will also use linear density wave theory to interpret
-simulation data. Here, we follow conventions in \cite{shu91} and quote
-results therein. The dispersion relation for tightly-wound density
-waves of the form 
-$\exp{[\ii(\omega t - m \phi + kR)]}$ in a razor-thin
-isothermal disc is 
+In addition to the above diagnostics for disc evolution, we
+will also use linear density wave theory to interpret simulation
+results. 
+
+\subsubsection{Global angular momentum conservation for linear
+  perturbations} 
+It can be shown that linear perturbations with $\phi$-dependence in the form
+$\exp{\ii m\phi }$ satisfies angular momentum conservation
+in the form 
+\begin{align} 
+  \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
+\end{align}
+where
+\begin{align}
+  \jlin \equiv
+  -\frac{m\Sigma}{2}\imag\left(\bm{\xi}^*\cdot\frac{\p\bm{\xi}}{\p
+      t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
+    m \Omega |\bm{\xi}|^2\right) 
+\end{align}
+is the angular momentum density, $\bm{\xi}$ is the Lagragian
+displacement, and $\bm{F}$ is the angular momentum flux
+consisting of a Reynolds stress and a gravitational stress. Explicit
+expressions for $\bm{\xi}$ and $\bm{F}$ can be found in e.g.,
+\cite{papaloizou85} and \cite{lin11} respectively. In the above
+expressions, $\Sigma$ and $\Omega$ correspond to the unperturbed disc.  
+
+The term $\tbg$ is 
+\begin{align}
+  \tbg \equiv
+  -\frac{m}{2}\imag\left(\Sigma_m\xi_R^\prime\frac{dc_s^2}{dR}\right), 
+\end{align}
+and arises because we have adopted a locally isothermal equation of
+state. In a barotropic fluid, such as a strictly isothermal disc,
+$\tbg$ vanishes and the angular momentum associated with
+the perturbation is conserved, provided boundary fluxes vanish. 
+
+However, as noted in \cite{lin11}, if there is an imposed
+temperature gradient, as is the disc models considered in this paper,
+then $\tbg\neq 0$ in general, which corresponds to a torque
+exerted by the background disc on the perturbation.       
+
+We remark that the perturbed angular momentum density $\jlin$ has been
+defined to satisfy a conservation law. This differs from the 
+empirical angular momentum decomposition above. 
+
+%each m satisfies its own equation 
+
+\subsubsection{Local results}
+\cite{shu91} gives the dispersion relation for tightly-wound density
+waves of the form $\exp{[\ii(\omega t - m \phi + kR)]}$ in a razor-thin
+isothermal disc as  
 \begin{align}\label{dispersion}
   (\omega - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
@@ -326,23 +332,5 @@ Finally, \emph{Q-barriers} occur at radii $R_{Qb}$ where
 \end{align}
 According to Eq. \ref{wavenumber}, purely wave-like solutions with
 real $k$ are only possible when $Q^2(1-\nu^2)\leq1$.  
-
-% We use Eq. \ref{wavenumber} to set trailing long waves as
-% perturbations, i.e. $k/k_T = -2Q^{-2}\left[1 - \sqrt{1 -
-%     Q^2(1-\nu^2)}\right]$.  
-% We only apply the perturbations where $Q^{-2}(1-\nu^2)<1$. 
-
-% The amplitude of the surface density and velocity perturbations are
-% related by
-% \begin{align}
-%   &\left(\omega - m\Omega\right)\delta\Sigma + k\Sigma\delta v_R= 0,\\
-%   &\frac{\kappa^2}{2\Omega} \delta v_R + \ii (\omega - m\Omega)\delta
-%   v_\phi=0. 
-% \end{align}
-% We set $\delta\Sigma = 10^{-3}\Sigma$ and $(\delta v_R, \delta
-% v_\phi)$ accordingly.   
-
-% %Having chosen the wave frequency and set the wavenumber according to
-% %the above, 
 
 
