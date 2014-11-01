@@ -22,23 +22,32 @@ central star,
   \Phi_*(r) = -\frac{GM_*}{r}, 
 \end{align}
 where $G$ is the gravitational constant,  and the disc potential
-$\Phi_d$. We further assume a locally 
+$\Phi_d$. We assume a locally 
 isothermal equation of state 
 \begin{align}
   p = c_s^2(R)\rho,
 \end{align}
-where the sound-speed is given by $c_s=H\Omega_k$, $H=hR$ is the
-disc scale-height with constant aspect-ratio $h$ chosen below, and
-$\Omega_k=\sqrt{GM_*/R^3}$ is the midplane Keplerian frequency.  
+where the sound-speed is given by 
+\begin{align}
+  c_s(R) = hR_0\Omega_k(R_0)\left(\frac{R}{R_0}\right)^{-q/2}, 
+\end{align}
+where $h$ is the disc aspect-ratio $R=R_0$, 
+$\Omega_k=\sqrt{GM_*/R^3}$ is the midplane Keplerian frequency, and
+$q$ is the imposed temperature gradient. A strictly isothermal disc
+corresponds to $q=0$, and a disc with constant aspect-ratio
+corresponds to $q=1$.   
 
-We have purposefully adopted the simplest model that was found to
-develop one-arm spirals in discs with radial structure. The indirect
-potential associated with the non-inertial reference frame is
+% We have purposefully adopted the simplest model that was found to
+% develop one-arm spirals in discs with radial structure. 
+The indirect potential associated with the non-inertial reference frame is 
 neglected to avoid complications arising from the motion of the
 central star. For the adopted disc masses $M_d\lesssim 0.1 M_*$, this
-effect is not expected to be significant. The locally isothermal
-equation of state allows us to apply standard linear density wave
-theory for results interpretation. 
+effect is not expected to be significant. 
+
+% The locally isothermal
+% equation of state allows us to apply standard linear density wave
+% theory for results interpretation. 
+
 %This allows us to consider
 %an isolated disc.   
 
@@ -193,15 +202,15 @@ that of ZEUS-MP and FARGO.
 
 %used in conference proceeding 
 
-\section{Diagnostics}
- 
-\subsection{Evolution of non-axisymmetirc modes}
+\subsection{Diagnostics}
+
+\subsubsection{Evolution of non-axisymmetirc modes}
 The disc evolution is quantified using mode amplitudes and angular
 momenta as follows. We list the 2D definitions with obvious 3D generalisations. 
 A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as 
 \begin{align}
-  f(R,\phi) &= \sum_{m=-\infty}^{\infty}f_m(R)\exp{\ii m \phi} \notag\\
-  &= f_0 + 2 \real\left[\sum_{m=1}^\infty f_m \exp{(\ii
+  f(R,\phi,t) &= \sum_{m=-\infty}^{\infty}f_m(R,t)\exp{\ii m \phi} \notag\\
+  &= f_0(R) + 2 \real\left[\sum_{m=1}^\infty f_m \exp{(\ii
       m\phi)}\right], 
 \end{align}
 where the $f_m$ may be obtained from Fourier transform in $\phi$. 
@@ -238,21 +247,55 @@ $m^\mathrm{th}$-fold symmetry, and $j_m$ the associated angular
 momentum per unit length. We will use $J_m$ to monitor angular momentum 
 conservation for the disc as a whole.  
 
-\subsection{Linear density waves}\label{wkb}
-In addition to the above diagnostics for disc evolution, we
-will also use linear density wave theory to interpret simulation
-results. 
+\section{Linear density waves}\label{wkb}
+In this paper we take a fully numerical approach using non-linear
+hydrodynamic simulations. However, it will be useful to employ
+existing linear density wave theory to interpret the simulations. 
+We list here the main definitions and results from 2D linear theory,
+taken from \cite{lin11} and \cite{shu91}.  
 
-\subsubsection{Global angular momentum conservation for linear
+In a linear analysis, one assumes a steady axisymmetric background state, such as
+that defined in \S\ref{model}, which is then perturbed such that
+\begin{align}  
+  \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
+        m\phi\right)\right]}, 
+\end{align}
+and similarly for other variables. Since the background is
+axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
+    t\right)} = \Sigma_m$ as defined for diagnostics. 
+The linearised mass and momentum equations are
+\begin{align}
+  &-\ii\sbar \delta\Sigma_m = -\frac{1}{R}\frac{d}{dR}\left(R\Sigma\delta
+    v_{Rm}\right) - \frac{\ii m \Sigma}{R}\delta v_{\phi m}, \\
+  &-\ii\sbar\delta v_{Rm} - 2\Omega \delta v_{\phi m} = -
+  c_s^2(R)\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right) - \frac{d}{dR}\delta\Phi_m,\\
+  & -\ii\sbar\delta v_{\phi m} + \frac{\kappa^2}{2\Omega}\delta v_{Rm} =
+  -\frac{\ii m }{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} + \delta\Phi_m\right),
+\end{align}
+where $\sbar = \sigma - m\Omega$ and $\kappa^2 =
+R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicycle frequency. A
+locally isothermal equation of state has been assumed.    
+The linearised Poisson equation is 
+\begin{align}
+  \nabla^2\delta\Phi_m = 4\pi G \delta\Sigma_m \delta(z). 
+\end{align}
+
+The linearised equations can be combined to a single
+integro-differential eigenvalue problem. We list below some general
+properties of the linear perturbations that will be useful for
+understanding our simulations. We defer a full numerical
+exploration of the linear problem to a future study. 
+
+\subsection{Global angular momentum conservation for linear
   perturbations} 
 It can be shown that linear perturbations with $\phi$-dependence in the form
-$\exp{\ii m\phi }$ satisfies angular momentum conservation
+$\exp{(\ii m\phi)}$ satisfies angular momentum conservation
 in the form 
 \begin{align} 
   \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
 \end{align}
 where
-\begin{align}
+\begin{align}\label{lin_ang_mom_cons}
   \jlin \equiv
   -\frac{m\Sigma}{2}\imag\left(\bm{\xi}^*\cdot\frac{\p\bm{\xi}}{\p
       t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
@@ -262,13 +305,12 @@ is the angular momentum density, $\bm{\xi}$ is the Lagragian
 displacement, and $\bm{F}$ is the angular momentum flux
 consisting of a Reynolds stress and a gravitational stress. Explicit
 expressions for $\bm{\xi}$ and $\bm{F}$ can be found in e.g.,
-\cite{papaloizou85} and \cite{lin11} respectively. In the above
-expressions, $\Sigma$ and $\Omega$ correspond to the unperturbed disc.  
+\cite{papaloizou85} and \cite{lin11} respectively.  
 
 The term $\tbg$ is 
-\begin{align}
+\begin{align}\label{baroclinic_torque}
   \tbg \equiv
-  -\frac{m}{2}\imag\left(\Sigma_m\xi_R^\prime\frac{dc_s^2}{dR}\right), 
+  -\frac{m}{2}\imag\left(\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
 \end{align}
 and arises because we have adopted a locally isothermal equation of
 state. In a barotropic fluid, such as a strictly isothermal disc,
@@ -286,27 +328,32 @@ empirical angular momentum decomposition above.
 
 %each m satisfies its own equation 
 
-\subsubsection{Local results}
-\cite{shu91} gives the dispersion relation for tightly-wound density
-waves of the form $\exp{[\ii(\omega t - m \phi + kR)]}$ in a razor-thin
-isothermal disc as  
+\subsection{Local results}
+%The linearised equations correspond to an integro-differential
+%equation eigenvalue problem. 
+In the local approximation, perturbations are assumed to vary rapidly
+relative to any background gradients. \cite{shu91} gives the
+dispersion relation for tightly-wound density 
+waves of the form $\exp{[\ii(-\sigma t + m \phi + kR)]}$ in a razor-thin
+disc as  
 \begin{align}\label{dispersion}
-  (\omega - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
+  (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
-where $\kappa^2 = R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicycle frequency, 
-and $k$ is a real wavenumber such that $|kR|\gg1$. 
+and $k$ is a real wavenumber such that $|kR|\gg1$. Note that in this
+approximation, only axisymmetric perturbations with $m=0$ can be
+unstable (having an imaginary $\sigma$).  
 
-Given the pattern speed $\Omega_p$,
-Eq. \ref{dispersion} can be solved for $|k|$, 
+Given the pattern speed $\Omega_p$, Eq. \ref{dispersion} can be solved
+for $|k|$,   
 \begin{align}\label{wavenumber}
-  \frac{|k|}{k_T} = \frac{2}{Q^2}\left[1 \pm \sqrt{1 -
+  |k| = \frac{\pi G \Sigma}{c_s^2}\left[1 \pm \sqrt{1 -
       Q^2(1-\nu^2)}\right], 
 \end{align}
 where 
-\begin{align}
-  k_T \equiv \frac{\kappa^2}{2\pi G \Sigma}
-\end{align}
-is a characteristic wavenumber, 
+% \begin{align}
+%   k_T \equiv \frac{\kappa^2}{2\pi G \Sigma}
+% \end{align}
+% is a characteristic wavenumber, 
 \begin{align}
   Q \equiv \frac{c_s\kappa}{\pi G \Sigma}
 \end{align}
@@ -314,7 +361,7 @@ is the usual Toomre parameter, and
 \begin{align}
   \nu \equiv \frac{(\omega - m\Omega)}{\kappa}
 \end{align}
-is a dimensionless frequency.  The upper (lower) signs in
+is a dimensionless frequency. The upper (lower) signs in
 Eq. \ref{wavenumber} correspond to short (long) waves.  
 
 The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
@@ -333,4 +380,9 @@ Finally, \emph{Q-barriers} occur at radii $R_{Qb}$ where
 According to Eq. \ref{wavenumber}, purely wave-like solutions with
 real $k$ are only possible when $Q^2(1-\nu^2)\leq1$.  
 
-
+A detailed discussion of the properties of density waves in the local
+approximation can be found in \cite{shu91}. A important result is that
+waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
+waves outside co-rotation ($R>R_c$) have positive angular
+momentum. The local approximation becomes less good for gobal modes,
+but will nevertheless be useful in results interpretation.   
