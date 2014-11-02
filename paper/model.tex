@@ -28,7 +28,7 @@ isothermal equation of state
   p = c_s^2(R)\rho,
 \end{align}
 where the sound-speed is given by 
-\begin{align}
+\begin{align}\label{sound-speed}
   c_s(R) = hR_0\Omega_k(R_0)\left(\frac{R}{R_0}\right)^{-q/2}, 
 \end{align}
 where $h$ is the disc aspect-ratio $R=R_0$, 
@@ -61,37 +61,37 @@ delta function.
 
 \subsection{Disc model and initial conditions}
 %We consider a smooth disc which contains a surface density bump
-%between $R\in[R_{d1},R_{d2}]$, mimicking mass built-up in a dead
+%between $R\in[R_{1},R_{2}]$, mimicking mass built-up in a dead
 %zone. 
 We adopt a modified power-law disc with surface
 density profile 
 \begin{align}
   \Sigma(R) = \Sigma_\mathrm{ref} \left(\frac{R}{R_0}\right)^{-s}\times B(R;
-  R_{d1}, R_{d2}, \epsilon, \delta R_d), 
+  R_{1}, R_{2}, \epsilon, \delta R_d), 
 \end{align}
 where $R_0$ is a reference cylindrical radius and $s$ is the power-law
 index describing the smooth disc, and $\Sigma_\mathrm{ref}$ is a
 surface density scale chosen by specifying $Q_\mathrm{out}$,
-the Keplerian Toomre parameter at $R=R_{d2}$,
+the Keplerian Toomre parameter at $R=R_{2}$,
 \begin{align}
   Q_\mathrm{out} = \left.\frac{c_s\Omega_k}{\pi G
-    \Sigma}\right|_{R=R_{d2}}. 
+    \Sigma}\right|_{R=R_{2}}. 
 \end{align}
 
 The bump function
 $B(R)$ represents a surface density boost between
-$R\in[R_{d1},R_{d2}]$ by a factor $\epsilon^{-1}>1$,
+$R\in[R_{1},R_{2}]$ by a factor $\epsilon^{-1}>1$,
 and $\delta R_d$ is the transition width between the bump and the
 smooth disc. We choose 
 \begin{align}
   &B(R) = f_1(R)\times f_2(R),\\
   &f_1(R) = \frac{1}{2}\left(1 - \epsilon\right)\left[1 +
-    \tanh\left(\frac{R-R_{d1}}{\Delta_1}\right)\right]  + \epsilon,\\
+    \tanh\left(\frac{R-R_{1}}{\Delta_1}\right)\right]  + \epsilon,\\
   &f_2(R) = \frac{1}{2}\left(1 - \epsilon\right)\left[1 -
-    \tanh\left(\frac{R-R_{d2}}{\Delta_2}\right)\right]  + \epsilon,
+    \tanh\left(\frac{R-R_{2}}{\Delta_2}\right)\right]  + \epsilon,
 \end{align}
-where $\Delta_1 = \delta R_d \times H(R_{d1})$ and similarly for
-$R_{d2}$. The bump function mimicks mass built-up in a dead zone.
+where $\Delta_1 = \delta R_d \times H(R_{1})$ and similarly for
+$R_{2}$. The bump function mimicks mass built-up in a dead zone.
 
 
 In 3D, we assume vertical hydrostatic balance
@@ -109,7 +109,7 @@ force compared to vertical self-gravity, which reduces the equations
 for vertical hydrostatic equilibrium to ordinary differential
 equations.  This procedure is described in \cite{lin12b}. 
 
-Our fiducial parameter values are: $s=2$, $R_{d1}=R_0$, $R_{d2}=2R_0$,
+Our fiducial parameter values are: $s=2$, $R_{1}=R_0$, $R_{2}=2R_0$,
 $\epsilon=0.1$, $\delta R_d=5$, $h=0.05$ and
 $Q_\mathrm{out}=2$. An example of the initial surface density and the
 Toomre parameter (see\S\ref{wkb}) is shown in Fig. \ref{initial_surf}. 

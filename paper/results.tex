@@ -1,10 +1,10 @@
-\section{Results for two-dimensional discs}
+\section{Results}
 We first present results from FARGO simulations. The 2D disc spans
 $[R_\mathrm{min}, R_\mathrm{max}] = [0.4,10]R_0$. This gives a total
 disc mass $M_{d}=0.086M_*$. The mass within
-$R\in[R_\mathrm{min},R_{d1}]$ is $0.017M_*$, that within
-$R\in[R_{d1},R_{d2}]$ is $0.049M_*$, and that within
-$R\in[R_{d2},R_\mathrm{max}]$ is $0.021M_*$. We use a resolution of
+$R\in[R_\mathrm{min},R_{1}]$ is $0.017M_*$, that within
+$R\in[R_{1},R_{2}]$ is $0.049M_*$, and that within
+$R\in[R_{2},R_\mathrm{max}]$ is $0.021M_*$. We use a resolution of
 $N_R\times N_\phi = 1024\times 2048$, or about $16$ grids per $H$, and
 adopt $\epsilon_g=10^{-4}H$ for the   
 self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
@@ -24,12 +24,12 @@ cylindrical radial velocity,
   \exp{\left[-\frac{1}{2}\left(\frac{R-\overline{R}_d}{\Delta 
           R_d}\right)^2\right]}\sum_{m=1}^M\cos{m\phi},
 \end{align}
-where $\delta$ is an amplitude, $\overline{R}_d = (R_{d1}+R_{d2})/2$
-and $\Delta R_d = (R_{d2}-R_{d1})/2$. We use $M=10$ and choose 
+where $\delta$ is an amplitude, $\overline{R}_d = (R_{1}+R_{2})/2$
+and $\Delta R_d = (R_{2}-R_{1})/2$. We use $M=10$ and choose 
 $\delta\in[-10^{-3},10^{-3}]$ randomly but independent of $\phi$.  
 
 Fig. \ref{fargo_modeamp} plots evolution of the maximum
-non-axisymmetric surface density amplitudes in $R\in[R_{d1},R_{d2}]$
+non-axisymmetric surface density amplitudes in $R\in[R_{1},R_{2}]$
 for $m\in[1,10]$. Snapshots from the simulation are shown in
 Fig. \ref{fargo_2d}. 
 At early times $t\lesssim100P_0$ the disc 
@@ -104,7 +104,7 @@ co-rotation radius and growth rate of
 \end{align*}
 The spiral can be considered as low frequency because $|\omega|
 \lesssim 0.3\Omega$ (recall $\omega = 
-m\Omega_p$) in the region it is promininent $R\in[R_{d1},R_{d2}]$. The
+m\Omega_p$) in the region it is promininent $R\in[R_{1},R_{2}]$. The
 growth rate is also slow relative to the local rotation. This gives a
 nearly stationary spiral pattern.   
 
@@ -175,15 +175,71 @@ Eq. \ref{lin_ang_mom_cons} to give
 where we recall $T_{BG}$ is the torque density related to the imposed
 sound-speed profile (Eq. \ref{baroclinic_torque}). We have explicitly
 computed both sides of Eq. \ref{baroclinic_torque_int} using
-simulation data, and compare them in Fig. \ref{fargo_angmom_ex}.  
+simulation data, and compare them in Fig. \ref{fargo_angmom_ex}. There
+is a good match between the two torques, especially at early times
+$t\lesssim110P_0$. The match is less good later on, when the spiral
+amplitude is no longer small ($\Delta\Sigma_1\sim 0.2$ at $t=110P_0$
+and $\Delta\Sigma_1\sim 0.4$ by $t=120P_0$) and linear theory becomes
+less valid. Fig. \ref{fargo_angmom_ex} confirms that angular momentum
+is lost from the wave to the disc. 
 
-
+%wave losses at boundaries 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_ang_fargo.ps} 
-  \caption{
+  \caption{Rate of change of the $m=1$ wave angular momentum as defined by
+    Eq. \ref{baroclinic_torque_int} (solid) compared to the torque
+    exerted on the wave associated with the background temperature
+    gradient (dotted). 
     \label{fargo_angmom_ex}} 
 \end{figure}
 
 %ang mom decreases slightly more rapidly than torque exchange provides
 %- probably non-linear effects/shocks 
+
+\subsection{Dependence on the imposed temperature gradient} 
+At this point we hypothesize the growth of the $m=1$ spiral mode is
+associated with the imposed temperature gradient. The torque
+responsible for its growth, Eq. \ref{baroclinic_torque}, is
+proportional to $q$, the power-law index used to set the sound-speed
+profile (Eq. \ref{sound-speed}). To test this, we carried out
+simulations with $q\in[0,1]$ using only an $m=1$ initial 
+perturbation. However, to keep the Toomre profiles similar, we adjust
+the surface density power-law index such that $s = (3+q)/2$ for each
+case presented below. %should not be important, local effects 
+
+Fig. \ref{fargo_varq} compares the $m=1$ spiral amplitudes as a
+function of $q$. We indeed observe slower growth with decreasing
+$q$. Although the figure indicates growth for the strictly isothermal
+disc ($q=0$), we did not observe a coherent one-arm spiral upon
+inspection of the $m=1$ surface density field. The growth in this case
+may be associated with higher $m$ modes. %"non-linear effects"
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_plot_fargo_varq.ps}   
+  \caption{Evolution of the $m=1$ spiral amplitude as a function of
+    the imposed sound-speed gradient $q$. The maximum value of the
+    $m=1$ surface density in $R\in[R_1,R_2]$ is shown. 
+    \label{fargo_varq}} 
+\end{figure}
+
+We plot growth rates of the $m=1$ spiral as a function of $q$ in 
+Fig. \ref{fargo_varq_growth}. The correlation is well-fitted by a
+linear relation
+\begin{align*}
+  \gamma = 0.014 q \Omega_k{R_0}. 
+\end{align*}
+This confirms that the temperature gradient is responsible for the
+development of the one-arm spiral observed in our simulations. 
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_plot_ratemax_fargo_varq.ps}    
+  \caption{Growth rates of the $m=1$ spiral mode as a function of the
+    imposed sound-speed gradient $q$ (asterisks). A linear fit is also
+    plotted (dotted line). 
+    \label{fargo_varq_growth}} 
+\end{figure}
+
+
+ 
+
+% only cases where a coherent spiral is seen is plotted 
