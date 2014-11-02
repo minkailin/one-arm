@@ -1,286 +1,103 @@
-\section{Additional results analysis}\label{additional}
-In this section we examine some secondary quantities derived
-from the hydrodynamic simulations above. To keep this discussion
-concise, we will use selected simulations from above for illustration.   
+\section{Discussion}
 
-\subsection{Three-dimensionality}
-A simple measure of three-dimensionality of the flow is to compare vertical 
-to horizontal motion. Since we are interested in non-axisymmetric
-perturbations to the gap edge, we first Fourier transform the
-meridional momentum densities 
-
+\subsection{Angular momentum density of  low-frequency $m=1$ modes}
+From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
+form $\exp{(-\ii \sigma t)}$ with $\real{\sigma} = \omega$,  
+the angular momentum density associated with linear waves is
 \begin{align}
-  (v_{Rm}, v_{zm} ) \equiv\int_0^{2\pi}\rho\times(u_R,
-  u_z)\exp{(-\ii m\phi)}d\phi. 
+  \jlin = \frac{m\Sigma}{2}\left[\left(\omega -
+      m\Omega\right)|\bm{\xi}|^2 + \ii\Omega\left(\xi_R\xi_\phi^* -
+      \xi_R\xi_\phi^*\right)\right].  
 \end{align}
-We define the three dimensionality as $\Theta_m(z/H)$, where 
+For a low-frequency mode, $|\omega|\ll m\Omega$. Then neglecting the
+term $\omega|\bm{\xi}|^2$ and setting $m=1$,
 \begin{align}
-  \Theta_m^2 \equiv \frac{\avg{|v_{zm}|^2}}{\avg{|v_{zm}|^2}
-    +\avg{|v_{Rm}|^2}},  
+  \jlin &\simeq \frac{\Sigma\Omega}{2}\left[-|\bm{\xi}|^2 + \ii\left(\xi_R\xi_\phi^* -
+      \xi_R\xi_\phi^*\right)\right]\notag\\
+  & = -\frac{\Sigma\Omega}{2}|\xi_R + \ii\xi_\phi|^2\notag\\
+  & \leq 0.
 \end{align}
-and $\avg{\cdot}$ denotes a radial average. 
-Admittedly, this is a crude measure, and exact values of $\Theta_m$
-varies somewhat with details of the average. However, we have
-experimented with different averaging domains and 
-found the features described below are robust.  
+Thus, low-frequency $m=1$ modes are generally associated with negative
+angular momentum. If the mode loses (positive) angular momentum
+to the background, then we can expect instability. We demonstrate
+this below. 
 
+\subsection{Unstable interaction between low-frequency $m=1$ spirals
+  and the background disc due to an imposed temperature gradient}
+The $m=1$ spiral that emerges in our simulations have low frequency
+and grows slowly, and its spatial form is consistent local theory
+(\S\ref{fargo_m1}). To demonstrate possible instability, we
+first construct a neutral low-frequency mode using local theory, then
+show that the torque density acting on this mode due to the background
+temperature gradient is negative, which enforces the mode. 
 
-The top panel in Fig. \ref{compare_vprofiles_3d008} shows $\Theta_m$
-for Cases 1--3 at $t=40P_0$. The radial average is taken over
-$r-r_p\in[3,7]r_h$. These are all vortex modes (see
-Fig. \ref{vortex8_polar_dens} and
-Fig. \ref{vortex4_vortex10_overall}). The flow becomes increasingly
-three-dimensional away from the midplane but 
-$\Theta_m = O(10^{-1})$ is small. In an averaged sense the flow is
-mostly horizontal. At the end of the  
-simulation for Case 1, an azimuthally extended vortex dominates the
-flow, for which we measured $\Theta_1\sim
-0.2$---0.3. Thus, although vertical motion can become an appreciable
-fraction of horizontal motion, the former never dominates.  
-
-$\Theta_m$ for Cases 4---7 are shown in in bottom panel of
-Fig. \ref{compare_vprofiles_3d008}. The radial average is performed
-over $r-r_p\in[2,6]r_h$ 
-because the global spirals in Cases 6---7 significantly protrude the
-gap edge. The snapshot is taken at $t=50P_0$ for Cases 4---5, at
-$t=40P_0$ for Case 6 and at $t=30P_0$, so that the
-vortices and spirals have comparable over-densities at the
-gap edge. It also reflects the fact that spiral modes are more
-unstable than vortex modes and develop earlier  
-\citep{lin11b}. $\Theta_m \sim 0.2$ is again not particularly
-large, but the spiral modes are distinctly more three-dimensional than
-vortex modes. This is likely due to additional vertical
-acceleration provided by the strong self-gravity in those cases.   
-
-
-%
-% can't do detail comparision between cases because instability have
-% different growth rates. different 'stages' in instability
-
-% Case 6 show 3 edge disturbances but this is likely to be a mixture
-% of spiral and vortex modes, rather than the m=3 spiral mode. This is
-% because 
-% we clearly see m=2 spiral in Case 7 (Q_0=1.5), and to see higher m spiral
-% modes one should increase the strength of self-gravity (e.g. lin11b
-% observe m=3 spirals with Q_0=1.2) 
-%
-
-\begin{figure}
-  \centering
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 1.7cm 0cm
-    0cm]{figures/compare_vprofiles_3d008}  
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 0cm 0cm
-    0.2cm]{figures/compare_vprofiles_3d010}  
-  \caption{Three-dimensionality of the non-axisymmetric
-    flow near the outer gap edge. Top: Cases 1---3 (vortex modes). 
-    Bottom: Cases 4---5 (vortex modes) and Cases 6---7 (spiral
-    modes). The azimuthal wavenumber $m$ is chosen to match the number
-    of vortices or large-scale spirals observed. 
-    \label{compare_vprofiles_3d008}}
-\end{figure}
-
-\subsection{Vortensity field}\label{vortensity}
-A fundamental distinction between the linear vortex and edge mode
-instability is their association with local vortensity minimum and
-maximum, respectively. In this section we compare vortensity fields of 
-discs with vortex modes (Case 2) and edge modes (Case 7). 
-%We use Case 2 
-%and Case 7 as examples, respectively. 
-More specifically, we examine the relative
-perturbation to the vertical component of vortensity,  
+We begin by recalling the expression for the torque density due to a
+locally isothermal equation of state,
 \begin{align}
-  \Delta\eta_z\equiv \frac{\eta_z - \eta_z(t=0)}{\eta_z(t=0)},
+  T_\mathrm{BG} &= -\frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\Sigma_m \left(\frac{\delta
+        v_{Rm}}{-\ii\sbar}\right)^*\right] \notag\\
+  & = \frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\ii \Sigma_m \left(\frac{\delta
+        v_{Rm}}{\sbar}\right)^*\right]
 \end{align}
-where
+where we replaced the radial Lagrangian displacement by the Eulerian
+radial velocity perturbation in Eq. \ref{baroclinic_torque}. 
+The linearised momentum equations give
 \begin{align}
-  \eta_z \equiv \frac{\bm{\hat{z}}\cdot\nabla\times\bm{u}}{\rho}. 
+  D\delta v_{Rm} =& 
+  \ii\sbar\left[c_s^2\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right)
+    + \frac{d}{dR}\delta\Phi_m\right] \notag\\ 
+  &- \frac{2\ii
+    m\Omega}{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} +
+    \delta\Phi_m\right),
 \end{align}
+where $D\equiv \kappa^2 - \sbar^2$. 
 
-Fig. \ref{vortex4_vortex1_vortxy} compares $\Delta\eta_z$ in the
-midplane when vortices and spirals develop. For planetary gaps, 
-vortensity maxima and minima are both located near the gap edges with 
-characteristic separation of the local scale-height. The vortensity
-ring at the inner gap edge ($r-r_p\simeq - 2r_h$) remain
-well-defined. The vortex instability is associated with the local
-vortensity minimum near the outer gap edge --- seen as localised closed
-contour lines centred about $r - r_p \sim 4r_h$. The vortensity ring at
-$r-r_p\sim +2r_h$ becomes distorted as a \emph{consequence} of
-large-scale vortex formation just exterior to it. By contrast, the
-edge-spiral mode is associated with the local vortensity
-maximum. Their development inherently disrupts the vortensity
-rings. This is seen in the right panel as the outer ring is broken up.    
-    
-\begin{figure}
-  \centering
-  \includegraphics[scale=.425,clip=true,trim=0cm 0cm 1.9cm 
-    0.9cm]{figures/vortex4_vortxy_008}\includegraphics[scale=.425,clip=true,trim=2.3cm    
-    0.0cm 0cm 
-    0.9cm]{figures/vortex1_vortxy_006}
-  \caption{Relative perturbation to the vertical component of
-    vortensity at the midplane in a disc with the vortex instability
-    (left, Case 2 at $t=40P_0$) and the 
-    spiral instability (right, Case 7 at $t=30P_0$). Negative
-    perturbations in the region $r-r_p\in[2,6]r_h$ are outlined by white lines. 
-    Dotted horizontal lines indicate azimuthal cuts taken in
-    Fig. \ref{vortex4_vortex1_vortRZ}.   
-    \label{vortex4_vortex1_vortxy}}
-\end{figure}
-
-
-The vertical structures also differ. Fig. \ref{vortex4_vortex1_vortRZ}
-compares $\Delta\eta_z$ at azimuths coinciding with 
-a vortex or the edge disturbance of the spiral mode. Both
-instabilities involve $\Delta\eta_z<0$. It is clear that 
-the spiral mode has stronger vertical dependence. Its 
-region of $\Delta\eta_z<0$ becomes thinner away from
-the midplane. In the vortex case this region remains 
-about the same width and  $\Delta\eta_z$ is approximately uniform
-within it. 
-%This is qualitatively
-%consistent with increased (downards) vertical motion. 
-While $\mathrm{min}(\Delta\eta_z)$ is of comparable
-magnitude, the vortensity ring at $r-r_p=2r_h$is much weaker and
-thinner in the spiral case ($\Delta\eta_z$ being a factor $\sim 4$
-smaller than the vortex case).   
- 
-
-\begin{figure}
-  \centering
-  \includegraphics[scale=.47,clip=true,trim=0cm 1.32cm .0cm
-    .6cm]{figures/vortex4_vortRZ_008}\\\includegraphics[scale=.47,clip=true,trim=0cm 
-    0.cm .0cm
-    .6cm]{figures/vortex1_vortRZ_006}
-  \caption{Relative vertical vortensity perturbation
-    associated with the vortex instability (top) and spiral
-    instability (bottom). The slices are taken at azimuths shown by
-    white dotted lines in Fig. \ref{vortex4_vortex1_vortxy}. Negative
-    perturbations in the region $r-r_p\in[2,5.5]r_h$ are outlined by
-    white lines. \label{vortex4_vortex1_vortRZ}} 
-\end{figure}
-
-\subsection{Disc-planet torques}
-The presence of non-axisymmetric disturbances at gap edges is
-expected to significantly affect disc-planet torques. It has been 
-confirmed in 2D simulations that both vortex and spiral modes lead to
-oscillatory torques of either sign \citep{li05,lin11b}. 
-%Limited 
-%numerical resolution the current 3D calculations prevent accurate torque measurements, 
-It this section we measure the disc-on-planet torques in several of the above simulations
-to confirm the main features found in 2D. 
-
-We calculate the specific torque acting on the planet due to a mass
-element as 
+We now invoke local theory by setting $d/dR \to \ii k$ where $k$ is
+real, and using the local solution to the Poisson equation
 \begin{align}
-d\bm{T}(\bm{r}) &=
-\frac{\bm{r}_p\times\bm{r}G\rho(\bm{r})d^3\bm{r}}{d_p^3}f(\bm{r},\bm{r}_p),\\
-f(\bm{r},\bm{r}_p)&\equiv 1
--\exp{\left(-\frac{1}{2}\left|\frac{\bm{r}-\bm{r}_p}{\epsilon_c
-      r_h}\right|^2\right)}.  
-\end{align} 
-The tapering function $f$ reduce contributions from close to the
-planet, thereby reducing numerical artifacts arising from this region
-because of the diverging potential and limited resolution. We set  
-the parameter $\epsilon_c=1$ so that tapering does not significantly
-reduce contributions from the instabilities, since they develop
-at $\gtrsim 2r_h$ away from the planet's orbital radius.  
+  \delta\Phi_m = -\frac{2\pi G}{|k|}\delta\Sigma_m 
+\end{align}
+\citep{shu91}. Then the radial velocity perturbation becomes
+\begin{align}
+  \delta v_{Rm} =
+  \frac{1}{D}\frac{\delta\Sigma_m}{\Sigma}\left(\frac{2\pi G
+      \Sigma}{|k|} - c_s^2\right)\left(k\sbar + \frac{2\ii
+      m\Omega}{R}\right),
+\end{align}
+so that 
+\begin{align}
+  \ii\delta\Sigma_m \left(\frac{\delta v_{Rm}}{\sbar}\right)^* =
+  \frac{1}{D^*}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
+      \Sigma}{|k|} - c_s^2\right)\left(\ii k  + \frac{2
+      m\Omega}{R\sbar^*}\right). 
+\end{align}
+For a neutral mode, $\sbar$, and therfore $D$ is real. Then, after
+taking the imaginary part of the above expression, the torque
+density is 
+\begin{align}
+  T_\mathrm{BG} &=
+  \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{D}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
+      \Sigma}{|k|} - c_s^2\right)\right] \notag\\
+&\simeq \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{\left(\kappa^2 -
+        m^2\Omega^2\right)}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi
+      G \Sigma}{|k|} - c_s^2\right)\right]. 
+\end{align}
+where the second line follows from the low-frequency approximation
+$|\sigma|\ll m\Omega$. 
 
-Fig. \ref{torque3} shows the disc-on-planet torques in Case 3 and Case 5, which develop
-the $m=5$ and $m=6$ vortex modes, respectively. These plots are qualitatively similar to
-2D simulations \citep[e.g.][]{li05}. The torques oscillate on orbital 
-time-scales and its instantaneous values can be of either sign. However, 
-upon averaging over the simulation we find the total torques are negative in both cases. This
-means inwards migration is still favoured. 
-%The planet is expected to interact
+To determine the sign of $T_\mathrm{BG}$ for low frequency one-arm spirals,
+we examine each factor separately below for $m=1$:
+\begin{itemize}
+\item We observe trailing spirals in our simulations, so $k>0$. 
+\item The factor $\kappa^2 - \Omega^2>0$ for our self-gravitating disc
+  models in the region where the spiral appears. 
+\item We measure $|k|\sim \pi G\Sigma/c_s^2$, so the last factor in
+  the square brackets is positive. Note that this factor is positive
+  provided $|k| < 2/HQ$ or wavelengths $\lambda > \pi Q H$.  
+\end{itemize}
+These considerations imply the factor in the square brackets is
+positive. Then, since $dc_s^2/dR < 0$, $T_\mathrm{BG}<0$ so the background
+disc applies a negative torque on the low-frequency $m=1$ spiral,
+which has negative angular momentum. This suggests the spiral
+amplitude will grow. 
 
-We extended Case 5 to $t=135P_0$ and find the vortices 
-have similar over-densities as at $t=50P_0$. However, 
-Fig. \ref{torque3} show the torque oscillation amplitudes decrease
-towards the end of Case 5 compared to $t\in[40,80]P_0$.  
-At $t=50P_0$ the vortices are located in $r-r_p\in[3.5,5.5]r_h$ but by
-$t=135P_0$ they are located in $r-r_p\in[4,6]r_h$. 
-Given that $t\in[40,80]P_0$ is only $20P_0$ to $50P_0$ after the planet  
-potential has been fully introduced, gap-formation is probably 
-ongoing during this time. We expect torque amplitudes to be larger
-during  gap-formation since the vortices lie closer to the planet. 
-%On the
-%other hand, gap-widening in the presence of vortices was also seen in  
-%2D simulations on long timescales \citep{lin11a}  
-%So there may also be
-%contributions from radial redistribution of material due to the
-%vortices. 
-% This might be
-%brought about by the of the density bump at the outer gap edge
-%\citep{meheut12b}  
-
-
-%The original
-%density bump at the outer gap edge ($r-r_p\simeq 4r_h$) shifts outward
-%between these times. 
-%This is unlike in the fixed-orbit 2D simulation by \cite{li05}, where
-%the oscillation amplitude does not decrease over several hundred
-%orbits. 
-%The different setups (especially self-gravity and numerical resolution) 
-%prevent a detail comparison 
-roclinic instability
- 
-\begin{figure}
-  \centering
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 1.cm 0cm
-    0cm]{figures/vortex10_torque3_tqex}  
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 0cm 0cm 0.2cm]{figures/vortex2b_torque3_tqex} 
-  \caption{Instantaneous disc-on-planet torques in simulations where the vortex mode develops. 
-    Top: Case 3. Bottom: Case 5. Note that Case 5 has been extended to $t=135P_0$. \label{torque3}}
-\end{figure}
-
-Next we examine disc-planet torques in the presence of the spiral
-modes. The top panel of Fig. \ref{torque3_spiral} shows the
-instantaneous disc-on-planet torques. Contributions from the
-inner disc ($r < r_p$) and outer disc ($r > r_p$) are plotted
-separately for comparison with Fig. 18b in \cite{lin11b}, which is 
-similar to the present plot. Large oscillations in the outer torque
-due to edge mode spirals cause the total torque to be positive or
-negative at a given instant. 
-
-Unlike the vortex modes, Fig. \ref{torque3_spiral} shows that spiral
-modes can lead to a positive running-time averaged torques (bottom panel). 
-The average torques become more positive with time after spiral modes develop, 
-and with increasing self-gravity (which increases the instability strength). 
-%The torque is more positive with
-%increasing strength of the spiral instability.
-This was also observed in high-resolution 2D simulations in
-\cite{lin11b}. There it was suggested that the creation of large   
-`voids' in between spiral arms decreases the time-averaged density in  
-the planet-induced wakes, thereby reducing associated torque
-magnitudes. Since the outer planetary wake normally provide a negative
-torque, the spiral modes make the total torque more positive. 
-The similarity between 2D and 3D results indicate that
-outwards migration induced by spiral modes, which was seen in 2D by
-\cite{lin11b,lin12b}, will also operate in 3D.      
-
-%It was later shown that the spiral instability can supply material to
-%go on horseshoe turns ahead of the planet, which also provide a
-%positive torque \citep{lin12b}. This is because the spiral modes 
-%are associated with local vortensity maximum which are located just
-%inside the gap edge in the co-orbital region. 
-
-%This is because the
-%spirals are associated with local vortensity maximum, which is just
-%inside the outer gap edge. Thus over-densities can be supplied by the
-%instability to go on horseshoe orbits
-
-%Since spiral modes are associated with disturbances at the local
-%vortensity maximum just inside the outer gap edge, its influence on
-%disc-planet torques is expected to be more si
-
-\begin{figure}
-  \centering
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 1.825cm 0cm
-    0cm]{figures/vortex1_torque2_tqex}  
-  \includegraphics[scale=.425,clip=true,trim=0.2cm 0cm 0cm 0.2cm]{figures/torque3_tqex} 
-  \caption{Disc-on-planet torques in the presence of spiral modes
-    associated with the outer gap edge. Top: total torque (solid),
-    torque from the inner disc (dotted) and from the outer disc
-    (dashed) in Case 7. Bottom: time-averaged torques in Case 6
-    (solid) and Case 7 (dotted).
-\label{torque3_spiral}}
-\end{figure}
