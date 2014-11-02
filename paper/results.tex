@@ -16,18 +16,30 @@ self-gravity softening length\footnote{In 2D self-gravity, $\epsilon_g$ also
   $\epsilon_g$ in favour of angular momentum conservation, keeping in
   mind that the strength of self-gravity will be over-estimated.}.
 
-\subsection{Reference run with random perturbations}
-In this fiducial simulation we subject the disc to initial perturbations in
+In these simulations we subject the disc to initial perturbations in 
 cylindrical radial velocity, 
 \begin{align}\label{randpert}
   v_R \to v_R+ c_s\frac{\delta}{M}
-  \exp{\left[-\frac{1}{2}\left(\frac{R-\overline{R}_d}{\Delta 
-          R_d}\right)^2\right]}\sum_{m=1}^M\cos{m\phi},
+  \exp{\left[-\frac{1}{2}\left(\frac{R-\overline{R}}{\Delta 
+        R}\right)^2\right]}\sum_{m=1}^M\cos{m\phi},
 \end{align}
-where $\delta$ is an amplitude, $\overline{R}_d = (R_{1}+R_{2})/2$
-and $\Delta R_d = (R_{2}-R_{1})/2$. We use $M=10$ and choose 
-$\delta\in[-10^{-3},10^{-3}]$ randomly but independent of $\phi$.  
+where the amplitude $\delta\in[-10^{-3},10^{-3}]$ is set randomly but
+independent of $\phi$, $\overline{R} = (R_{1}+R_{2})/2$
+and $\Delta R = (R_{2}-R_{1})/2$. 
 
+\subsection{Reference run with random perturbations}
+To obtain a picture of the overall disc evolution, here we consider a
+fiducial run initialised with $M=10$ in Eq. \ref{randpert}. 
+%In this fiducial simulation we subject the disc to initial perturbations in
+%cylindrical radial velocity, 
+%\begin{align}\label{randpert}
+%  v_R \to v_R+ c_s\frac{\delta}{M}
+%  \exp{\left[-\frac{1}{2}\left(\frac{R-\overline{R}_d}{\Delta 
+%          R_d}\right)^2\right]}\sum_{m=1}^M\cos{m\phi},
+%\end{align}
+%where $\delta$ is an amplitude, $\overline{R}_d = (R_{1}+R_{2})/2$
+%and $\Delta R_d = (R_{2}-R_{1})/2$. We use $M=10$ and choose 
+%$\delta\in[-10^{-3},10^{-3}]$ randomly but independent of $\phi$.   
 Fig. \ref{fargo_modeamp} plots evolution of the maximum
 non-axisymmetric surface density amplitudes in $R\in[R_{1},R_{2}]$
 for $m\in[1,10]$. Snapshots from the simulation are shown in
@@ -227,7 +239,7 @@ We plot growth rates of the $m=1$ spiral as a function of $q$ in
 Fig. \ref{fargo_varq_growth}. The correlation is well-fitted by a
 linear relation
 \begin{align*}
-  \gamma = 0.014 q \Omega_k{R_0}. 
+  \gamma \simeq 0.015 q \Omega_k(R_0). 
 \end{align*}
 This confirms that the temperature gradient is responsible for the
 development of the one-arm spiral observed in our simulations. 
@@ -238,8 +250,5 @@ development of the one-arm spiral observed in our simulations.
     plotted (dotted line). 
     \label{fargo_varq_growth}} 
 \end{figure}
-
-
- 
 
 % only cases where a coherent spiral is seen is plotted 
