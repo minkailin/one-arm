@@ -33,7 +33,9 @@ and grows slowly, and its spatial form is consistent local theory
 (\S\ref{fargo_m1}). To demonstrate possible instability, we
 first construct a neutral low-frequency mode using local theory, then
 show that the torque density acting on this mode due to the background
-temperature gradient is negative, which enforces the mode. 
+temperature gradient is negative, which enforces the mode. % Note that
+% we will not be assuming a self-gravitating disc until the end of this
+% section. 
 
 We begin by recalling the expression for the torque density due to a
 locally isothermal equation of state,
@@ -118,23 +120,59 @@ protoplanetary discs, then $T_\mathrm{BG}<0$, and the background disc
 applies a negative torque on the disturbance, which further decreases
 its angular momentum. This suggests the spiral amplitude will grow.  
 
-%torque effective for large scales or sharp gradients
 
-%Then, since $dc_s^2/dR < 0$, $T_\mathrm{BG}<0$ so the background
-%disc applies a negative torque on the low-frequency $m=1$ spiral,
-%which has negative angular momentum. This suggests the spiral
-%amplitude will grow. 
+Using $\jlin$ and $T_\mathrm{BG}$, we can obtain a rough estimate of
+the growth rate $\gamma$ of linear perturbations as  
+\begin{align}
+  2\gamma \sim \frac{T_\mathrm{BG}}{\jlin},
+\end{align}
+where the factor of two accounts for the fact that the angular momentum
+density is quadradtic in the linear perturbations. Inserting the above
+expressions for $\jlin$ and $T_\mathrm{BG}$ for $m=1$ gives
+\begin{align}
+  2\gamma \sim
+  -\frac{dc_s^2}{dR}\frac{1}{k\Sigma^2\Omega}\frac{|\delta\Sigma_1|^2}{|\xi_R
+    + \ii\xi_\phi|^2}.
+\end{align}
+Now, using $\delta\Sigma_m/\Sigma = -\ii k \xi_R - \ii m \xi_\phi/R$
+in the local approximation, we have
+\begin{align}
+  2\gamma \sim -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R +
+    \xi_\phi/kR|^2}{|\xi_R + \ii \xi_\phi|^2}
+  \lesssim -\frac{dc_s^2}{dR}\frac{k}{\Omega}.
+\end{align}
+where we used $dc_s^2/dR <0$, $k>0$ and $|kR|\gg 1$ to obtain the
+inequality. For $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ adopted in our disc
+models,
+\begin{align}
+  2\gamma \lesssim q\frac{c_s^2}{R}\frac{k}{\Omega}. 
+\end{align}
+Now we consider perturbations in a self-gravitating disc with characteristic
+wavenumber $k \sim \pi G \Sigma/c_s^2 \sim \Omega/Q c_s$ (as seen in
+our simulations). Then
+\begin{align}
+  \gamma \lesssim \frac{qh}{2Q}\Omega,
+\end{align}
+where we used $c_s/R\sim h\Omega$. For our fiducial disc models with
+$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega = O(10^{-2})$,
+consistent with simulation results. 
 
-\subsection{Role of self-gravity and disc structure} 
-The background torque density $T_{BG}$ does not depend on
-self-gravity. 
-%and by definition, disc structure plays no role in the local description of linear modes 
-However, our numerical simulations show that the $m=1$ spiral is
-confined between two $Q$-barriers, where real solutions to the local
-dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
-structure. Thus, the role of disc structure and self-gravity is to
-allow a neutral mode to be set up and confined, which is then
-destabilised through the background torque density. 
+Of course, we have been assuming a neutral mode to obtain expressions
+for $\jlin$ and $T_\mathrm{BG}$ in the first place, so the above can only be
+considered as an order-of-magnitude estimate. Nevertheless, the
+expected growth rate is in reasonable agreement with numerical
+results. 
+
+% \subsection{Role of self-gravity and disc structure} 
+% The background torque density $T_{BG}$ does not depend on
+% self-gravity. 
+% %and by definition, disc structure plays no role in the local description of linear modes 
+% However, our numerical simulations show that the $m=1$ spiral is
+% confined between two $Q$-barriers, where real solutions to the local
+% dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
+% structure. Thus, the role of disc structure and self-gravity is to
+% allow a neutral mode to be set up and confined, which is then
+% destabilised through the background torque density. 
 
 %talk about additional simulations at high Q
 %spiral mode as external potential to wider disc (lp11)
