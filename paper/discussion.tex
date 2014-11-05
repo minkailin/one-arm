@@ -40,9 +40,9 @@ temperature gradient is negative, which enforces the mode. % Note that
 We begin by recalling the expression for the torque density due to a
 locally isothermal equation of state,
 \begin{align}
-  T_\mathrm{BG} &= -\frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\Sigma_m \left(\frac{\delta
+  T_\mathrm{BG} &= -\frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\delta\Sigma_m \left(\frac{\delta
         v_{Rm}}{-\ii\sbar}\right)^*\right] \notag\\
-  & = \frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\ii \Sigma_m \left(\frac{\delta
+  & = \frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\ii \delta\Sigma_m \left(\frac{\delta
         v_{Rm}}{\sbar}\right)^*\right]
 \end{align}
 where we replaced the radial Lagrangian displacement by the Eulerian
@@ -144,7 +144,7 @@ in the local approximation, we have
 where we used $dc_s^2/dR <0$, $k>0$ and $|kR|\gg 1$ to obtain the
 inequality. For $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ adopted in our disc
 models,
-\begin{align}
+\begin{align}\label{theoretical_rate}
   2\gamma \lesssim q\frac{c_s^2}{R}\frac{k}{\Omega}. 
 \end{align}
 Now we consider perturbations in a self-gravitating disc with characteristic
@@ -163,16 +163,19 @@ considered as an order-of-magnitude estimate. Nevertheless, the
 expected growth rate is in reasonable agreement with numerical
 results. 
 
-% \subsection{Role of self-gravity and disc structure} 
-% The background torque density $T_{BG}$ does not depend on
-% self-gravity. 
-% %and by definition, disc structure plays no role in the local description of linear modes 
-% However, our numerical simulations show that the $m=1$ spiral is
-% confined between two $Q$-barriers, where real solutions to the local
-% dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
-% structure. Thus, the role of disc structure and self-gravity is to
-% allow a neutral mode to be set up and confined, which is then
-% destabilised through the background torque density. 
+\subsection{Role of self-gravity and disc structure} 
+We note that the background torque density $T_\mathrm{BG}$ does not depend on  
+self-gravity, and we only considered a self-gravitating perturbation to
+obtain an appropriate wavenumber $k$ needed to evaluate
+Eq. \ref{theoretical_rate}. Thus, self-gravity is not directly
+responsible for instability. However, 
+our numerical simulations show that the $m=1$ spiral is
+confined between two $Q$-barriers, where real solutions to the local
+dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
+structure. Thus, the role of disc structure and self-gravity is to
+allow a neutral mode to be set up and confined, which is then
+destabilised through the background torque density. 
 
 %talk about additional simulations at high Q
 %spiral mode as external potential to wider disc (lp11)
+%interaction across co-rotation

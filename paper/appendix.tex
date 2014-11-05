@@ -1,74 +1,123 @@
-\section{Modification to vertical structure by self-gravity}\label{vertsg_mod}
-We describe a simple procedure to set up the vertical structure of a locally
-isothermal, self-gravitating disc. We imagine setting up a non-self-gravitating disc,
-then slowly switch on the vertical force due to self-gravity. We expect the midplane
-density to increase at the expense of gas density higher in the atmosphere. It is assumed
-that the temperature profile remains unchanged. 
+\section{The background torque density in a three-dimensional disc with
+  a fixed temperature profile}\label{tbg_deriv}
+We give a brief derivation of the angular momentum exchange between
+linear perturbations and the background disc. We consider a
+three-dimensional disc in which the equilibrium pressure and density
+are related by 
+\begin{align}\label{iso_cond}
+  p = c_s^2(R,z)f(\rho),
+\end{align} 
+where $f(\rho)$ is an arbitrary function of $\rho$ with dimensions of
+mass per unit volume, and $c_s$ is a prescribed function of
+position with dimensions of velocity squared. The equilibrium disc
+satisfies 
+\begin{align}
+  R\Omega^2(R,z) &= \frac{1}{\rho}\frac{\p p}{d R} +
+  \frac{\p\Phi_\mathrm{tot}}{\p R}, \\
+  0 &= \frac{1}{\rho}\frac{\p p}{\p z} + \frac{\p\Phi_\mathrm{tot}}{\p
+    z}. 
+\end{align}
+Note that, in general, the equilibrium rotation $\Omega$ depends on
+$R$ and $z$. 
 
-Vertical hydrostatic equilibrium between
-gas pressure, stellar gravity and self-gravity reads
-\begin{align}
-c_\mathrm{iso}^2(R)\frac{\p\ln{\rho}}{\p z} = -\frac{\p\Phi_*}{\p z} - \frac{\p\Phi}{\p z}. 
+We begin with the linearised equation of motion in terms of the
+Lagragian displacement $\bm{\xi}$ as given by \cite{lin93b} but with an
+additional potential perturbation, 
+\begin{align}\label{lagragian_pert}
+  &\frac{D^2\bm{\xi}}{Dt^2} +
+  2\Omega\hat{\bm{z}}\times\frac{D\bm{\xi}}{Dt}  \notag \\ &= -
+  \frac{\nabla \delta p }{\rho} + \frac{\delta\rho}{\rho^2}\nabla\rho  
+  -\nabla\delta\Phi_d - R
+  \hat{\bm{R}}\left(\bm{\xi}\cdot\nabla\Omega^2\right) \notag \\
+  & = -\nabla\left(\frac{\delta p}{\rho} + \delta \Phi_d\right) -
+  \frac{\delta p}{\rho}\frac{\nabla\rho}{\rho} +
+  \frac{\delta\rho}{\rho}\frac{\nabla p}{\rho} - - R
+  \hat{\bm{R}}\left(\bm{\xi}\cdot\nabla\Omega^2\right),
 \end{align}
-Assuming a smooth radial density profile, we use the plane-parallel atmosphere
-approximation for the disc potential, i.e.
-\begin{align}
-\frac{\p^2\Phi}{\p z^2} = 4\pi G \rho. 
-\end{align}
-Next, we write the density field as
-\begin{align}
-\rho(R,z) = \rho_N(R, z) \times \beta(z; R)
-\end{align}
-where $\rho_N$ is the density field corresponding to the non-self-gravitating disc:
-\begin{align}
-&c_\mathrm{iso}^2(R)\frac{\p\ln{\rho_N}}{\p z} = -\frac{\p\Phi_*}{\p z},\\
-&\rho_N = \frac{\Sigma(R)}{\sqrt{2\pi}H(R)}\exp{(-z^2/2H^2)} \notag\\
-&\phantom{\rho_N}\equiv \rho_{N0}(R)\exp{(-z^2/2H^2)},
-\end{align}
-where $\rho_{N0}=\rho_N(R,z=0)$ is the midplane density. The explicit
-expression for $\rho_N$ above assumes a thin disc. The function
-$\beta$ describes the modification to the local density in order to be
-consistent with self-gravity. By construction, its governing equation
-is 
-\begin{align}
-c_\mathrm{iso}^2(R)\frac{\p^2\ln{\beta}}{\p z^2} = -4\pi G\rho_N\beta. 
-\end{align}
-Let 
-\begin{align}
-& \chi  = \ln\beta - z^2/2H^2 ,\\
-& \xi= \left(\frac{4\pi G \rho_{N0} }{c_\mathrm{iso}^2}\right)^{1/2} z,
-\end{align}
-then the governing equation can be written in dimensionless form
-\begin{align}
-&\frac{\p^2 \chi}{\p\xi^2} = -K -\exp{\chi}\label{vertsg_eqn},\\
-& K \equiv \frac{c_\mathrm{iso}^2}{4\pi G \rho_{N0} H^2}. \notag
-\end{align}
-Note that $K(R)$ is proportional to the local Keplerian Toomre
-parameter. Eq. \ref{vertsg_eqn} can be further reduced to a first
-order differential equation, but this is unnecessary because we
-pursue a numerical solution at the end. Appropriate 
-boundary conditions are
-\begin{align}
-&\chi(z=0)  =  \ln\beta_0, \\
-&\left.\frac{\p \chi}{\p \xi} \right|_{z=0} = 0.
-\end{align}
-$\beta_0(R)$ is the midplane density enhancement. To determine its value, we impose
-the surface density before and after modification by self-gravity to
-remain the same. Then we require 
-\begin{align}\label{beta0_eqn}
-&F(\beta_0) \equiv \sqrt{\frac{2K}{\pi}}\int_0^{ n /\sqrt{K} } 
-\exp{\chi(\xi;\beta_0)}d\xi - \erf{\left(\frac{n}{\sqrt{2}}\right)} \notag\\
-&\phantom{F(\beta_0)} = 0,  
-\end{align}
-where $n$ is the number of scale-heights of the non-self-gravitating
-disc we originally considered. At a given cylindrical radius $R$, we
-solve Eq. \ref{beta0_eqn} using Newton-Raphson iteration. Each
-iteration involves integrating the governing ODE for $\chi$
-(Eq. \ref{vertsg_eqn}). At the end of the iteration, we have $\beta(z;
-R)$ and the midplane enhancement $\beta_0(R)$.  
+where $D/Dt \equiv \p_t + \ii m \Omega$ for perturbations with
+azimuthal dependence in the form $\exp\left(\ii m \phi\right)$, and  
+the $\delta$ quantities denote Eulerian perturbations. 
 
-We comment that the procedure outlined above can be extended to
-polytropic discs. In this case, there is an additional unknown --- 
-the new disc thickness after adjustment by self-gravity and an
-additional constraint --- the density should vanish at the new disc
-surface. 
+As explained in \cite{lin11b}, a conservation law for the angular
+momentum of the perturbation may be obtained by taking the dot product
+between Eq. \ref{lagragian_pert} and $(-m/2)\rho\bm{\xi}^*$, then
+taking the imaginary part afterwards. The left hand side bcomes the
+angluar momentum density. The first term on the right hand side (RHS)
+becomes 
+\begin{align}\label{angflux1}
+  &-\frac{m}{2}\imag\left[-\rho\bm{\xi}^*\cdot\nabla\left(\frac{\delta p}{\rho} + \delta
+    \Phi_d\right)\right] \notag\\ 
+&= \frac{m}{2}\imag\left\{\nabla\cdot\left[\rho\bm{\xi}^*\left(\frac{\delta p}{\rho} + \delta
+    \Phi_d \right) + \frac{1}{4\pi
+    G}\delta\Phi_d\nabla\delta\Phi_d^*\right]\right\} \notag\\
+&+ \frac{m}{2}\imag\left(\delta\rho^*\frac{\delta p}{\rho}\right),
+\end{align}
+where $\delta\rho = - \nabla\cdot\left(\rho\bm{\xi}\right)$ and
+$\nabla^2\delta\Phi_d = 4\pi G \delta \rho$ have been used. The first
+term on the RHS of Eq. \ref{angflux1} is (minus) the 
+angular momentum flux. The second term on RHS of Eq. \ref{angflux1}, 
+together with the remaining terms on the RHS of 
+Eq. \ref{lagragian_pert} constitutes the background torque. That is, 
+\begin{align}\label{tbg_3d}
+  T_\mathrm{BG} = \frac{m}{2}\imag\left[
+    \frac{\delta p}{\rho} \Delta\rho^* -
+%\left(\delta\rho^* + \bm{\xi}^*\cdot\nabla\rho\right) - 
+    \frac{\delta\rho}{\rho}\bm{\xi}^*\cdot\nabla p  
+    + \rho \xi_R^*\xi_z\frac{\p\left(R\Omega^2\right)}{\p z}\right],
+\end{align}
+where $\Delta\rho = \delta\rho + \bm{\xi}\cdot\nabla\rho$ is the
+Lagragian density perturbation. 
+
+So far we have not invoked an energy equation. For 
+adiabatic perturbations $T_\mathrm{BG}$ is zero
+\citep{lin93b}. However, if we impose the equilibrium relation
+Eq. \ref{iso_cond} to hold in the perturbed state, then
+\begin{align}
+  \delta p = c_s^2(R,z) f^\prime \delta\rho,
+\end{align}
+where $f^\prime = df/d\rho$. Inserting this into Eq. \ref{tbg_3d}, we
+obtain
+\begin{align}\label{tbg_3d_2}
+  T_\mathrm{BG} = -\frac{m}{2}\frac{p}{\rho
+    c_s^2}\imag\left[\delta\rho\bm{\xi}^*\cdot\nabla c_s^2 +
+    \xi_R^*\xi_z \left(\frac{\p\rho}{\p z}\frac{\p c_s^2}{\p R} -
+      \frac{\p\rho}{\p R}\frac{\p c_s^2}{\p z}\right)\right],
+\end{align}
+where the equilibrium equations were used. 
+At this point setting $\xi_z=0$ gives $T_\mathrm{BG}$ for
+perturbations with no vertical motion, 
+\begin{align}
+  T_\mathrm{BG,2D} = -\frac{m}{2}\frac{p}{\rho
+    c_s^2}\imag\left(\delta\rho \xi_R^*  \p_R c_s^2 \right),
+\end{align}
+and is equivalent to the 2D
+expression, Eq. \ref{baroclinic_torque}, with $\delta\rho $ replaced
+by $\delta \Sigma$ and $p=c_s^2\rho$. % The 2D expression is convenient
+% for razor-thin discs or perturbations without vertical motion because
+% one can measure $\delta\rho$ (or $\delta \Sigma)$ directly.  
+
+
+In fact, we can simplify Eq. \ref{tbg_3d_2} in the general case by
+using $\delta\rho = - \rho\nabla\cdot\bm{\xi} -
+\bm{\xi}\cdot\nabla\rho$, giving
+\begin{align}\label{tbg_general}
+  T_\mathrm{BG} = \frac{m}{2}\frac{p}{\rho
+    c_s^2}\imag\left[\rho\left(\nabla\cdot\bm{\xi}\right)\bm{\xi}^*\cdot\nabla
+  c_s^2\right].  
+\end{align} 
+For a barotropic fluid $p=p(\rho)$, the function $c_s^2$ can be
+taken as constant (Eq. \ref{iso_cond}) for which $T_\mathrm{BG}$
+vanishes. When there is a forced temperature gradient,
+Eq. \ref{tbg_general} indicates there is angular momentum exchange
+between compressible perturbations ($\nabla\cdot\bm{\xi}\neq0$) and
+the background disc if there is motion along the temperature
+gradient ($\bm{\xi}\cdot\nabla c_s^2 \neq 0$).  
+
+% total effect needs to be integrated
+
+% For the perturbations without vertical motion or those in razor-thin
+% discs, the expression Eq. \ref{}
+
+%eq baroclinic torque is more practical in 2d case because \delta
+%sigma can be measured direction from simulations (xi needs to be
+%calculated from velocity field, knowing the eigenfrequency)

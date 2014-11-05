@@ -1,32 +1,38 @@
 \section{Three-dimensional simulations}
-In this section we review results from 3D simulations carried
-out using the ZEUS-MP and PLUTO codes. 
+In this section we briefly review results from 3D simulations carried 
+out using the ZEUS-MP and PLUTO codes. The main purpose is to check
+verify the above results with different numerical codes, and validate 
+the 2D approximation.    
 
-
-The 3D disc has radial size 
-$[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent
+The 3D disc has radial size
+$[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent 
 $n_H=2$ scale-heights. The resolution is $N_r\times N_\theta\times
 N_\phi=256\times32\times256$. Because of the much reduced resolution
 compared to 2D, we use a smooth perturbation by setting
-$\delta = 10^{-3}$ and $M=1$. This corresponds to a single $m=1$
-spiral in the dead zone, which was found to dominate the 2D
-simulation. 
+$\delta = 10^{-3}$ and $M=1$ in Eq. \ref{randpert}. This corresponds
+to a single $m=1$ spiral in the dead zone, which was found to dominate
+the 2D simulation.  
 
 Our 3D discs are initialised in approximate equilibrium only, so we
 first evolve the disc without perturbations using  
-$(\lmax,\mmax)=(32,0)$ up to $t=10P_0$, during which 
+$(\lmax,\mmax)=(32,0)$ up to $t=100P_0$, during which 
 meridional velocities are damped out. We then restart the simulation
 with the above perturbation and $(\lmax,\mmax)=(32,32)$. 
 
+
+
+
+
 Snapshots at the end of the simulations are shown in
 Fig. \ref{3d_prelim} for both ZEUS-MP and PLUTO. We again find the dead zone eventually
-dominated by an $m=1$ spiral.%  A Cartesian visualisation of the
+dominated by an $m=1$ spiral. %A Cartesian visualisation of the
 % midplane density perturbation associated with the $m=1$ mode is shown in Fig. \ref{pluto_cart}.
 The two codes give qualitatively similar results, but a longer PLUTO simulation was
-needed to achieve similar mode amplitudes than ZEUS-MP. 
-The amplitude of the spiral is smaller than the 2D case above,
-possibily due to lower resolution and/or 3D self-gravity being weaker
-than that in 2D.  
+needed to achieve similar mode amplitudes in ZEUS-MP. 
+
+%The amplitude of the spiral is smaller than the 2D case above,
+%possibily due to lower resolution and/or 3D self-gravity being weaker
+%than that in 2D.  
 
 \begin{figure}
   \begin{center}
