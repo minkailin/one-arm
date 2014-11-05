@@ -209,7 +209,7 @@ is lost from the wave to the disc.
 %ang mom decreases slightly more rapidly than torque exchange provides
 %- probably non-linear effects/shocks 
 
-\subsection{Dependence on the imposed temperature gradient} 
+\subsection{Dependence on the imposed temperature profile} 
 At this point we hypothesize the growth of the $m=1$ spiral mode is
 associated with the imposed temperature gradient. The torque
 responsible for its growth, Eq. \ref{baroclinic_torque}, is
@@ -252,3 +252,30 @@ development of the one-arm spiral observed in our simulations.
 \end{figure}
 
 % only cases where a coherent spiral is seen is plotted 
+
+We also performed a series of simulations with aspect-ratio
+$h\in[0.03,0.07]$ with fixed $q=1$. This also affects the temperature
+gradient since $c_s \propto h$. However, with other parameters equal
+to that in the fiducial simulation,  varying $h$ also changes the disc
+mass. For $h\in[0.03,0.07]$ the total disc mass ranges from
+$M_d=0.052M_*$ to $M_d=0.12M_*$ and the 
+mass within $R\in[R_1,R_2]$  ranges from $0.033M_*$ to $0.062M_*$. 
+
+Fig. \ref{fargo_varh_growth} shows the growth rates of the $m=1$
+spiral in $R\in[R_1,R_2]$ as a function of $h$. Growth rates increases
+with $h$, roughly as 
+\begin{align}
+  \gamma \simeq 0.10h\Omega_k(R_0).  
+\end{align}
+However, the linear fit is less good than for variable $q$ above. This
+may be due to the change in the total disc mass when $h$ changes. We
+find no qualitative difference between the spiral pattern that
+emerges. 
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_plot_ratemax_fargo_varh.ps}    
+  \caption{Growth rates of the $m=1$ spiral mode as a function of the
+    disc aspect-ratio $h$ (asterisks). A linear fit is also
+    plotted (dotted line). 
+    \label{fargo_varh_growth}} 
+\end{figure}
