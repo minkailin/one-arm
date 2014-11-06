@@ -83,9 +83,9 @@ is transferred from the one-arm spiral to the background disc.
 \end{figure}   
 
 \subsection{Trapping the low-frequency $m=1$ spiral}\label{fargo_m1}
-In order to focus on the $m=1$ spiral that eventually emerges, here 
-we examine a simulation initialised with only $m=1$
-perturbations, by setting $M=1$ in Eq. \ref{randpert}. The disc
+In order to focus on the $m=1$ spiral that eventually emerges, from
+now on we examine simulations initialised with
+$M=1$ in Eq. \ref{randpert}. The disc 
 evolution is largely similar to the previous case, but the final spiral is
 more coherent, which facilitates the analysis below. 
 
@@ -99,7 +99,8 @@ we measure a co-rotation radius and growth rate of
 The spiral can be considered as low frequency because its 
 pattern speed $\Omega_p\lesssim 0.3\Omega$ in $R\in[R_{1},R_{2}]$,
 where it is  most prominent. The growth rate $\gamma$ is also slow
-relative to the local rotation. Thus, the spiral 
+relative to the local rotation. (Although the characteristic growth
+time $\gamma^{-1} \simeq 10P_0$.) Thus, the spiral 
 pattern is nearly stationary. 
 
 \begin{figure}
@@ -113,16 +114,15 @@ pattern is nearly stationary.
 Next, we write $\Sigma_1 = 
 |\Sigma_1|\exp{(\ii kR)}$, where $k$ is real, and assume the amplitude
 $|\Sigma_1|$ varies slowly compared to the complex phase. This is the
-main assumption in local theory. We plot in
-Fig. \ref{fargo_wavenumber} the normalised radial wavenumber associated with
-the $m=1$ spiral. We find 
+main assumption in local theory. We measure $k$ numerically and plot
+its normalised value in Fig. \ref{fargo_wavenumber}. We find 
 \begin{align*}
   kR \sim \frac{\pi G \Sigma}{c_s^2}R \sim \frac{1}{hQ}, 
 \end{align*}
 where we used $Q\sim c_s\Omega/\pi G \Sigma$ and $R\Omega/c_s\sim
 h^{-1}$. Since $Q=O(1)$ and $h\ll 1$ imply $|kR|\gg 1$, we 
 can apply results from local theory self-consistently. Recall $k>0$
-means the spiral is trailing, as seen in Fig. \ref{2d_fargo_viz}.  
+corresponds to a trailing spiral, as seen in Fig. \ref{2d_fargo_viz}.  
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_kr120_fargo.ps}
@@ -140,10 +140,10 @@ mode frequency is given. The figure shows two $Q$-barriers located in
 the inner disc, at $R_{Qb}=R_0$ and $R_{Qb}=1.6R_0$, which is indeed the
 region where the $m=1$ spiral develops. This suggests that the one-arm
 spiral is trapped. There is one outer Lindblad resonance at $R_L\simeq
-7.2R_0$. Thus, waves may be launched in $R\gtrsim 7.2R_0$ by the main 
+7.2R_0$. Thus, waves may be launched in $R\gtrsim 7.2R_0$ by the  
 spiral disturbance in the inner disc \citep{lin11b}. 
 %this would be a de-stabilising
-% effect.  
+% effect.  we discuss this in discussions?
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_Qbar_fargo.ps} 
@@ -174,7 +174,7 @@ Eq. \ref{lin_ang_mom_cons} to give
     2\pi R dR}_{\jlintot} 
   =\int_{R\mathrm{min}}^{R\mathrm{max}}T_\mathrm{BG} 2\pi R dR, 
 \end{align}
-where we recall $T_{BG}$ is the torque density related to the imposed
+where we recall $T_\mathrm{BG}$ is the torque density due to the imposed
 sound-speed profile (Eq. \ref{baroclinic_torque}). We have explicitly
 computed both sides of Eq. \ref{baroclinic_torque_int} using
 simulation data, and compare them in Fig. \ref{fargo_angmom_ex}. There
@@ -182,8 +182,10 @@ is a good match between the two torques, especially at early times
 $t\lesssim110P_0$. The match is less good later on, when the spiral
 amplitude is no longer small ($\Delta\Sigma_1\sim 0.2$ at $t=110P_0$
 and $\Delta\Sigma_1\sim 0.4$ by $t=120P_0$) and linear theory becomes
-less valid. Fig. \ref{fargo_angmom_ex} confirms that angular momentum
-is lost from the wave to the disc. 
+less valid. Fig. \ref{fargo_angmom_ex} confirms that the $m=1$ spiral
+wave experiences a negative torque that further reduces its angular
+momentum. This is consistent with angular momentum component
+measurements (Fig. \ref {2d_angmom}).  
 
 %wave losses at boundaries 
 
@@ -215,7 +217,8 @@ function of $q$. We indeed observe slower growth with decreasing
 $q$. Although the figure indicates growth for the strictly isothermal
 disc ($q=0$), we did not observe a coherent one-arm spiral upon
 inspection of the $m=1$ surface density field. The growth in this case
-may be associated with higher $m$ modes. %"non-linear effects"
+may be associated with higher $m$ modes.  
+% show result of isothermal calc?
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_plot_fargo_varq.ps}   
@@ -226,7 +229,7 @@ may be associated with higher $m$ modes. %"non-linear effects"
 \end{figure}
 
 We plot growth rates of the $m=1$ spiral as a function of $q$ in 
-Fig. \ref{fargo_varq_growth}. The correlation is well-fitted by a
+Fig. \ref{fargo_varq_growth}. The correlation can be fitted with a
 linear relation
 \begin{align*}
   \gamma \simeq \left[0.015 q - 7.9\times10^{-4}\right] \Omega_k(R_0). 
@@ -240,24 +243,24 @@ development of the one-arm spiral observed in our simulations.
     plotted (dotted line). 
     \label{fargo_varq_growth}} 
 \end{figure}
+%maybe extend the low q simulations to get better rates?
 
-% only cases where a coherent spiral is seen is plotted 
-
-We also performed a series of simulations with aspect-ratio
-$h\in[0.03,0.07]$ with fixed $q=1$. This also affects the temperature
+We also performed a series of simulations with variable aspect-ratio
+$h\in[0.03,0.07]$ but fixed $q=1$. This also affects the temperature
 gradient since $c_s \propto h$. However, with other parameters equal
 to that in the fiducial simulation,  varying $h$ also changes the disc
 mass. For $h\in[0.03,0.07]$ the total disc mass ranges from
 $M_d=0.052M_*$ to $M_d=0.12M_*$ and the 
 mass within $R\in[R_1,R_2]$  ranges from $0.033M_*$ to $0.062M_*$. 
+% similar Q profiles
 
 Fig. \ref{fargo_varh_growth} shows the growth rates of the $m=1$
 spiral in $R\in[R_1,R_2]$ as a function of $h$. Growth rates increases
-with $h$, roughly as 
+with $h$, roughly as  
 \begin{align}
   \gamma \simeq \left[0.10h + 8.3\times10^{-3}\right]\Omega_k(R_0).  
 \end{align}
-However, the linear fit is less good than for variable $q$ above. This
+However, a linear fit is less good than for variable $q$ above. This
 may be due to the change in the total disc mass when $h$ changes. We
 find no qualitative difference between the spiral pattern that
 emerges. 

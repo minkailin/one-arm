@@ -254,13 +254,13 @@ conservation law, which is given in \S\ref{wkb}.
 %momentum per unit length. We will use $J_m$ to monitor angular momentum 
 %conservation for the disc as a whole.  
 
-\subsection{Three-dimensionality}
+\subsubsection{Three-dimensionality}
 In 3D simulations we measure the importance of vertical motion with
 $\Theta$, where 
 \begin{align}
   \Theta^2 \equiv \frac{\avg{v_z^2}}{\avg{v_R^2}+\avg{v_\phi^2}}, 
 \end{align}
-and $\avg{v_z^2}$ denotes the density-weighted average,
+and $\avg{\cdot}$ denotes the density-weighted average, e.g., 
 \begin{align}
   \avg{v_z^2} \equiv\frac{
     \int_{R_1}^{R_2}\int_{\theta_\mathrm{min}}^{\pi/2} \int_{0}^{2\pi}
@@ -286,7 +286,7 @@ that defined in \S\ref{model}, which is then perturbed such that
   \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
         m\phi\right)\right]}, 
 \end{align}
-and similarly for other variables. Since the background is
+and similarly for other variables. We take $m>0$. Since the background is
 axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
     t\right)} = \Sigma_m$ as defined for diagnostics. 
 The linearised mass and momentum equations are
@@ -306,11 +306,11 @@ The linearised Poisson equation is
   \nabla^2\delta\Phi_m = 4\pi G \delta\Sigma_m \delta(z). 
 \end{align}
 
-The linearised equations can be combined to a single
+The linearised equations can be combined into a single
 integro-differential equation eigenvalue problem. We defer a full
 exploration of the linear problem to a future study. Here, we list some
 general  properties of the linear perturbations that will be useful
-for analysing our simulation results. 
+for describing simulation results. 
 
 \subsection{Global angular momentum conservation for linear
   perturbations} 
@@ -320,7 +320,7 @@ in the form
 \begin{align} 
   \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
 \end{align}
-\citep[e.g.][]{narayan87,ryu92,lin93} where
+\citep[e.g.][]{narayan87,ryu92,lin93b} where
 \begin{align}\label{lin_ang_mom_cons}
   \jlin \equiv
   -\frac{m\Sigma}{2}\imag\left(\bm{\xi}^*\cdot\frac{\p\bm{\xi}}{\p
@@ -367,7 +367,8 @@ and $k$ is a real wavenumber such that $|kR|\gg1$. Note that in this
 approximation, only axisymmetric perturbations with $m=0$ can be
 unstable (having an imaginary $\sigma$).  
 
-Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv
+Considering a neutral mode, given the real frequency $\omega$ or
+pattern speed $\Omega_p\equiv 
 \omega/m$, Eq. \ref{dispersion} can be solved 
 for $|k|$, 
 \begin{align}\label{wavenumber}
@@ -386,9 +387,10 @@ is the usual Toomre parameter, and
 \begin{align}
   \nu \equiv \frac{(\omega - m\Omega)}{\kappa}
 \end{align}
-is a dimensionless frequency. The upper (lower) signs in
-Eq. \ref{wavenumber} correspond to short (long) waves, and $k>0$
-($k<0$) correspond to trailing (leading) spirals.   
+is a dimensionless frequency. In
+Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
+(long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
+spirals.    
 
 The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
 the fluid rotation,
