@@ -185,15 +185,79 @@ destabilised through the background torque density.
 \subsubsection{The confined spiral as an external potential}
 One possible effect of self-gravity is to allow the one-arm spiral 
 to act as an external potential for the wider disc. This effect is
-analogous to disc-satellite interaction
+analogous to disc-satellite interaction 
 \citep{goldreich79}, and may lead to instability 
 if the angular momentum associated with the spiral has the opposite 
 sign to that of the density waves it induces in the exterior disc
-\citep{lin11b}. 
+\citep{lin11b}. To estimate this effect, we port basic results from
+disc-planet theory \citep[see, e.g.][and references
+therein]{papaloizou07}. 
 
-Considering the spiral as a external potential (c.f. an embedded
-satellite), we expect it to  exert a torque on the disc at Lindblad
-and co-rotation resonances. 
+Let us regard the one-arm spiral disturbance located in the inner disc as an  
+external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
+    \Omega_pt\right)}$. We expect
+it to exert a torque on the exterior disc at Lindblad  
+and co-rotation resonances. At the outer Lindblad resonance (OLR), this
+torque is 
+\begin{align}
+  \Gamma_L =
+  \frac{\pi^2\Sigma_L}{3\Omega_L\Omega_p}
+\left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 - \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2,
+\end{align}   
+where a Keperian disc has been assumed and subscript $L$ denotes
+evaluation at $R=R_L$. (The inner Lindblad resonance does not exist
+for the pattern speeds observed in our simulations.)
+
+To order-of-magnitude, we reasonably take
+\begin{align}
+  \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \bar{R}|}, 
+\end{align}
+for the potential associated with a disturbance located at
+$R=\bar{R}$, where $M_\mathrm{ring}$ is the mass in $R\in[R_1,R_2]$.
+If we also associate its angular momentum with 
+$J_\mathrm{ext}  = M_\mathrm{ring}\bar{R}^2\Omega_p$, we can obtain a
+rate $\gamma_L$ by evaluating $\Gamma_L/J_\mathrm{ext}$. Then 
+\begin{align}
+  \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
+    Q_L}\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_L}{\bar{R}}\right)^{-1/2}\left(\frac{R_c}{\bar{R}}\right)^{5/2}\notag\\
+  &\times \left\{ \frac{R_L}{R_L - \bar{R}} - 2\left[1 -
+      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]\right\}^2\frac{R_c^2}{\left(R_L
+    - \bar{R}\right)^2}. 
+\end{align}
+Inserting $h=0.05$, $Q_L=10$, $M_\mathrm{ring} = 0.05M_*$,
+$R_L=7.2R_0$, $R_c=4.4R_0$ and $\bar{R}=1.5R_0$ from our fiducial
+FARGO simulation, we get
+\begin{align}
+  \gamma_L \sim 0.012\Omega_p. 
+\end{align}
+This represents an upper limit on the effect of the OLR on the spiral
+disturbance, and is much smaller than the growth rate measured in the
+simulation ($\gamma\sim0.1\Omega_p$). We conclude that for our models,
+the OLR has negligible effect on the one-arm spiral. 
+
+For the co-rotation torque, we use the result
+\begin{align}
+  \Gamma_C = \left.
+    \pi^2\Phi_\mathrm{ext}^2\left(\frac{d\Omega}{dR}\right)^{-1}\frac{d}{dR}\left(\frac{2\Sigma}{\Omega}\right)\right|_{C}
+\end{align}
+for a Keplerian disc, where subscript $C$ denotes evaluation at
+co-rotation radius $R=R_c$. For a power-law surface density profile
+$\Sigma\propto R^{-s}$ we have
+\begin{align}
+  \Gamma_C = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
+    \frac{3}{2}\right)\left(\frac{M_\mathrm{ring}}{M_*}\right)\frac{R_c^4}{\bar{R}^2\left(R_c
+      - \bar{R}\right)^2}.   
+\end{align}
+Using the above parameter values with $s=2$ and $Q_c=10$, we obtain a
+rate
+\begin{align}
+  \frac{\gamma_C}{\Omega_p} \sim 0.010\Omega_p,
+\end{align}
+which is again small compared to the measured growth rates. 
+
+%expressions for linear response, but have massive "planet" -> but CR
+%and LR far from where spiral is 
+
 
 %required disc structure (for confined SG spiral)
 

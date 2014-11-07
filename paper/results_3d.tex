@@ -33,7 +33,7 @@ ZEUS-MP code. Thus the $m=1$ spiral grows to a larger amplitude by the
 end of the run. However, we measure similar growth rates,
 \begin{align*}
 &\gamma \simeq 0.0073\Omega_k(R_0) \quad\quad \mathrm{PLUTO},\\
-&\gamma \simeq 0.0075\Omega_k(R_0) \quad\quad \mathrm{ZEUS-MP}.
+&\gamma \simeq 0.0075\Omega_k(R_0) \quad\quad \varA{ZEUS-MP}.
 \end{align*}
 Both are smaller than the 2D simulations above. This may be due to the
 low resolutions adopted. 
@@ -48,31 +48,52 @@ low resolutions adopted.
     \label{3d_ampmax}}   
 \end{figure}
 
-Visualisations of the 3D simluations are shown in Fig. \ref{3d_prelim} for
-both ZEUS-MP and PLUTO. The snapshots are chosen for when the spiral
-amplitudes are similar. The agreement between the two codes, as well
-as with the 2D simulations, is satisfactory. 
-
-%but a longer PLUTO simulation was 
-%needed to achieve similar mode amplitudes in ZEUS-MP. 
-
+Visualisations of the 3D simluations are shown in
+Fig. \ref{3d_prelim} for the disc midplane and near the upper disc
+boundary. The snapshots are chosen when the spiral 
+amplitudes reached in the two codes are similar. Although the
+non-axisymmetric density has similar amplitudes at both heights, a
+coherent spiral is less evident away from the disc midplane. 
+The agreement between the two codes, as well as with the 2D
+simulations, is satisfactory.   
 
 \begin{figure}
   \begin{center}
     \subfigure[ZEUS-MP]{
-      \includegraphics[scale=0.33]{figures/polarxy_dens015_zeus}
+      \includegraphics[scale=0.33]{figures/polarxy_dens015_z0}
+      \includegraphics[scale=0.33,clip=true,trim=2.24cm 0cm 0cm
+      0cm]{figures/polarxy_dens015_zmax}  
     }
     \subfigure[PLUTO]{
-      \includegraphics[scale=0.33]{figures/pdisk_020}
+      \includegraphics[scale=0.33]{figures/pdisk_021_z0}
+      \includegraphics[scale=0.33,clip=true,trim=2.24cm 0cm 0cm
+      0cm]{figures/pdisk_021_zmax}
     }
   \end{center}
-  \caption{Three-dimensional simulations using the (a) ZEUS-MP and (b)
-    PLUTO. The non-axisymmetric midplane density is shown. Here $\psi
-    \equiv \pi/2 - \theta$ is the angular height 
+  \caption{Three-dimensional simulations using the ZEUS-MP (top) and 
+    PLUTO (bottom) codes. The non-axisymmetric density at the midplane (left) and
+    two scale-heights above the midplane (right) is shown. Here $\psi
+    \equiv \pi/2 - \theta$ is the angular height  
     from the midplane.\label{3d_prelim}}   
 \end{figure}
 
 \subsection{Vertical motion}
+In Fig. \ref{3d_vert} we measure three-dimensionality using the
+parameter $\Theta$ as defined in Eq. \ref{theta}. Vertical velocities
+do increase with the growth of the one-arm spiral. Larger amplitudes
+are reached in ZEUS because of larger numerical noise. 
+However, even 
+in this case, $\Theta \lesssim 10^{-2}$. This implies $|v_z/c_s|\lesssim
+0.2$ for $h=0.05$. Thus, vertical motions are sub-sonic and negligible
+compared to horizontal motions. 
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_plot_vert.ps}
+  \caption{Evolution of three-dimensionality $\Theta$, as defined by
+    Eq. \ref{theta}, which corresponds to the
+    average vertical kinetic energy density, scaled by 
+    the average horizontal kinetic energy.\label{3d_vert}} 
+\end{figure}   
 
 \subsection{Angular momentum evolution}
 
@@ -84,15 +105,14 @@ to the individual components $|\Delta J_{0,1}/J|\sim
 $|J_{0,1}|$, but achieves better conervation, with $|\Delta
 J/J|=O(10^{-8})$. 
 
-
-
 \begin{figure}
 %scale=0.41
   \includegraphics[scale=.41,clip=true,trim=0cm 1cm 0cm 0cm]{figures/nonaxi_evol_ang_zeus}
   \includegraphics[scale=.41]{figures/nonaxi_evol_ang_pluto}
-  \caption{Evolution of angular momentum components in the fiducial 3D 
-    simulations. The perturbation
-    relative to $t=100P_0$ is shown in units of the
-    initial total angular momentum $J_\mathrm{ref}$.\label{3d_angmom}} 
+  \caption{Evolution of angular momentum components in the 3D 
+    simulations. The perturbation 
+    relative to $t=100P_0$, during the growth of the one-arm spiral,
+    is shown in units of the initial total angular momentum
+    $J_\mathrm{ref}$.\label{3d_angmom}}  
 \end{figure}   
 
