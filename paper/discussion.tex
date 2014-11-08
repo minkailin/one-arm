@@ -165,24 +165,41 @@ agreement with numerical results.
 
 %also total torque is integral -> may get cancelations 
 
-\subsection{Role of self-gravity and disc structure} 
-We note that the background torque density $T_\mathrm{BG}$ does not depend on  
-self-gravity, and we only considered a self-gravitating perturbation to
+\subsection{The role of self-gravity and disc structure} 
+The background torque density $T_\mathrm{BG}$ does not depend on  
+self-gravity explicitly. In the above discussion, we only considered a self-gravitating perturbation to 
 obtain an appropriate wavenumber $k$ needed to evaluate
-Eq. \ref{theoretical_rate}. Thus, self-gravity is not directly
+Eq. \ref{theoretical_rate}. Self-gravity is not directly
 responsible for instability. However, 
 our numerical simulations show that the $m=1$ spiral is
 confined between two $Q$-barriers, where real solutions to the local
 dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
-structure. Thus, the main role of disc structure and self-gravity is to
+structure. Thus, in our disc models the main role of disc structure and self-gravity is to 
 allow a neutral mode to be set up and confined, which is then
 destabilised through the background torque density. 
+
+In order to confine an $m=1$ spiral between two $Q$-barriers, we
+should have $Q^2(1-\nu^2)=1$ at two radii. Assuming 
+Keperlian rotation and a slow pattern speed $\Omega_p\ll\Omega$, this amounts to
+\begin{align}
+  \left(\frac{R_{Qb}}{R_c}\right)^{-3/2} = 2Q^2(R_{Qb}). 
+\end{align}
+Then it may be possible to have two $Q$-barriers when the $Q$ profile
+of the disc rises more rapidly (decays more slowly) than $R^{-3/2}$
+for decreasing (increasing) $R$. One possibility is a gap
+opened by a giant planet in a constant-$Q$ disc. In that case $Q$
+rises rapidly towards the gap centre since it is a region of low
+surface density.  %multi spirals associated with one planet 
+
+
+
 
 %talk about additional simulations at high Q
 %spiral mode as external potential to wider disc (lp11)
 %interaction across co-rotation
 
-\subsubsection{The confined spiral as an external potential}
+
+\subsection{The confined spiral as an external potential}
 One possible effect of self-gravity is to allow the one-arm spiral 
 to act as an external potential for the wider disc. This effect is
 analogous to disc-satellite interaction 
@@ -196,7 +213,7 @@ therein]{papaloizou07}.
 Let us regard the one-arm spiral disturbance located in the inner disc as an  
 external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
     \Omega_pt\right)}$. We expect
-it to exert a torque on the exterior disc at Lindblad  
+it to exert a torque on the exterior disc at the Lindblad  
 and co-rotation resonances. At the outer Lindblad resonance (OLR), this
 torque is 
 \begin{align}
@@ -205,8 +222,8 @@ torque is
 \left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 - \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2,
 \end{align}   
 where a Keperian disc has been assumed and subscript $L$ denotes
-evaluation at $R=R_L$. (The inner Lindblad resonance does not exist
-for the pattern speeds observed in our simulations.)
+evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
+exist for the pattern speeds observed in our simulations.) 
 
 To order-of-magnitude, we reasonably take
 \begin{align}
@@ -255,9 +272,11 @@ rate
 \end{align}
 which is again small compared to the measured growth rates. 
 
+%not important for our models, but may be important if outer disc is
+%self-gravitating too
+
 %expressions for linear response, but have massive "planet" -> but CR
 %and LR far from where spiral is 
-
 
 %required disc structure (for confined SG spiral)
 
