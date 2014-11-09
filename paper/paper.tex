@@ -8,7 +8,9 @@
 \newcommand{\p}{\partial}
 \newcommand{\mnras}{MNRAS}
 \newcommand{\apj}{ApJ}
+\newcommand{\aj}{AJ}
 \newcommand{\aap}{A\&A}
+\newcommand{\apss}{ApSS}
 \newcommand{\apjl}{ApJL}
 \newcommand{\pasj}{PASJ}
 \newcommand{\araa}{ARAA}
@@ -104,7 +106,7 @@
 \section{Introduction}\label{intro}
 % Protoplanetary discs are expected to contain complex structures
 % \citep{armitage11}, which directly impact planet formation theories.  
-One of the exciting developments in the study of circumstellar 
+An exciting development in the study of circumstellar 
 discs is the direct observation of large-scale, non-axisymmmetric
 structures within them. These
 include lopsided dust distributions 
@@ -113,7 +115,7 @@ spiral arms
 \citep{muto12,grady13,christiaens14,avenhaus14,boccaletti14}. 
 
 % planet is popular answer for spiral structure
-An attractive explanation for asymmetries in circumstellar discs is to
+The attractive explanation for asymmetries in circumstellar discs is to
 invoke disc-planet interaction. In particular, spiral structures
 naturally arise from the gravitational interaction between a
 planet and the gaseous protoplanetary disc it is embedded in
@@ -122,12 +124,12 @@ presence of spiral arms in circumstellar discs could be signposts of
 planet formation.  
 
 % but also natural in GI.
-Spiral arms are also naturally associated with global gravitational 
+However, spiral arms are also naturally associated with global gravitational 
 instability (GI) of differentially rotating discs
-\citep{goldreich65,laughlin96b,laughlin98,lodato05,forgan11}. Large-scale
+\citep{goldreich65,laughlin96b,laughlin98,nelson98,lodato05,forgan11}. Large-scale
 spiral arms may provide significant angular momentum transport to enable
 accretion \citep{lynden-bell72, papaloizou91,balbus99,lodato04}, and
-spiral structures are potentially observable with the Atacama Large 
+spiral structures due to GI are potentially observable with the Atacama Large 
 Millimeter/sub-millimeter Array \citep{cossins10,dipierror14}.   
 
 % when/where does it happen? formation stage/dead zones (special for ppd)
@@ -144,25 +146,57 @@ self-gravitating with sufficient mass built-up
 \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}.   
 
 % original motivation for this work (DZGI) 
-Indeed, the original goal for this project was to clarify
-what type of GI is relevant to astrophysical discs in which only part 
-of it is self-gravitating, such as a protoplanetary disc containing a 
-massive dead zone. However, our seemingly simple initial disc models
-consistently produced one-armed spiral structures, despite not 
-satisfying the usual requirements to generate them
+Given the wide range of GIs that may occur in  gaseous 
+astrophysical discs \citep{papaloizou89,christo92,christo93,hadley11,hadley14}, it would of
+theoretical interest to clarify what type of GI is relevant to 
+partially self-gravitating discs such as a protoplanetary disc containing a 
+massive dead zone. This was indeed the original goal of this project. 
+However, our seemingly simple initial disc models
+consistently produced \emph{one-armed} spiral structures, despite not 
+satisfying the usual requirements to generate them 
 (see below). We therefore dedicate this study to verify their origin.     
 
 %brief history of m=1 
 %stellar wobble from indiana group 
-Single-arm, or eccentric modes in 
+Single-arm spirals, or eccentric modes, corresponding to perturbations 
+with azimuthal wavenumber $m=1$, have received interest in
+the context of protoplanetary discs because of their global nature
+\citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. Their development is 
+often associated with the unique property of $m=1$ perturbations to
+move the central star \citep{shu90}, which may have observable
+consequeces \citep{michael10}. 
+%these are self-gravitating instabilities
 
+The aforementioned analytical studies have mostly adopted barotropic, smooth disc models. 
+In this work, we identify a mechanism to generate one-arm
+spiral patterns that is related to a non-barotropic equation of
+state and disc structure. Specifically, we find that if the disc temperature or
+sound-speed is forced to be a prescribed function of position, then 
+one-arm spiral modes grows inside a cavity that results from the
+adopted disc structure. 
 
+Our study is based on direct hydrodynamic simulations using three
+different grid-based codes, both in two-dimensions (2D) and
+three-dimensions (3D). We also apply results from previous linear
+theory to explain their growth. We find that, when the disc
+temperature is prescribed, the usual statement for the conservation of
+angular momentum for linear perturbations acquires a source term
+proportional to the temperature gradient which may act to destabilise
+$m=1$ perturbations. Although we work with self-gravitating discs, the
+source term itself does not depend explicitly on disc self-gravity. Thus, the
+destabilisation effect we describe may also operate in
+non-self-gravitating discs. 
 
-%this work  mechanism is not strictly sg 
-
-%this paper is organised as follows 
-
-
+This paper is organised as follows. In \S\ref{model} we list the
+governing equations and describe the disc equilibria under
+consideration. \S\ref{methods} describes the hydrodynamic codes
+employed in this work and several diagnostic measures. We briefly
+review basic results from linear theory in \S\ref{wkb} to aid our
+interpretation of numerical simulations.  Our main results are presented in 
+\S\ref{results2d} for 2D simulations and \S\ref{results3d} for 3D
+simulations, and we further analyse them in \S\ref{discussions}. 
+We summarise in \S\ref{summary}, including a discussion on
+spectulations for future work. 
 
 \input{model}
 \input{results}
