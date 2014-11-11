@@ -1,4 +1,4 @@
-\section{Discussion}\label{discussions}
+\section{Discussion}\label{discussions} 
 Having confirmed the $m=1$ spiral instability through numerical
 simulations, we now use results from the simulations combined with
 linear theory to construct an explanation for their growth. For
@@ -214,14 +214,36 @@ analogous to disc-satellite interaction
 \citep{goldreich79}, and may lead to instability 
 if the angular momentum associated with the spiral has the opposite 
 sign to that of the density waves it induces in the exterior disc
-\citep{lin11b}. To estimate this effect, we port basic results from
+\citep{lin11b}. To estimate the magnitude of this effect, we port basic results from
 disc-planet theory \citep[see, e.g.][and references
 therein]{papaloizou07}. 
 
-Let us regard the one-arm spiral disturbance located in the inner disc as an  
+Let us treat the one-arm spiral disturbance located in the inner disc as an  
 external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
-    \Omega_pt\right)}$. We expect
-it to exert a torque on the exterior disc at the Lindblad  
+    \Omega_pt\right)}$. Let $M_\mathrm{ring}$ denote the
+mass contained within $R\in[R_1,R_2]$ of the disc, where the spiral is
+confined in the numerical simulations. We take 
+\begin{align} 
+  \Phi_\mathrm{ext}
+  =-\frac{GM_\mathrm{ring}}{\bar{R}}b^{1}_{1/2}(\beta),   
+\end{align}
+where $b_{n}^m(\beta)$ is the Laplace coefficient, $\beta = R/\bar{R}$ 
+\citep{goldreich79} and $\bar{R} = (R_1+R_2)/2$ is the
+approximate location of the spiral. 
+
+%and here we are interested in the
+%potential it produces at $R>\bar{R}$  
+%This potential is associated with a mass
+%$M_\mathrm{ring}$ contained in   is the mass in $R\in[R_1,R_2]$.
+
+%For an order-of-magnitude exercise, we simply take 
+%\begin{align}
+ % \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \bar{R}|}, 
+%\end{align}
+%for the potential associated with a disturbance located at
+%$R=\bar{R}$, where $M_\mathrm{ring}$ 
+
+We expect the external potential to exert a torque at the Lindblad  
 and co-rotation resonances. At the outer Lindblad resonance (OLR), this
 torque is 
 \begin{align}
@@ -233,32 +255,40 @@ where a Keperian disc has been assumed and subscript $L$ denotes
 evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
 exist for the pattern speeds observed in our simulations.) 
 
-To order-of-magnitude, we reasonably take
-\begin{align}
-  \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \bar{R}|}, 
-\end{align}
-for the potential associated with a disturbance located at
-$R=\bar{R}$, where $M_\mathrm{ring}$ is the mass in $R\in[R_1,R_2]$.
 If we also associate its angular momentum with 
 $J_\mathrm{ext}  = M_\mathrm{ring}\bar{R}^2\Omega_p$, we can obtain a
-rate $\gamma_L$ by evaluating $\Gamma_L/J_\mathrm{ext}$. Then 
+rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
 \begin{align}
-  \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
-    Q_L}\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_L}{\bar{R}}\right)^{-1/2}\left(\frac{R_c}{\bar{R}}\right)^{5/2}\notag\\
-  &\times \left\{ \frac{R_L}{R_L - \bar{R}} - 2\left[1 -
-      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]\right\}^2\frac{R_c^2}{\left(R_L
-    - \bar{R}\right)^2}. 
+  \frac{\gamma_L}{\Omega_p} = &\frac{\pi
+    h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\bar{R}}\right)\left(\frac{R_c}{\bar{R}}\right)^3\left(\frac{R_L}{R_c}\right)^{-3/2}\notag\\
+  &\times \left\{\frac{R_L}{\bar{R}}\left.\frac{db_{1/2}^1}{d\beta}\right|_L + 2\left[1 -
+      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]b_{1/2}^1(\beta_L)\right\}^2.
 \end{align}
+
+%\begin{align}
+ % \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
+  %  Q_L}\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_L}{\bar{R}}\right)^{-1/2}\left(\frac{R_c}{\bar{R}}\right)^{5/2}\notag\\
+ % &\times \left\{ \frac{R_L}{R_L - \bar{R}} - 2\left[1 -
+  %    \left(\frac{R_c}{R_L}\right)^{-3/2}\right]\right\}^2\frac{R_c^2}{\left(R_L
+   % - \bar{R}\right)^2}. 
+%\end{align}
+
 Inserting $h=0.05$, $Q_L=10$, $M_\mathrm{ring} = 0.05M_*$,
 $R_L=7.2R_0$, $R_c=4.4R_0$ and $\bar{R}=1.5R_0$ from our fiducial
 FARGO simulation, we get
+
 \begin{align}
-  \gamma_L \sim 0.012\Omega_p. 
+  \gamma_L \sim 0.0005\Omega_p. 
 \end{align}
-This represents an upper limit on the effect of the OLR on the spiral
-disturbance, and is much smaller than the growth rate measured in the
-simulation ($\gamma\sim0.1\Omega_p$). We conclude that for our models,
-the OLR has negligible effect on the one-arm spiral. 
+
+%\begin{align}
+ % \gamma_L \sim 0.012\Omega_p. 
+%\end{align}
+
+%This represents an upper limit on the effect of the OLR on the spiral
+%disturbance, and is much smaller than the growth rate measured in the
+%simulation ($\gamma\sim0.1\Omega_p$). We conclude that for our models,
+%the OLR has negligible effect on the one-arm spiral. 
 
 For the co-rotation torque, we use the result
 \begin{align}
@@ -269,15 +299,25 @@ for a Keplerian disc, where subscript $C$ denotes evaluation at
 co-rotation radius $R=R_c$. For a power-law surface density profile
 $\Sigma\propto R^{-s}$ we have
 \begin{align}
-  \frac{\Gamma_C}{J_\mathrm{ext}\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
-    \frac{3}{2}\right)\left(\frac{M_\mathrm{ring}}{M_*}\right)\frac{R_c^4}{\bar{R}^2\left(R_c
-      - \bar{R}\right)^2}.   
+\frac{\gamma_c}{\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_c}
+\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_c}{\bar{R}}\right)^4\left(s-\frac{3}{2}\right) \left[b_{1/2}^1(\beta_c)\right]^2 
 \end{align}
+
+%\begin{align}
+%  \frac{\Gamma_C}{J_\mathrm{ext}\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
+ %   \frac{3}{2}\right)\left(\frac{M_\mathrm{ring}}{M_*}\right)\frac{R_c^4}{\bar{R}^2\left(R_c
+ %     - \bar{R}\right)^2}.   
+%\end{align}
+
 Using the above parameter values with $s=2$ and $Q_c=10$, we obtain a
 rate
 \begin{align}
-  \gamma_C\sim 0.010\Omega_p,
+  \gamma_c\sim 0.0006\Omega_p,
 \end{align}
+
+%\begin{align}
+%  \gamma_C\sim 0.010\Omega_p,
+%\end{align}
 which is again small compared to the measured growth rates. 
 
 %not important for our models, but may be important if outer disc is
