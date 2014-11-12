@@ -59,7 +59,6 @@
 \usepackage{array,booktabs,tabularx}
 \newcolumntype{R}{>{\centering\arraybackslash}X} % right justified tabularx columns
 
-
 \title[One-arm spirals]{One-arm spirals in 
   locally isothermal, radially structured self-gravitating discs}     
 
@@ -82,20 +81,20 @@
   We conduct numerical gravito-hydrodynamic experiments in 2D using
   the FARGO code and in 3D with the ZEUS-MP and PLUTO codes. In such
   discs we observe the development of a 
-  spiral mode with azimuthal wavenumber $m=1$ with co-rotation radius 
+  spiral mode with azimuthal wavenumber $m=1$ and co-rotation radius 
   outside the bulk of the spiral arm, resulting in a nearly stationary 
   one-arm spiral pattern in the self-gravitating region of the
   disc. The development of this one-arm 
   spiral does not require the movement of  
   the central star, as found in previous studies. Instead, we find it 
-  to be associated with the imposed 
+  is associated with the imposed 
   temperature gradient and the radial disc structure. 
-  We apply results from existing linear theory and attribute the
+  We apply results from linear theory and attribute the
   growth of this spiral to the non-conservation of angular momentum
   for non-axisymmetric linear perturbations in discs with a forced temperature
   gradient. This may lead to an unstable exchange of angular momentum between the spiral 
   and the background disc. However, because the interaction does
-  not explicitly depend on self-gravity, we speculate it may also
+  not explicitly depend on self-gravity, we suggest it may also
   affect low-frequency one-arm spirals in non-self-gravitating
   discs. 
 \end{abstract}
@@ -125,54 +124,57 @@ presence of spiral arms in circumstellar discs could be signposts of
 planet formation.  
 
 % but also natural in GI.
-However, spiral arms are also naturally associated with global gravitational 
+However, spiral arms are also associated with global gravitational 
 instability (GI) of differentially rotating discs
 \citep{goldreich65,laughlin96b,laughlin98,nelson98,lodato05,forgan11}. Large-scale
-spiral arms may provide significant angular momentum transport to enable
-accretion \citep{lynden-bell72, papaloizou91,balbus99,lodato04}, and
+spiral arms can provide significant angular momentum transport
+neccessary for accretion \citep{lynden-bell72, papaloizou91,balbus99,lodato04}, and
 spiral structures due to GI are potentially observable with the Atacama Large 
 Millimeter/sub-millimeter Array \citep{cossins10,dipierror14}.   
 
 % when/where does it happen? formation stage/dead zones (special for ppd)
 GI can be expected in the earliest stages of 
-circumstellar disc formation \citep{kratter10b,inutsuka10,tsukamoto13}. %also
+circumstellar disc formation
+\citep{kratter10b,inutsuka10,tsukamoto13}, and may be possible in the
+outer parts of the disc \citep{rafikov05,matzner05,kimura12}.  
 % outer parts  
 In the case of protoplanetary discs, which have complex structure
-\citep{armitage10}, GI may also occur in `dead
+\citep{armitage10}, GI can also occur in `dead
 zones' --- sub-portions of the disc where the magneto-rotational
 instability is ineffective for angular momentum transport
 \citep{gammie96,turner08,landry13} and therefore has reduced mass
-accretion. Dead zones may become
+accretion. Dead zones may then become
 self-gravitating with sufficient mass built-up
 \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}.   
 
 % original motivation for this work (DZGI) 
-Given the wide range of GIs that may occur in  gaseous 
-astrophysical discs
-\citep{papaloizou89,christo92,christo93,hadley11,hadley14}, it is of 
-theoretical interest to clarify what type of GI is relevant to 
+A wide range of GIs can occur in  gaseous 
+astrophysical discs 
+\citep{papaloizou89,christo92,christo93,hadley11,hadley14}. It is then
+of theoretical importance to clarify what type of GI is relevant to 
 partially self-gravitating discs, such as a protoplanetary disc containing a 
 massive dead zone.  %This was indeed the original goal of this project. 
-This work presents a first step towards this goal. We begin with
-the simplest disc models which, surprisingly, still produced
-unexpected results. Specifically, our seemingly simple initial disc models
-consistently developed \emph{one-armed} spiral structures, despite not 
-satisfying the usual requirements to generate them 
-(see below). 
+This work presents a first step towards this goal. Specifically, we 
+study a class of seemingly simple disc models which were found to 
+consistently produce \emph{one-armed} spiral structures, despite not 
+satisfying the usual requirements to generate them. 
 
 %through this work we identify a new method to generate one arm
 %spirals 
 %We therefore dedicate this study to verify their origin.     
 
 %brief history of m=1 
-%stellar wobble from indiana group 
+%stellar wobble from indiana group  
 Single-arm spirals, or eccentric modes, corresponding to perturbations 
 with azimuthal wavenumber $m=1$, have received interest in
 the context of protoplanetary discs because of their global nature
-\citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. Their development is 
-often associated with the unique property of $m=1$ perturbations to
-move the central star \citep{shu90}, which may have observable
-consequeces \citep{michael10}. 
+\citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. 
+In the `SLING' mechanism proposed by \cite{shu90}, the $m=1$ spiral
+instability is attributed to motion of the central star induced by the
+one-arm perturbation and requires a massive disc \citep[the former may
+have observable consequences, ][]{michael10}. However, our numerical
+models do not have these features.   
+
 %these are self-gravitating instabilities
 
 The aforementioned analytical studies have adopted barotropic, smooth disc models. 
@@ -185,14 +187,14 @@ adopted disc structure.
 
 Our study is based on direct hydrodynamic simulations using three
 different grid-based codes, both in two-dimensions (2D) and
-three-dimensions (3D). We also apply results from previous linear
+three-dimensions (3D). We also apply results from linear
 theory to explain their growth. We find that, when the disc
 temperature is prescribed, the usual statement for the conservation of
 angular momentum for linear perturbations acquires a source term
 proportional to the temperature gradient, which may act to destabilise
-$m=1$ perturbations. Although we work with self-gravitating discs, the
-source term itself does not depend explicitly on disc self-gravity. Thus, the
-destabilisation effect we describe may also operate in
+$m=1$ perturbations. Although we work with self-gravitating discs,
+this source term does not depend explicitly on disc self-gravity. Thus, the
+destabilisation effect we describe should also be applicable to
 non-self-gravitating discs. 
 
 This paper is organised as follows. In \S\ref{model} we list the
@@ -203,7 +205,7 @@ review basic results from linear theory in \S\ref{wkb} to aid our
 interpretation of numerical simulations.  Our main results are presented in 
 \S\ref{results2d} for 2D simulations and \S\ref{results3d} for 3D
 simulations, and we further analyse them in \S\ref{discussions}. 
-We summarise in \S\ref{summary}, including a discussion on
+We summarise in \S\ref{summary}, with a discussion on
 spectulations for future work. 
 
 \input{model}

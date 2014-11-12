@@ -38,14 +38,14 @@ At early times $t\lesssim100P_0$ the disc
 dominated by low-amplitude high-$m$ perturbations. The $m\geq4$ modes
 growth initially and saturate (or decays) after $t=40P_0$. Notice the
 low $m\leq 2$ modes decay initially, but grows between $t\in[20,40]P_0$,
-possibily due to saturation of the high-$m$ modes  
+possibily due to non-linear interaction of the high-$m$ modes  
 \citep{laughlin96,laughlin97}. However, the $m=1$ mode begins to grow
 again after $t=70P_0$, and eventually dominates the annulus. 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/nonaxi_evol_DZ_fargo}
-  \caption{Evolution of maxima in non-axisymmetric surface density 
-    in the fiducial FARGO simulation initialised with perturbations
+  \caption{Evolution of non-axisymmetric surface density maxima 
+    in the FARGO simulation initialised with perturbations
     with $m\in[1,10]$.\label{fargo_modeamp}} 
 \end{figure}
 
@@ -54,7 +54,7 @@ again after $t=70P_0$, and eventually dominates the annulus.
   0cm 0cm 
   0cm]{figures/polarxy_dens110}\includegraphics[scale=0.27,clip=true,trim=2.26cm
   0cm 0cm 0cm]{figures/polarxy_dens130} 
-  \caption{Visualisation of the fiducial FARGO 2D simulation in
+  \caption{Visualisation of the FARGO 2D simulation in
     Fig. \ref{fargo_modeamp}. The total  
     non-axisymmetric surface density
     $\Delta\Sigma$ is shown. \label{fargo_2d}} 
@@ -68,7 +68,7 @@ Its growth is compensated by an increase in the axisymmetric
 component of angular momentum, such that $\Delta J_0 + \Delta
 J_1 \sim 0$. Note that FARGO does not conserve angular momentum
 exactly. However, we find the total angular momentum varies by 
-$|\Delta J/J|= O(10^{-6})$, and is much smaller in magnitude than the
+$|\Delta J/J|= O(10^{-6})$, and is much smaller than the
 change in the angular momenta components, $|\Delta J_{0,1}/J|>
 O(10^{-5})$. Fig. \ref{2d_angmom} then suggest that angular momentum
 is transferred from the one-arm spiral to the background disc.    
@@ -76,7 +76,7 @@ is transferred from the one-arm spiral to the background disc.
 \begin{figure}
   % scale=0.41
   \includegraphics[width=\linewidth]{figures/nonaxi_evol_ang_fargo}
-  \caption{Evolution of angular momentum components in the fiducial
+  \caption{Evolution of angular momentum components in the 
     FARGO simulation in Fig. \ref{fargo_modeamp}---\ref{fargo_2d}. The
     perturbation relative to $t=0$ in 2D is shown in units of the 
     initial total angular momentum $J_\mathrm{ref}$.\label{2d_angmom}} 
@@ -84,14 +84,14 @@ is transferred from the one-arm spiral to the background disc.
 
 \subsection{Trapping the low-frequency $m=1$ spiral}\label{fargo_m1}
 In order to focus on the $m=1$ spiral that eventually emerges, from
-now on we examine simulations initialised with
+now on we examine simulations initialised 
 $M=1$ in Eq. \ref{randpert}. The disc 
-evolution is largely similar to the previous case, but the final spiral is
+evolution is largely similar to the previous case, but the one-armed spiral is
 more coherent, which facilitates the analysis below. 
 
 Fig. \ref{2d_fargo_viz} shows the $m=1$ surface density
-at the end of this simulation. For this one-arm spiral
-we measure a co-rotation radius and growth rate of 
+at the end of this simulation. For this one-armed spiral
+we measure a co-rotation radius and growth rate  
 \begin{align*}
   &R_c \simeq 4.4R_0,\\
   &\gamma\simeq 0.014\Omega_k(R_0) = 0.13\Omega_p. 
@@ -114,15 +114,16 @@ pattern is nearly stationary.
 Next, we write $\Sigma_1 = 
 |\Sigma_1|\exp{(\ii kR)}$, where $k$ is real, and assume the amplitude
 $|\Sigma_1|$ varies slowly compared to the complex phase. This is the
-main assumption in local theory. We measure $k$ numerically and plot
+main assumption in local theory. We measured $k$ numerically and plot
 its normalised value in Fig. \ref{fargo_wavenumber}. We find 
 \begin{align*}
   kR \sim \frac{\pi G \Sigma}{c_s^2}R \sim \frac{1}{hQ}, 
 \end{align*}
 where we used $Q\sim c_s\Omega/\pi G \Sigma$ and $R\Omega/c_s\sim
 h^{-1}$. Since $Q=O(1)$ and $h\ll 1$ imply $|kR|\gg 1$, we 
-can apply results from local theory self-consistently. Recall $k>0$
-corresponds to a trailing spiral, as seen in Fig. \ref{2d_fargo_viz}.  
+can apply results from local theory
+self-consistently. Fig. \ref{2d_fargo_viz} shows the $m=1$ spiral is
+trailing, which is consistent with $k>0$. 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_kr120_fargo.ps}
@@ -144,12 +145,11 @@ the inner disc, at $R_{Qb}=R_0$ and $R_{Qb}=1.6R_0$, which is indeed the
 region where the $m=1$ spiral develops. This suggests that the one-arm
 spiral is trapped. Note in this region, $\nu^2 - 1 +
 Q^{-2}\simeq 0.1\ll 1$, as required for consistency with
-Eq. \ref{dispersion} (with the lower sign taken, i.e. long waves).  
+Eq. \ref{dispersion} with the lower sign taken (i.e. long waves).  
 There is one outer Lindblad resonance at $R_L\simeq
-7.2R_0$. Thus, waves may be launched in $R\gtrsim 7.2R_0$ by the  
-spiral disturbance in the inner disc \citep{lin11b}. 
-%this would be a de-stabilising
-% effect.  we discuss this in discussions?
+7.2R_0$. Thus, acoustic waves may be launched in $R\gtrsim 7.2R_0$ by
+the spiral disturbance in the inner disc \citep{lin11b}. 
+%implications: effect on dynamics in outer disc 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_Qbar_fargo.ps} 
@@ -161,7 +161,7 @@ spiral disturbance in the inner disc \citep{lin11b}.
     \label{fargo_qbarrier}} 
 \end{figure}
 
-\subsection{Angular momentum exchange with the background disc} 
+\subsection{Angular momentum exchange with the background disc}  
 The wavenumber $k = \pi G\Sigma/c_s^2$ corresponds to the
 wavelength most susceptible to gravitational instability for
 \emph{axisymmetric} perturbations. Physically, then, it is not
@@ -215,8 +215,7 @@ proportional to $q$, the power-law index used to set the sound-speed
 profile (Eq. \ref{sound-speed}). To test this, we carried out
 simulations with $q\in[0,1]$ using only an $m=1$ initial 
 perturbation. However, to keep the Toomre profiles similar, we adjust
-the surface density power-law index such that $s = (3+q)/2$ for each
-case presented below. %should not be important, local effects 
+the surface density power-law index such that $s = (3+q)/2$. 
 
 Fig. \ref{fargo_varq} compares the $m=1$ spiral amplitudes as a
 function of $q$. We indeed observe slower growth with decreasing
