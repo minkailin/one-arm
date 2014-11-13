@@ -8,7 +8,7 @@ The 3D disc has radial size
 $[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent  
 $n_H=2$ scale-heights at $R=R_0$. The resolution is $N_r\times N_\theta\times
 N_\phi=256\times32\times256$. This corresponds to about $4$ cells per
-$H$in radius. Because of the much reduced resolution 
+$H$ in radius. Because of the much reduced resolution 
 compared to 2D, we use a smooth perturbation by setting
 $\delta = 10^{-3}$ and $M=1$ in Eq. \ref{randpert}. This corresponds
 to a single $m=1$ disturbance in $R\in[R_1,R_2]$, which was found to dominate
@@ -25,26 +25,24 @@ Fig. \ref{3d_ampmax} plots the amplitude of the $m=1$ spirals measured
 in the ZEUS-MP and PLUTO runs. 
 %why no high m
                                 %modes as in 2D for iso disc?
-                                %resolution?
-Results from ZEUS-MP appears to be off-set from that obtained using
-PLUTO.  
-%We suspect this is due to larger numerical noise in the
-%ZEUS-MP code, 
+                                %resolution? 
 In ZEUS-MP we observe disturbances developed near
 the inner boundary, which is probably responsible for the initial growth
-for $t<70P_0$. This growth is likely a numerical artifact and effectively seeds
-the ZEUS-UP simulation with a larger initial perturbation.  However,
+for $t<70P_0$. This is likely a numerical artifact and effectively seeds
+the ZEUS-UP simulation with a larger initial perturbation. Results
+from ZEUS-MP are therefore off-set from PLUTO. However,
 once the coherent $m=1$ spiral begins to grow ($t\gtrsim 100P_0$), 
 we measure similar growth rates in both codes: 
 \begin{align*}
   &\gamma \simeq 0.0073\Omega_k(R_0) \quad\quad \mathrm{PLUTO},\\
   &\gamma \simeq 0.0084\Omega_k(R_0) \quad\quad \varA{ZEUS-MP}.
 \end{align*}
-Both are smaller than the 2D simulations. This may be due to the
+Both are smaller than the 2D simulations and is probably due to the
 low resolutions adopted and/or the small softening length employed in
 2D.  Fig. \ref{3d_ampmax} also show results from strictly isothermal
 simulations, which display no growth compared to cases with a 
-temperature gradient. 
+temperature gradient. This confirms the temperature gradient effect is
+the same in 3D. 
 
 % We also show results from strictly
 % isothermal discs ($q=0$). 
@@ -61,12 +59,11 @@ temperature gradient.
 
 Visualisations of the 3D simluations are shown in   
 Fig. \ref{3d_prelim} for the disc midplane and near the upper disc
-boundary. The snapshots are chosen when the spirals in the two codes
+boundary. The snapshots are chosen when the one-armed spirals in the two codes
 have reached similar amplitudes. The agreement between the codes,
-as well as with the 2D simulations, is satisfactory.    
-Away from the disc midplane, a coherent spiral arm is
-not prominent, but the disturbance is radially more global, extending
-up to $R\sim 4R_0$. 
+as well as with the 2D simulations, is satisfactory. Away from the
+disc midplane, a coherent spiral arm is not prominent, but the
+disturbance is radially more global, extending up to $R\sim 4R_0$.   
 %implications?
 
 \begin{figure}
@@ -95,9 +92,10 @@ spiral in the PLUTO run. The main spiral is confined to $z < H$. Thus,
 a 2D disc model, representing dynamics near the disc midplane, 
 should be sufficient to study the instability. Interestingly, however, for $R>2R_0$ the
 spirals  increase in amplitude away from the midplane. It remains
-small  in our disc mode ($|\Delta\rho| < 0.1$) l, but could become 
-significant with a larger vertical domain. This shows that 
-the one-arm spiral can have a global influence. 
+small in our disc model ($|\Delta\rho| < 0.1$), but could become 
+significant with a larger vertical domain. The figure shows that 
+the one-arm spiral can have a global influence away from the
+midplane of the self-gravitating annulus.
 
 \begin{figure}
   \includegraphics[scale=0.47,clip=true,trim=0cm 0.79cm 0cm 0cm]{figures/pdisk_rz_020_sg.ps}
@@ -110,12 +108,17 @@ the one-arm spiral can have a global influence.
     \label{3d_rz}} 
 \end{figure}   
 
-Although Fig. \ref{3d_rz} appears to show significant vertical motion,
+Although Fig. \ref{3d_rz} appears to display significant vertical motion,
 the three-dimensionality parameter $\Theta < 10^{-2}$
 (Eq. \ref{theta}), implying the kinetic energy associated with
 vertical motion is insignificant compared to that in horizontal
-motion. We find  $|v_z/c_s|\lesssim
-0.2$ for $h=0.05$. Thus, vertical motions are sub-sonic.  
+motion. We find  $|v_z/c_s|\lesssim 
+0.2$ for $h=0.05$. Thus, vertical motions are sub-sonic and negligible
+compared to horizontal motions, which supports a 2D approximation. 
+
+%negligible vertical motion
+%unstratified approxi good?
+
 %This again supports the 2D approximation, altthou
 
 %Vertical velocities
@@ -132,16 +135,17 @@ motion. We find  $|v_z/c_s|\lesssim
 %    the average horizontal kinetic energy.\label{3d_vert}} 
 %\end{figure}   
 
-\subsection{Angular momentum evolution} 
+\subsection{Angular momentum conservation} 
 Fig. \ref{3d_angmom} shows the angular momentum evolution in the 3D
-runs. These plots are again similar to the 2D runs, i.e. angular
-momentum lost by $J_1$ is gained by $J_0$. ZEUS-MP does not conserve
-angular momentum very well, but the variation $|\Delta J/J|<
-O(10^{-6})$ is small compared 
+runs. ZEUS-MP does not conserve angular momentum very well, but the
+variation $|\Delta J/J|< O(10^{-6})$ is small compared 
 to the individual components $|\Delta J_{0,1}/J|\sim 
 5\times10^{-5}$. The PLUTO run reaches similar values of
-$|J_{0,1}|$, but achieves better conervation, with $|\Delta
-J/J|=O(10^{-8})$. 
+$|J_{0,1}|$, but achieves better conservation, with $|\Delta
+J/J|=O(10^{-8})$. These plots are again similar to the 2D simulations,
+i.e. angular momentum lost by $J_1$ is gained by $J_0$. This confirms 
+that the interaction between $J_1$ and $J_0$ operates in 3D and 2D
+similarly.  
 
 \begin{figure}
 %scale=0.41

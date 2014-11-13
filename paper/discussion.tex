@@ -29,19 +29,24 @@ term $\omega|\bm{\xi}|^2$ and setting $m=1$,
   & = -\frac{\Sigma\Omega}{2}|\xi_R + \ii\xi_\phi|^2\notag\\
   & \leq 0.
 \end{align}
-Thus, low-frequency $m=1$ modes are generally associated with negative
+Thus, low-frequency $m=1$ modes generally have negative
 angular momentum. If the mode loses (positive) angular momentum
 to the background, then we can expect instability. We demonstrate
 this below. 
 
 \subsection{Unstable interaction between low-frequency $m=1$ spirals
   and the background disc due to an imposed temperature gradient}
-The $m=1$ spiral that emerges in our simulations have low frequency
-and grows slowly, and its spatial form is consistent local theory
-(\S\ref{fargo_m1}). To demonstrate possible instability, we
-first construct a neutral low-frequency mode using local theory, then
-show that the torque density acting on this mode due to the background
-temperature gradient is negative, which enforces the mode. % Note that
+The $m=1$ spiral that emerges in our simulations have low frequency,
+grows slowly, and its spatial form is consistent local theory  
+(\S\ref{fargo_m1}). Then to a first approximation, we can regard it 
+as a neutral, low-frequency $m=1$ mode in satifying the 
+dispersion relation Eq. \ref{dispersion}.  
+To demonstrate possible instability, %we 
+%first construct a neutral low-frequency mode using local theory, 
+we show that the torque density acting on such a mode due to the background
+temperature gradient is negative, which enforces the mode, because it
+has negative angular mometum.  
+% Note that
 % we will not be assuming a self-gravitating disc until the end of this
 % section. 
 
@@ -85,7 +90,7 @@ so that
       \Sigma}{|k|} - c_s^2\right)\left(\ii k  + \frac{2
       m\Omega}{R\sbar^*}\right). 
 \end{align}
-For a neutral mode, $\sbar$, and therfore $D$ is real. Then, after
+For a neutral mode, $\sbar$, and therefore $D$ is real. Then, after
 taking the imaginary part of the above expression, the torque
 density is 
 \begin{align}\label{tbg_explicit}
@@ -162,22 +167,23 @@ our simulations). Then
   \gamma \lesssim \frac{qh}{2Q}\Omega,
 \end{align}
 where we used $c_s/R\sim h\Omega$. For our fiducial disc models with
-$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega = O(10^{-2})$,
+$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega < O(10^{-2})$,
 consistent with simulation results. 
 
-Of course, we have been assuming a neutral mode to obtain expressions
+Of course, we assumed a neutral mode to obtain expressions
 for $\jlin$ and $T_\mathrm{BG}$ in the first place, so
 Eq. \ref{theoretical_rate} is only an order-of-magnitude
-constraint. Nevertheless, the xpected growth rate is in reasonable
+constraint. Nevertheless, the expected growth rate is in reasonable
 agreement with numerical results. 
 
 %also total torque is integral -> may get cancelations 
 
 \subsection{The role of self-gravity and disc structure} 
+In the above discussion, we only considered a self-gravitating
+perturbation to obtain an appropriate wavenumber $k$ needed to
+evaluate Eq. \ref{theoretical_rate}. 
 The background torque density $T_\mathrm{BG}$ does not depend on  
-self-gravity explicitly. In the above discussion, we only considered a self-gravitating perturbation to 
-obtain an appropriate wavenumber $k$ needed to evaluate
-Eq. \ref{theoretical_rate}. Self-gravity is not directly
+self-gravity explicitly, so self-gravity is not directly
 responsible for instability. However, 
 our numerical simulations show that the $m=1$ spiral is
 confined between two $Q$-barriers, where real solutions to the local
@@ -312,7 +318,7 @@ rate
 
 These estimates are much smaller than that due to
 the imposed temperature gradient as measured in the simulations
-$\gamma\sim 0.1\Omega_p$). We conclude that for our disc models, the
+($\gamma\sim 0.1\Omega_p$). We conclude that for our disc models, the
 Lindblad and co-rotation resonances have negligible effect on the
 growth of the spiral arm in the inner disc. We confirmed this with
 additional FARGO simulations with a reduced radial domain size,

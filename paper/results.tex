@@ -162,13 +162,14 @@ the spiral disturbance in the inner disc \citep{lin11b}.
 \end{figure}
 
 \subsection{Angular momentum exchange with the background disc}  
-The wavenumber $k = \pi G\Sigma/c_s^2$ corresponds to the
-wavelength most susceptible to gravitational instability for
-\emph{axisymmetric} perturbations. Physically, then, it is not
+The wavenumber $k = \pi G\Sigma/c_s^2$ minimises the shifted frequency
+$\sbar$ in the dispersion relation, Eq. \ref{dispersion}.  
+%\emph{axisymmetric} perturbations. 
+Physically, then, it is not
 surprising to find perturbations of this wavenumber in a
 self-gravitating disc where $Q\sim 1$. However, according the
-local dispersion relation, $m=1$ perturbations are formally stable for 
-real $k$.  
+local dispersion relation, low-frequency $m=1$ perturbations are
+formally stable for real $k$.  
 
 In order to track down the origin for the (slow) growth of the
 $m=1$ spiral, we invoke angular momentum conservation for linear
@@ -181,11 +182,12 @@ Eq. \ref{lin_ang_mom_cons} to give
   =\int_{R\mathrm{min}}^{R\mathrm{max}}T_\mathrm{BG} 2\pi R dR, 
 \end{align}
 where we recall $T_\mathrm{BG}$ is the torque density due to the imposed
-sound-speed profile (Eq. \ref{baroclinic_torque}). We have explicitly
-computed both sides of Eq. \ref{baroclinic_torque_int} using
+sound-speed profile (Eq. \ref{baroclinic_torque}). We explicitly 
+compute both sides of Eq. \ref{baroclinic_torque_int} using
 simulation data, and compare them in Fig. \ref{fargo_angmom_ex}. There
 is a good match between the two torques, especially at early times
-$t\lesssim110P_0$. The match is less good later on, when the spiral
+$t\lesssim110P_0$. The average discrepency is $\simeq 5\%$. 
+The match is less good later on, when the spiral
 amplitude is no longer small ($\Delta\Sigma_1\sim 0.2$ at $t=110P_0$
 and $\Delta\Sigma_1\sim 0.4$ by $t=120P_0$) and linear theory becomes
 less valid. Fig. \ref{fargo_angmom_ex} confirms that the $m=1$ spiral
@@ -193,6 +195,7 @@ wave experiences a negative torque that further reduces its angular
 momentum. This is consistent with angular momentum component
 measurements (Fig. \ref {2d_angmom}).  
 
+% similar results if only intergrating between R_1 and R_2
 %wave losses at boundaries 
 
 \begin{figure}
@@ -208,13 +211,13 @@ measurements (Fig. \ref {2d_angmom}).
 %- probably non-linear effects/shocks 
 
 \subsection{Dependence on the imposed temperature profile} 
-At this point we hypothesize the growth of the $m=1$ spiral mode is
+We now hypothesize the growth of the $m=1$ spiral mode is
 associated with the imposed temperature gradient. The torque
 responsible for its growth, Eq. \ref{baroclinic_torque}, is
 proportional to $q$, the power-law index used to set the sound-speed
 profile (Eq. \ref{sound-speed}). To test this, we carried out
 simulations with $q\in[0,1]$ using only an $m=1$ initial 
-perturbation. However, to keep the Toomre profiles similar, we adjust
+perturbation. However, to keep the Toomre $Q$ profiles similar, we adjust
 the surface density power-law index such that $s = (3+q)/2$. 
 
 Fig. \ref{fargo_varq} compares the $m=1$ spiral amplitudes as a
@@ -222,7 +225,8 @@ function of $q$. We indeed observe slower growth with decreasing
 $q$. Although the figure indicates growth for the strictly isothermal
 disc ($q=0$), we did not observe a coherent one-arm spiral upon
 inspection of the $m=1$ surface density field. The growth in this case
-may be associated with higher $m$ modes.  
+may be associated with higher $m$ modes, which dominated the
+simulation.    
 % show result of isothermal calc?
 
 \begin{figure}
@@ -239,8 +243,9 @@ linear relation
 \begin{align*}
   \gamma \simeq \left[0.015 q - 7.9\times10^{-4}\right] \Omega_k(R_0). 
 \end{align*}
+% difficult to measure very small growth rates
 This confirms that the temperature gradient is responsible for the
-development of the one-arm spiral observed in our simulations. 
+development of the one-arm spirals observed in our simulations. 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_plot_ratemax_fargo_varq.ps}    
   \caption{Growth rates of the $m=1$ spiral mode as a function of the
@@ -251,7 +256,7 @@ development of the one-arm spiral observed in our simulations.
 %maybe extend the low q simulations to get better rates?
 
 We also performed a series of simulations with variable aspect-ratio
-$h\in[0.03,0.07]$ but fixed $q=1$. This also affects the temperature
+$h\in[0.03,0.07]$ but fixed $q=1$. This affects the magnitude of the temperature
 gradient since $c_s \propto h$. However, with other parameters equal
 to that in the fiducial simulation,  varying $h$ also changes the disc
 mass. For $h\in[0.03,0.07]$ the total disc mass ranges from
@@ -265,7 +270,7 @@ with $h$, roughly as
 \begin{align}
   \gamma \simeq \left[0.10h + 8.3\times10^{-3}\right]\Omega_k(R_0).  
 \end{align}
-However, a linear fit is less good than for variable $q$ above. This
+However, a linear fit is less good than for variable $q$ cases above. This
 may be due to the change in the total disc mass when $h$ changes. We
 find no qualitative difference between the spiral pattern that
 emerges. 
