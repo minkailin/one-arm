@@ -121,3 +121,41 @@ gradient ($\bm{\xi}\cdot\nabla c_s^2 \neq 0$).
 %eq baroclinic torque is more practical in 2d case because \delta
 %sigma can be measured direction from simulations (xi needs to be
 %calculated from velocity field, knowing the eigenfrequency)
+
+\section{Relation between horizontal Lagragian displacements for
+  local, low frequency $m=1$ disturbances}\label{horizontal_displacements}
+Here, we aim to relate the horizontal Lagrangian displacements $\xi_R$
+and $\xi_\phi$ in the local approximation. Using the local solution to
+the Poisson equation 
+\begin{align}
+  \delta \Phi_m = -\frac{2\pi G}{|k|} \delta\Sigma_m 
+\end{align}
+\citep{shu91}, the linearised azimuthal equation of motion becomes 
+\begin{align} 
+  - \ii\sbar \delta v_{\phi m}  + \frac{\kappa^2}{2\Omega}\delta v_{Rm} = -\frac{\ii
+    m}{R\Sigma}\left(c_s^2 - \frac{2\pi G
+      \Sigma}{|k|}\right)\delta\Sigma_m. 
+\end{align}
+Next, we replace the surface density perturbation
+$\delta \Sigma_m = -\ii k \Sigma \xi_R$, and use the expressions
+\begin{align}
+  &\delta v_{Rm} = -\ii\sbar\xi_R,\\
+  &\delta v_{\phi m} = -\ii\sbar\xi_\phi - \frac{\ii R
+    \p_R\Omega}{\sbar} \delta v_{Rm}
+\end{align}
+\citep{papaloizou85} to obtain 
+\begin{align}
+  -\sbar^2\xi_\phi - 2\ii\sbar\Omega \xi_R =
+  \frac{m}{kR}\left(\kappa^2 - \sbar^2\right)\xi_R, 
+\end{align}
+where the dispersion relation Eq. \ref{dispersion} was used. 
+In the local approximation, $|kR|\gg m$ by assumption.%  Furthermore,  
+% Also, for low frequency $m=1$ modes $\sbar \simeq -\Omega$, so the
+% quantity $|\kappa^2 - \sbar^2| \ll \Omega^2$ in a nearly Keplerian disc
+% ($\kappa\sim \Omega$). 
+ Hence the RHS of this equation can be neglected. Then 
+\begin{align}
+  \xi_\phi \simeq -\frac{2\ii\Omega}{\sbar}\xi_R.
+\end{align}
+For low-frequency $m=1$ modes we have $\sbar \simeq -\Omega$, so
+$\xi_\phi\simeq 2\ii\xi_R$, as used in the main text.  
