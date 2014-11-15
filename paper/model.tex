@@ -3,7 +3,7 @@ We consider a self-gravitating, inviscid fluid disc of mass $M_d$
 orbting a central star of mass $M_*$. We will mainly examine 2D
 (or razor-thin) discs in favour of numerical 
 resolution, but have also carried out some 3D disc
-simulations. Thus, for generality we describe the system in
+simulations. Hence, for generality we describe the system in
 3D, using both cylindrical $(R,\phi,z)$ and spherical polar
 coordinates $(r,\theta,\phi)$ centred on the star. 
 The governing fluid equations in 3D are  
@@ -46,7 +46,7 @@ associated with the non-inertial reference frame is purposefully
 neglected to avoid complications arising from the motion of the
 central star. For the adopted disc masses $M_d\lesssim 0.1 M_*$, this
 effect is not expected to be significant
-\citep{adams89,shu90}. Indeed, simulations including the indirect
+\citep{adams89,shu90,michael10}. Indeed, simulations including the indirect
 potential, carried out in the early stages of this project, produced
 similar results.    
 
@@ -95,7 +95,9 @@ smooth disc. We choose
 where $\Delta_{1,2} = \delta R \times H(R_{1,2})$. The bump function
 mimicks mass built-up in $R\in[R_1,R_2]$. 
 
-In 3D, we assume vertical hydrostatic balance
+%In 3D, we assume vertical hydrostatic balance
+The 3D disc structure is obtained by assuming vertical hydrostatic
+balance  
 \begin{align}
   0 = \frac{1}{\rho}\frac{\p p}{\p z} + \frac{\p\Phi_*}{\p z} + \frac{\p
     \Phi_d}{\p z},  
@@ -175,7 +177,7 @@ $\phi\in[0,2\pi]$. The vertical domain is chosen to cover $n_H$
 scale-heights at $R=R_0$, i.e. $\tan{(\pi/2 - \theta_\mathrm{min})}/h=n_H$. 
 The grid is logarithmically spaced in radius and uniformly spaced in the angular
 coordinates. We assume reflectional symmetry across the midplane, and
-apply relfective boundary conditions at radial boundaries and the
+apply reflective boundary conditions at radial boundaries and the
 upper disc boundary.  
 
 ZEUS-MP solves the 3D Poisson equation using a conjugate gradient
@@ -332,10 +334,12 @@ in the form
     m \Omega |\bm{\xi}|^2\right) 
 \end{align}
 is the angular momentum density, $\bm{\xi}$ is the Lagragian
-displacement, and $\bm{F}$ is the angular momentum flux
-consisting of a Reynolds stress and a gravitational stress. Explicit
-expressions for $\bm{\xi}$ can be found in, e.g. \cite{papaloizou85},
-and $\bm{F}$ can be read off Eq. \ref{angflux1}.  
+displacement, and $\bm{F}$ is the vertically-integrated angular
+momentum flux consisting of a Reynolds stress and a gravitational
+stress \citep{lin11b}. Explicit expressions for $\bm{\xi}$ can be found in,
+e.g. \cite{papaloizou85}. 
+%and $\bm{F}$ can be read off Eq. \ref{angflux1}.  
+
 % \cite{papaloizou85} and \cite{lin11} respectively, and
 
 % lin papaloizou kley 1993, ryu/goodman, narayan 
@@ -347,9 +351,9 @@ The background torque density $\tbg$ is
 \end{align}
 and arises because we have adopted a locally isothermal equation of
 state. In a barotropic fluid, such as a strictly isothermal disc,
-$\tbg$ vanishes and the angular momentum associated with
+$\tbg$ vanishes and the total angular momentum associated with
 the perturbation is conserved, provided that there is no net angular
-momeumtum flux and the perturbations are regular. 
+momeumtum flux.% and the perturbations are regular. 
 
 However, as noted in \cite{lin11b}, if there is an imposed
 temperature gradient, as in the disc models we consider,
