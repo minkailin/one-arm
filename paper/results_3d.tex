@@ -7,37 +7,37 @@ the 2D approximation.
 The 3D disc has radial size
 $[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent  
 $n_H=2$ scale-heights at $R=R_0$. The resolution is $N_r\times N_\theta\times
-N_\phi=256\times32\times256$. This corresponds to about $4$ cells per
-$H$ in radius. Because of the much reduced resolution 
+N_\phi=256\times32\times512$. This corresponds to about $4$ cells per
+$H$ in radius. Because of the reduced resolution 
 compared to 2D, we use a smooth perturbation by setting
 $\delta = 10^{-3}$ and $M=1$ in Eq. \ref{randpert}. This corresponds
-to a single $m=1$ disturbance in $R\in[R_1,R_2]$, which was found to dominate
-the 2D simulation.  
+to a single $m=1$ disturbance in $R\in[R_1,R_2]$, which
+eventually dominates in 2D simulations.  
 
 The 3D discs are initialised in approximate equilibrium only, so we
 first evolve the disc without perturbations using  
 $(\lmax,\mmax)=(32,0)$ up to $t=10P_0$, during which 
 meridional velocities are damped out. We then restart the simulation
-with the above perturbation and $(\lmax,\mmax)=(32,32)$ and damp
+with the above perturbation and $(\lmax,\mmax)=(32,32)$, and damp
 merdional velocities near the radial boundaries. 
 
 Fig. \ref{3d_ampmax} plots the amplitude of the $m=1$ spirals measured
-in the ZEUS-MP and PLUTO runs. 
+in the ZEUS-MP and PLUTO runs.  
 %why no high m
                                 %modes as in 2D for iso disc?
                                 %resolution? 
-In ZEUS-MP we observe disturbances developed near
+In the ZEUS-MP run we observe disturbances developed near
 the inner boundary, which is probably responsible for the initial growth
 for $t<70P_0$. This is likely a numerical artifact and effectively seeds
 the ZEUS-UP simulation with a larger initial perturbation. Results
-from ZEUS-MP are therefore off-set from PLUTO. However,
+from ZEUS-MP are therefore off-set from PLUTO by $\sim50P_0$ However,
 once the coherent $m=1$ spiral begins to grow ($t\gtrsim 100P_0$), 
 we measure similar growth rates in both codes: 
 \begin{align*}
   &\gamma \simeq 0.0073\Omega_k(R_0) \quad\quad \mathrm{PLUTO},\\
   &\gamma \simeq 0.0084\Omega_k(R_0) \quad\quad \varA{ZEUS-MP}.
 \end{align*}
-Both are smaller than the 2D simulations and is probably due to the
+Both are smaller than the 2D simulations and due to the
 low resolutions adopted and/or the small softening length employed in
 2D.  Fig. \ref{3d_ampmax} also show results from strictly isothermal
 simulations, which display no growth compared to cases with a 
@@ -50,7 +50,7 @@ the same in 3D.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_plot_ampmax3d.ps}
-  \caption{Evolution of the maximum $m=1$ density in  $r\in[R_1,R_2]$
+  \caption{Evolution of the maximum $m=1$ density component in  $r\in[R_1,R_2]$
     measured in the 3D simulations. Results from discs with a imposed 
     temperature gradient ($q=1$) and a strictly isothermal disc
     ($q=0$) are shown.  
