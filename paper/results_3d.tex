@@ -7,8 +7,8 @@ the 2D approximation.
 The 3D disc has radial size
 $[r_\mathrm{min},r_\mathrm{max}]=[0.4,10]R_0$ and vertical extent  
 $n_H=2$ scale-heights at $R=R_0$. The resolution is $N_r\times N_\theta\times
-N_\phi=256\times32\times512$. This corresponds to about $4$ cells per
-$H$ in radius. Because of the reduced resolution 
+N_\phi=256\times32\times512$, or about $4$ cells per
+$H$. Because of the reduced resolution 
 compared to 2D, we use a smooth perturbation by setting
 $\delta = 10^{-3}$ and $M=1$ in Eq. \ref{randpert}. This corresponds
 to a single $m=1$ disturbance in $R\in[R_1,R_2]$, which
@@ -19,10 +19,13 @@ first evolve the disc without perturbations using
 $(\lmax,\mmax)=(32,0)$ up to $t=10P_0$, during which 
 meridional velocities are damped out. We then restart the simulation
 with the above perturbation and $(\lmax,\mmax)=(32,32)$, and damp
-merdional velocities near the radial boundaries. 
+meridional velocities near the radial boundaries. 
 
-Fig. \ref{3d_ampmax} plots the amplitude of the $m=1$ spirals measured
-in the ZEUS-MP and PLUTO runs.  
+Fig. \ref{3d_ampmax} plots the evolution of the $m=1$ spiral amplitudes measured
+in the ZEUS-MP and PLUTO runs. We also ran simulations
+with a strictly isothermal equation of state ($q=0$), which display no
+growth compared to that with a temperature gradient.  This confirms
+the temperature gradient effect is the same in 3D. 
 %why no high m
                                 %modes as in 2D for iso disc?
                                 %resolution? 
@@ -30,19 +33,19 @@ In the ZEUS-MP run we observe disturbances developed near
 the inner boundary, which is probably responsible for the initial growth
 for $t<70P_0$. This is likely a numerical artifact and effectively seeds
 the ZEUS-UP simulation with a larger initial perturbation. Results
-from ZEUS-MP are therefore off-set from PLUTO by $\sim50P_0$ However,
+from ZEUS-MP are therefore off-set from PLUTO by $\sim50P_0$. However,
 once the coherent $m=1$ spiral begins to grow ($t\gtrsim 100P_0$), 
 we measure similar growth rates in both codes: 
 \begin{align*}
   &\gamma \simeq 0.0073\Omega_k(R_0) \quad\quad \mathrm{PLUTO},\\
   &\gamma \simeq 0.0084\Omega_k(R_0) \quad\quad \varA{ZEUS-MP}.
 \end{align*}
-Both are smaller than the 2D simulations and due to the
-low resolutions adopted and/or the small softening length employed in
-2D.  Fig. \ref{3d_ampmax} also show results from strictly isothermal
-simulations, which display no growth compared to cases with a 
-temperature gradient. This confirms the temperature gradient effect is
-the same in 3D. 
+Both are smaller than the 2D simulations, because of to the
+low resolutions adopted in 3D and/or the small softening length employed in
+2D. 
+%Fig. \ref{3d_ampmax} also show results from strictly isothermal
+%simulations, which display no growth compared to cases with a 
+%temperature gradient. 
 
 % We also show results from strictly
 % isothermal discs ($q=0$). 
@@ -59,11 +62,18 @@ the same in 3D.
 
 Visualisations of the 3D simluations are shown in   
 Fig. \ref{3d_prelim} for the disc midplane and near the upper disc
-boundary. The snapshots are chosen when the one-armeded spirals in the two codes
-have reached similar amplitudes. The agreement between the codes,
-as well as with the 2D simulations, is satisfactory. Away from the
-disc midplane, a coherent spiral arm is not prominent, but the
-disturbance is radially more global, extending up to $R\sim 4R_0$.   
+boundary. The snapshots are chosen when the one-armed spirals in the two codes
+have reached comparable amplitudes. The agreement between the codes,
+as well as with the 2D simulations, is satisfactory. The largest
+spiral amplitude is found in $R\in[R_1,R_2]$ independent of
+height. However, notice the spiral pattern extends into the
+non-self-gravitating outer disc ($R>R_2$) at $z\sim 2H$, i.e. 
+the disturbance becomes more global away from the midplane. 
+
+%Away from the
+%disc midplane, a coherent spiral arm is not prominent, but the
+%disturbance is radially more global, extending up to $R\sim 4R_0$.   
+
 %implications?
 
 \begin{figure}
