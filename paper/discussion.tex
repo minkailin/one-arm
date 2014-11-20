@@ -34,7 +34,7 @@ angular momentum. If the mode loses (positive) angular momentum
 to the background, then we can expect instability. We demonstrate
 this below. 
 
-\subsection{Unstable interaction between low-frequency $m=1$ spirals
+\subsection{Unstable interaction between low-frequency $m=1$ spirals 
   and the background disc due to an imposed temperature gradient}
 The $m=1$ spiral that emerges in our simulations have low frequency
 ($\Omega_p < \Omega$),
@@ -246,12 +246,9 @@ surface density.  %multi spirals associated with one planet
 One possible effect of self-gravity is to allow the one-armed spiral  
 to act as an external potential for the wider disc. This is
 analogous to disc-satellite interaction 
-\citep{goldreich79}, and may lead to instability 
-if the angular momentum associated with the spiral has the opposite 
-sign to that of the density waves it induces in the exterior disc
-\citep{lin11b}. Here, we estimate the magnitude of this effect using
-basic results from disc-planet theory \citep[see, e.g.][and references 
-therein]{papaloizou07}. 
+\citep{goldreich79}. Here, we estimate the magnitude of this effect
+using basic results from disc-planet theory \citep[see, e.g.][and
+references therein]{papaloizou07}.  
 
 Let us treat the one-armed spiral confined in $R\in[R_1,R_2]$ as an  
 external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
@@ -268,11 +265,6 @@ $\Phi_\mathrm{ext}$ is the $m=1$ component of the gravitational
 potential of an external satellite on a circular orbit
 \citep{goldreich79}.    
 
-%and here we are interested in the
-%potential it produces at $R>\overline{R}$  
-%This potential is associated with a mass
-%$M_\mathrm{ring}$ contained in   is the mass in $R\in[R_1,R_2]$.
-
 %For an order-of-magnitude exercise, we simply take 
 %\begin{align}
  % \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \overline{R}|}, 
@@ -286,7 +278,8 @@ Lindblad and co-rotation resonances. At the outer Lindblad resonance
 \begin{align}
   \Gamma_L =
   \frac{\pi^2\Sigma_L}{3\Omega_L\Omega_p}
-  \left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 - \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2,
+  \left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 -
+      \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2, 
 \end{align}   
 where a Keplerian disc has been assumed and subscript $L$ denotes
 evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
@@ -297,9 +290,12 @@ $J_\mathrm{ext}  = M_\mathrm{ring}\overline{R}^2\Omega_p$, we can obtain a
 rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
 \begin{align}
   \frac{\gamma_L}{\Omega_p} = &\frac{\pi
-    h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)\left(\frac{R_c}{\overline{R}}\right)^3\left(\frac{R_L}{R_c}\right)^{-3/2}\notag\\
-  &\times \left\{\frac{R_L}{\overline{R}}\left.\frac{db_{1/2}^1}{d\beta}\right|_L + 2\left[1 -
-      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]b_{1/2}^1(\beta_L)\right\}^2.
+    h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)\left(\frac{R_c}{\overline{R}}\right) 
+  ^3\left(\frac{R_L}{R_c}\right)^{-3/2}\notag\\ 
+  &\times
+  \left\{\frac{R_L}{\overline{R}}\left.\frac{db_{1/2}^1}{d\beta}\right|_L
+    + 2\left[1 - 
+      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]b_{1/2}^1(\beta_L)\right\}^2. 
 \end{align}
 %\begin{align}
  % \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
@@ -324,15 +320,15 @@ FARGO simulation, we get
 For the co-rotation torque, we use the result
 \begin{align}
   \Gamma_c = \left.
-    \pi^2\Phi_\mathrm{ext}^2\left(\frac{d\Omega}{dR}\right)^{-1}\frac{d}{dR}\left(\frac{2\Sigma}{\Omega}\right)\right|_{c}   
+    \pi^2\Phi_\mathrm{ext}^2\left(\frac{d\Omega}{dR}\right)^{-1}\frac{d}{dR}\left(\frac{2\Sigma}{\Omega}\right)\right|_{c}     
 \end{align}
 for a Keplerian disc, where subscript $c$ denotes evaluation at
 co-rotation radius $R=R_c$. For a power-law surface density profile
 $\Sigma\propto R^{-s}$ we have
 \begin{align}
 \frac{\gamma_c}{\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_c}
-\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_c}{\overline{R}}\right)^4\left(s-\frac{3}{2}\right)
-\left[b_{1/2}^1(\beta_c)\right]^2   
+\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_c}{\overline{R}}\right)^4\left(s-\frac{3}{2}\right) 
+\left[b_{1/2}^1(\beta_c)\right]^2    
 \end{align}
 %\begin{align}
 %  \frac{\Gamma_C}{J_\mathrm{ext}\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
@@ -354,28 +350,18 @@ additional FARGO simulations with a reduced radial domain size,
 setting $R_\mathrm{max}=3R_0$, which still developed the one-armed
 spiral. 
 
-% both are positive -> destabilizing in principle 
+The torque exerted on the disc at the OLR by an
+external potential is positive, while that at co-rotation 
+depends on the gradient of potential vorticity there
+\citep{goldreich79}. For our disc models with surface density
+$\Sigma\propto R^{-2}$ in the outer disc, this co-rotation torque is
+positive. Interpreting the one-armed spiral as an external potential
+for the outer disc, this means that the spiral loses
+angular momentum by launching density waves with positive angular momentum at
+the OLR, and by applying a positive co-rotation torque on the disc. In
+principle, this interaction is destabilising because the one-armed
+spiral has negative angular momentum \citep{lin11b}. As estimated
+above, this effect is small in our simulations, but could be
+important for other parameter regimes. 
 
-%\begin{align}
-%  \gamma_C\sim 0.010\Omega_p,
-%\end{align}
-%which is again small compared to the measured growth rates. 
-
-%not important for our models, but may be important if outer disc is
-%self-gravitating too
-
-%expressions for linear response, but have massive "planet" -> but CR
-%and LR far from where spiral is 
-
-%required disc structure (for confined SG spiral)
-
-%\subsection{Speculations}
-%speculations - long term balance. forced temp gradient drives
-%instability (disc gains ang mom, spiral loses ang mom). but if spiral
-%shocks and dissiple, it dumps negative angular momentum (disc gains
-%negative ang mom). balance between gain from forced temp gradient and
-%loss due to dissiplatoin
-
-%other source of m=1 disturbance -> eccentric modes (adams, PJ06,
-%hopkins, tremaine)
-
+%also transport ang mom outwards

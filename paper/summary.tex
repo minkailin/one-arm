@@ -5,9 +5,9 @@ isothermal discs.
 We find such systems can be unstable to low-frequency perturbations
 with azimuthal wavenumber $m=1$, which lead to the development of one-armed 
 trailing spirals that persist for at least $O(10^2)$ orbits. The 
-spiral pattern speed is smaller than the local disc rotation, making
-it almost stationary. The growth rates are $O(10^{-2}\Omega)$ which
-gives a characteristic growth time of $O(10P_0)$. 
+spiral pattern speed is smaller than the local disc rotation, and
+growth rates are $O(10^{-2}\Omega)$ which gives a characteristic
+growth time of $O(10)$ orbits.   
 %While this is slow
 %compared to the local rotation, it is dynamical at co-rotation.  
 
@@ -18,57 +18,64 @@ profile and disc structure. The spiral is confined between two
 $Q$-barriers owing to a surface density bump. Growth rates increased
 with the magnitude of the imposed temperature gradient, and one-armed
 spirals did not develop in strictly isothermal simulations.  
-We find no significant vertical 
-motion in 3D simulations, which indicates the instability is
-two-dimensional. 
+We find the instability behaves similarly in 2D and 3D. However, in 3D
+the spiral disturbance can become radially global away from 
+the midplane.  
 
 We applied angular momentum conservation within linear theory to
-explain our numerical results. A  
+explain our numerical results. We find a   
 forced temperature gradient introduces a torque on linear 
 perturbations. We called this the background torque because it
 represents an exchange of angular momentum between the background disc
-and the perturbations. In the local approximation, we showed that this
-background torque is negative for trailing spirals, which enforces  
+and the perturbations. This offers a previously unexplored pathway to
+instability. 
+
+In the local approximation, we showed that this background torque is
+negative for trailing spirals in discs with a fixed temperature or
+sound-speed profile that decrease outwards. This torque enforces  
 low-frequency $m=1$ modes because they are associated with negative
 angular momentum. We therefore interpret the one-armed spiral instability
-observed in our simulations as a neutral, tightly-wound $m=1$ mode
-being destabilised by the imposed temperature gradient.  
+observed in our simulations as an initially neutral, tightly-wound
+$m=1$ mode being destabilised by the imposed temperature gradient.   
 
-%works in 2D/3D
-%forced gradient feedback 
-%neutral mode destabilized      
 \subsection{Speculations and future work}
-%accretion??
-%balancing heating and cooling 
+%numerical simulations to include cooling/heating
+A locally isothermal equation of state represents the limit of
+infinitely short cooling (and heating) timescales, so the disc
+temperature instantly returns to its initial value when perturbed.  
+This assumption can be relaxed by including an energy equation with
+thermal relaxation. Preliminary FARGO simulations
+indicate a thermal relaxation timescale $t_c < 0.1\Omega_k^{-1}$ is
+needed for the one-armed spiral to develop. However, this value may
+depend on disc parameters, and will be explored in a follow-up  
+study.  
+
+% prelim sims show they are long lasting 
+% balancing heating and cooling 
+% should not get fragmentation (CR away from spiral) 
 In the deeply non-linear regime, the one-armed spiral may 
-shock and dissipate, depositing negative angular momentum onto
+shock and deposit negative angular momentum onto
 the background disc. The spiral amplitude would saturate by gaining
 positive angular momentum. However, if the temperature gradient is
-forced, it may be possible to achieve a balance between the gain of negative
-angular momentum through the forced temperature gradient, and the gain
-of positive angular momentum through shock dissipation. In order to
-study this possibility, improved numerical models are needed to ensure 
-total angular momentum conservation in long-term simulations.  
+maintained, it may be possible to achieve a balance between the gain
+of negative angular momentum through the temperature gradient, and the
+gain of positive angular momentum through shock dissipation. We remark  
+that fragmentation is unlikely because the co-rotation radius 
+is outside the bulk of the spiral arm, in the non-self-gravitating
+portion of the disc \citep{durisen08}. In order
+to study these possibilities, improved numerical models are needed to
+ensure total angular momentum conservation on timescales much longer
+than that considered in this paper. 
 
-%numerical simulations to include cooling/heating
-A locally isothermal disc represents the limit of infinitely short
-cooling (and heating) timescales, so the disc temperature instantly
-returns to its initial value. %so we don't go to deeply non-linear
-                             %regime 
-This assumption can be relaxed by including an energy
-equation with thermal relaxation. Preliminary FARGO simulations
-indicate a relaxation timescale $t_c < 0.1\Omega_k^{-1}$ is needed for
-the one-armed spiral to develop. This will be presented in a follow-up
-study. %prelim sims show they are long lasting 
-
-%non-sg sims, Be stars, eccentric discs
+% non-sg sims, Be stars, eccentric discs
 % We stress that destabilisation through the temperature gradient
 % does not explicitly depend on self-gravity. In principle, this effect
 % will destabilise low-frequency $m=1$ trailing spirals regardless of
 % its origin.
+
 In our models and interpretation, self-gravity coupled with the disc 
 structure permits a neutral one-armed mode, which is then
-destabilised. Other origins of a neutral
+destabilised by the temperature gradient. Other origins of the neutral
 one-armed spiral should be investigated. One possibility is in Be star discs
 \citep{rivinius13}, for which 
 one-armed oscillations may explain long-timescale variations in their
