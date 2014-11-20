@@ -93,7 +93,7 @@ smooth disc. We choose
     \tanh\left(\frac{R-R_{2}}{\Delta_2}\right)\right]  + \epsilon,
 \end{align}
 where $\Delta_{1,2} = \delta R \times H(R_{1,2})$. The bump function
-mimicks mass built-up in $R\in[R_1,R_2]$. 
+mimics mass built-up in $R\in[R_1,R_2]$. 
 
 %In 3D, we assume vertical hydrostatic balance
 The 3D disc structure is obtained by assuming vertical hydrostatic
@@ -146,11 +146,11 @@ in the Keplerian orbital period at the reference radius, $P_0\equiv
 Our primary code is FARGO with self-gravity \citep{baruteau08}. This
 is a popular, simple finite-difference code for 2D discs. `FARGO' refers
 to its azimuthal transport algorithm, which circumvents time-step
-contraint set by the inner disc boundary \citep{masset00a,masset00b}. 
+constraint set by the inner disc boundary \citep{masset00a,masset00b}. 
 
 The 2D disc occupies
 $R\in[R_\mathrm{min},R_\mathrm{max}],\,\phi\in[0,2\pi]$ and is 
-divided into $(N_R,N_\phi)$ grids, logarithimically spaced in radius and
+divided into $(N_R,N_\phi)$ grids, logarithmically spaced in radius and
 uniformly spaced in azimuth. At radial boundaries we set the
 hydrodynamic variables to their initial values.   
 
@@ -161,7 +161,7 @@ The 2D Poisson equation is solved in integral form,
   \frac{G\Sigma(R^\prime,\phi^\prime)R^\prime dR^\prime d\phi^\prime}{\sqrt{R^2+R^{\prime 2} -
       2RR^\prime\cos{(\phi - \phi^\prime)} + \epsilon_g^2}}, 
 \end{align}
-using Fast Fouier Transform (FFT), where $\epsilon_g$ is a softening
+using Fast Fourier Transform (FFT), where $\epsilon_g$ is a softening
 length to prevent a numerical singularity. The FFT approach requires
 $\epsilon_g\propto R$ \citep{baruteau08}. In FARGO, $\epsilon_g$ is
 set to a fraction of $hR$.  
@@ -191,7 +191,7 @@ self-gravitating disc-planet simulations.
 \subsection{PLUTO} 
 PLUTO is a general-purpose Godunov code \citep{mignone07}. The grid
 setup is the same as that adopted in ZEUS-MP above. We configure the
-code similarly to that used in \cite{lin14}: piecewise linear
+code similarly to that used in \cite{lin14}: piece-wise linear
 reconstruction, a Roe solver and second order Runge-Kutta time
 integration. We also enable the FARGO algorithm for azimuthal
 transport. 
@@ -305,7 +305,7 @@ The linearised mass and momentum equations are
   -\frac{\ii m }{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} + \delta\Phi_m\right),
 \end{align}
 where $\sbar = \sigma - m\Omega$ and $\kappa^2 =
-R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicycle frequency. A
+R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicyclic frequency. A
 locally isothermal equation of state has been assumed.    
 The linearised Poisson equation is 
 \begin{align}
@@ -333,7 +333,7 @@ in the form
       t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
     m \Omega |\bm{\xi}|^2\right) 
 \end{align}
-is the angular momentum density, $\bm{\xi}$ is the Lagragian
+is the angular momentum density, $\bm{\xi}$ is the Lagrangian
 displacement, and $\bm{F}$ is the vertically-integrated angular
 momentum flux consisting of a Reynolds stress and a gravitational
 stress \citep{lin11b}. Explicit expressions for $\bm{\xi}$ can be found in,
@@ -353,7 +353,7 @@ and arises because we have adopted a locally isothermal equation of
 state. In a barotropic fluid, such as a strictly isothermal disc,
 $\tbg$ vanishes and the total angular momentum associated with
 the perturbation is conserved, provided that there is no net angular
-momeumtum flux.% and the perturbations are regular. 
+momentum flux.% and the perturbations are regular. 
 
 However, as noted in \cite{lin11b}, if there is an imposed
 temperature gradient, as in the disc models we consider,
@@ -420,5 +420,5 @@ A detailed discussion of the properties of local density waves
 is given in \cite{shu91}. An important result is that
 waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
 waves outside co-rotation ($R>R_c$) have positive angular
-momentum. The local approximation becomes less good for gobal modes,
+momentum. The local approximation becomes less good for global modes,
 but will nevertheless be useful for results interpretation.   
