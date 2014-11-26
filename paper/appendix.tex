@@ -36,7 +36,11 @@ additional potential perturbation,
 \end{align}
 where $D/Dt \equiv \p_t + \ii m \Omega$ for perturbations with
 azimuthal dependence in the form $\exp\left(\ii m \phi\right)$, and  
-the $\delta$ quantities denote Eulerian perturbations. 
+the $\delta$ quantities denote Eulerian perturbations. % Note that we
+% have written the perturbed pressure force such that the state
+%the associated 
+%angular momentum flux (see below) has the same form as that in 
+%barotropic or adiabatic discs \citep{lin93b}. 
 
 As explained in \cite{lin11b}, a conservation law for the angular
 momentum of the perturbation may be obtained by taking the dot product
@@ -69,8 +73,11 @@ where $\Delta\rho = \delta\rho + \bm{\xi}\cdot\nabla\rho$ is the
 Lagrangian density perturbation. 
 
 So far we have not invoked an energy equation. For 
-adiabatic perturbations $T_\mathrm{BG}$ is zero
-\citep{lin93b}. However, if we impose the equilibrium relation
+adiabatic perturbations $T_\mathrm{BG}$ is zero, and we recover the
+same statement of angular momentum conservation as in \cite{lin93b} but 
+modified by self-gravity in the fluxes. 
+
+However, if we impose the equilibrium relation
 Eq. \ref{iso_cond} to hold in the perturbed state, then
 \begin{align}
   \delta p = c_s^2(R,z) F^\prime \delta\rho,
@@ -95,7 +102,6 @@ expression, Eq. \ref{baroclinic_torque}, with $\delta\rho $ replaced
 by $\delta \Sigma$ and $p=c_s^2\rho$. % The 2D expression is convenient
 % for razor-thin discs or perturbations without vertical motion because
 % one can measure $\delta\rho$ (or $\delta \Sigma)$ directly.  
-
 
 In fact, we can simplify Eq. \ref{tbg_3d_2} in the general case by
 using $\delta\rho = - \rho\nabla\cdot\bm{\xi} -
@@ -148,7 +154,7 @@ $\delta \Sigma_m = -\ii k \Sigma \xi_R$, and use the expressions
   \frac{m}{kR}\left(\kappa^2 - \sbar^2\right)\xi_R, 
 \end{align}
 where the dispersion relation Eq. \ref{dispersion} was used. 
-In the local approximation, $|kR|\gg m$ by assumption.%  Furthermore,  
+In the local approximation, $|kR|\gg m$ by assumption. %  Furthermore,  
 % Also, for low frequency $m=1$ modes $\sbar \simeq -\Omega$, so the
 % quantity $|\kappa^2 - \sbar^2| \ll \Omega^2$ in a nearly Keplerian disc
 % ($\kappa\sim \Omega$). 

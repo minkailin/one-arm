@@ -38,7 +38,8 @@ term $\omega|\bm{\xi}|^2$ and setting $m=1$,
   & \leq 0.
 \end{align}
 Thus, low-frequency $m=1$ modes generally have negative
-angular momentum. If the mode loses (positive) angular momentum 
+angular momentum. These are the modes observed in our simulations. 
+If the mode loses (positive) angular momentum 
 to the background, then we can expect instability. We demonstrate
 below how this is possible through a forced temperature
 gradient. 
@@ -46,17 +47,16 @@ gradient.
 \subsection{Unstable interaction between low-frequency $m=1$ spirals 
   and the background disc due to an imposed temperature gradient}
 The $m=1$ spiral that emerges in our simulations have low frequency
-($\Omega_p < \Omega$),
-grows slowly ($\gamma\ll\Omega_p$), and its spatial form is consistent local theory  
-(\S\ref{fargo_m1}). Then to a first approximation, we can regard it 
-as a neutral, low-frequency $m=1$ mode in satisfying the 
-dispersion relation Eq. \ref{dispersion} in local theory.  %attribute
-                                %growth to temp gradient 
-To demonstrate possible instability, %we 
-% first construct a neutral low-frequency mode using local theory, 
-we show that the torque density acting on such a mode due to the background
-temperature gradient is negative, which enforces the mode, because it
-has negative angular momentum.  
+($\Omega_p < \Omega$), grows slowly ($\gamma\ll\Omega_p$) and its
+spatial form is consistent local theory (\S\ref{fargo_m1}). Then to a
+first approximation, we can regard it   
+as a mode within the framework of local theory, satisfying the
+% temperature gradient ignored in local theory
+dispersion relation Eq. \ref{dispersion}. To demonstrate possible
+instability, we show that the torque density acting on such a mode due
+to the background temperature gradient is negative, which enforces the
+mode, because it has negative angular momentum.  
+
 % Note that
 % we will not be assuming a self-gravitating disc until the end of this
 % section. 
@@ -144,13 +144,13 @@ low-frequency approximation and holds for any $m$.
 However, if the linear disturbance under consideration \emph{is} a
 low-frequency $m=1$ mode, then it has negative angular
 momentum. If it is a trailing spiral and $dc_s^2/dR<0$, as is typical
-for circumstellar or protoplanetary discs, then $T_\mathrm{BG}<0$, and
+in astrophysical discs, then $T_\mathrm{BG}<0$, and
 the background disc applies a negative torque on the disturbance,
 which further decreases its angular momentum. This suggests the spiral
 amplitude will grow.    
 
-Using $\jlin$ and $T_\mathrm{BG}$, we can estimate 
-the growth rate $\gamma$ of linear perturbations due to the background
+Using $\jlin$ and $T_\mathrm{BG}$, we can estimate the 
+growth rate $\gamma$ of linear perturbations due to the background
 torque as  
 \begin{align}
   2\gamma \sim \frac{T_\mathrm{BG}}{\jlin},
@@ -158,7 +158,7 @@ torque as
 where the factor of two accounts for the fact that the angular momentum
 density is quadratic in the linear perturbations. Inserting the above
 expressions for $\jlin$ and $T_\mathrm{BG}$ for $m=1$ gives
-\begin{align}
+\begin{align}\label{theoretical_rate0}
   2\gamma \sim
   -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R|^2}{|\xi_R + \ii
     \xi_\phi|^2}. 
@@ -199,11 +199,21 @@ $q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega \sim O(10^{-2})$,
 consistent with simulation results. Specifically,
 Eq. \ref{theoretical_rate} indicates the growth rate should increase
 linearly with $q$ and $h$, as seen in the simulations
-(Fig. \ref{fargo_varq_growth}---\ref{fargo_varh_growth}).    
+(Fig. \ref{fargo_varq_growth}---\ref{fargo_varh_growth}).     
+%the latter assumes  k=pi\Sigma G /c_s^2 is always the most favoured 
 
-
-%Note that changing $q$ affects the magntiude of the background
-%torque through its explicit depdence on the temperature gradient. By
+% The temperature gradient affects the growth rate through the
+% explicit depdence of the background torque on $q$. The growth 
+% rate is also dependent on the underlying disturbance being
+% considered (i.e. through $k$ and $\bm{\xi}$ in
+% Eq. \ref{theoretical_rate0}). % Of course, the temperature gradient
+% % plays no role on local modes. However, other disc parameters such as
+% % $c_s^2$ may affect the mode that develops. 
+% The dependence on $h$ in 
+% Eq. \ref{theoretical_rate} assumes $k=\pi\Sigma G/c_s^2$ is always the
+% most favourable wavenumber for low-frequency modes.  
+ 
+%By 
 %definition, the global temperature gradient does not affect modes in
 %local theory. 
 %however, changing $h$ may also modify the mode properties (since
@@ -257,10 +267,9 @@ of the disc rises more rapidly (decays more slowly) than $R^{-3/2}$
 for decreasing (increasing) $R$. One possibility is a gap
 opened by a giant planet in a constant-$Q$ disc. In that case $Q$
 rises rapidly towards the gap centre since it is a region of low
-surface density.  %multi spirals associated with one planet 
-
-
-
+surface density. The outer gap edge is then a potential site for the
+growth of a low-frequency one-armed spiral through the background
+torque. 
 
 %talk about additional simulations at high Q
 %spiral mode as external potential to wider disc (lp11)
@@ -311,8 +320,8 @@ evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
 exist for the pattern speeds observed in our simulations.) 
 
 If we associate the external potential with angular momentum 
-$J_\mathrm{ext}  = M_\mathrm{ring}\overline{R}^2\Omega_p$, we can obtain a
-rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
+$J_\mathrm{ext}  = M_\mathrm{ring}\overline{R}^2\Omega_p$, we can
+calculate a growth rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
 \begin{align}
   \frac{\gamma_L}{\Omega_p} = &\frac{\pi
     h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)\left(\frac{R_c}{\overline{R}}\right) 
@@ -369,8 +378,8 @@ rate
 These estimates are much smaller than that due to
 the imposed temperature gradient as measured in the simulations
 ($\gamma\sim 0.1\Omega_p$). We conclude that for our disc models, the
-Lindblad and co-rotation resonances have negligible effect on the
-growth of the spiral arm in the inner disc. We confirmed this with
+Lindblad and co-rotation resonances have negligible effects on the
+growth of the one-armed spiral in the inner disc. We confirmed this with
 additional FARGO simulations with a reduced radial domain size,
 setting $R_\mathrm{max}=3R_0$, which still developed the one-armed
 spiral. 
@@ -383,10 +392,12 @@ $\Sigma\propto R^{-2}$ in the outer disc, this co-rotation torque is
 positive. Interpreting the one-armed spiral as an external potential
 for the outer disc, this means that the spiral loses
 angular momentum by launching density waves with positive angular momentum at
-the OLR, and by applying a positive co-rotation torque on the disc. In
-principle, this interaction is destabilising because the one-armed
-spiral has negative angular momentum \citep{lin11b}. As estimated
-above, this effect is small in our simulations, but could be
-important for other parameter regimes. 
+the OLR, and by applying a positive co-rotation torque on the disc. 
+In principle, this interaction is destabilising because the
+one-armed spiral has negative angular momentum
+\citep{lin11b}. This effect is small in our simulations, but it  
+could be significant in other parameter regimes. %Furthermore, this
+%non-local interaction may be important for the long-term evolution of
+%the outer disc, since it gains angular momentum from the
 
 %also transport ang mom outwards
