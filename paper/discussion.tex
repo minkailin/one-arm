@@ -4,13 +4,21 @@ simulations, we now use results from the simulations combined with
 linear theory to construct an explanation for their growth. For
 simplicity, we return to 2D discs. 
 
+The dominant disturbance in our simulations is an one-armed, $m=1$
+trailing spiral, and its growth is associated with the imposed temperature
+gradient. As discussed in \S\ref{global_cons}, in a locally isothermal disc this imposed
+temperature gradient generally results in a torque being exerted on
+linear perturbations. An instability is therefore possible if the sign
+of this torque is the same as that of the angular momentum associated
+with the linear perturbation. 
 
+%associated angular mometum density is the same as that
+%of this
 % According to previous studies \citep{adams89}, our disc models
 % should not support $m=1$ linear spiral instabilities. This is because
 % our discs are not sufficiently massive ($M_d\lesssim 0.1M_*$) and, more
 % importantly, we have surpressed the motion of the central star. The 
 % latter can induce $m=1$ instabilities in massive discs  \citep{shu90}.   
-
 
 \subsection{Angular momentum density of  low-frequency $m=1$ modes}
 From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
@@ -30,9 +38,10 @@ term $\omega|\bm{\xi}|^2$ and setting $m=1$,
   & \leq 0.
 \end{align}
 Thus, low-frequency $m=1$ modes generally have negative
-angular momentum. If the mode loses (positive) angular momentum
+angular momentum. If the mode loses (positive) angular momentum 
 to the background, then we can expect instability. We demonstrate
-this below. 
+below how this is possible through a forced temperature
+gradient. 
 
 \subsection{Unstable interaction between low-frequency $m=1$ spirals 
   and the background disc due to an imposed temperature gradient}
@@ -64,7 +73,7 @@ The Eulerian surface density perturbation is given by
 \end{align}
 We now invoke local theory by setting $d/dR \to \ii k$ where $k$ is
 real, and assume $|kR|\gg m$ so that the second term on the right hand
-side of Eq. \ref{den_pert} is negligible. Then    
+side of Eq. \ref{den_pert} can be neglected. Then    
 \begin{align}
   \delta\Sigma _m  \simeq -\ii k \Sigma \xi_R,
 \end{align}
@@ -140,7 +149,7 @@ the background disc applies a negative torque on the disturbance,
 which further decreases its angular momentum. This suggests the spiral
 amplitude will grow.    
 
-Using $\jlin$ and $T_\mathrm{BG}$, we can obtain a rough estimate of
+Using $\jlin$ and $T_\mathrm{BG}$, we can estimate 
 the growth rate $\gamma$ of linear perturbations due to the background
 torque as  
 \begin{align}
@@ -187,16 +196,30 @@ our simulations, we have
 \end{align}
 where we used $c_s/R\sim h\Omega$. For our fiducial disc models with
 $q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega \sim O(10^{-2})$,
-consistent with simulation results.  
+consistent with simulation results. Specifically,
+Eq. \ref{theoretical_rate} indicates the growth rate should increase
+linearly with $q$ and $h$, as seen in the simulations
+(Fig. \ref{fargo_varq_growth}---\ref{fargo_varh_growth}).    
 
+
+%Note that changing $q$ affects the magntiude of the background
+%torque through its explicit depdence on the temperature gradient. By
+%definition, the global temperature gradient does not affect modes in
+%local theory. 
+%however, changing $h$ may also modify the mode properties (since
+%temperature appears in local theory) in addition
+%to the magnitude of the temperature gradient. Thus, we expect the depedence of
+%the background torque on $q$ to be better described by
+%Eq. \{theoretical_rate} 
+
+%by definition, q does not affect local neutral modes
 %Of course, we assumed a neutral mode to obtain expressions
 %for $\jlin$ and $T_\mathrm{BG}$ in the first place, 
-Note that by using local theory we have implicitly
-assumed a neutral mode because the dispersion relation,
-Eq. \ref{dispersion}, states that non-axisymmetric modes are
-stable for real $k$. Eq. \ref{theoretical_rate} should be interpreted
-as an order-of-magnitude estimate of the perturbative effect of a
-temperature gradient on local, low-frequency $m=1$ modes.  
+%Recall that in local theory non-axisymmetric modes are stable for real
+%$k$  
+%Eq. \ref{theoretical_rate} should be interpreted
+%as an order-of-magnitude estimate of the perturbative effect of a
+%temperature gradient on local, low-frequency $m=1$ modes.  
 
 %neutral modes are not actually neutral)
 %gamma << omega_p << omega 
@@ -208,12 +231,14 @@ temperature gradient on local, low-frequency $m=1$ modes.
 %also total torque is integral -> may get cancelations 
 
 \subsection{The role of self-gravity and disc structure} 
-In the above discussion, we only considered a self-gravitating
+It is important to note that in the above discussion, we only considered a self-gravitating
 perturbation to obtain an appropriate wavenumber $k$ needed to
 evaluate Eq. \ref{theoretical_rate}. 
 The background torque density $T_\mathrm{BG}$ does not depend on  
 self-gravity explicitly, so self-gravity is not directly
-responsible for instability. However, 
+responsible for instability. 
+
+However, 
 our numerical simulations show that the $m=1$ spiral is
 confined between two $Q$-barriers, where real solutions to the local
 dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc

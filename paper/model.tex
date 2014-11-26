@@ -137,154 +137,15 @@ and similarly in 2D.
     parameter (bottom) used in this work.\label{initial_surf}}
 \end{figure}
 
-\section{Numerical methods}\label{methods}
-We adopt computational units such that $G=M_*=R_0=1$. Time is measured
-in the Keplerian orbital period at the reference radius, $P_0\equiv 
-2\pi/\Omega_k(R_0)$.  
-
-\subsection{FARGO}
-Our primary code is FARGO with self-gravity \citep{baruteau08}. This
-is a popular, simple finite-difference code for 2D discs. `FARGO' refers
-to its azimuthal transport algorithm, which circumvents time-step
-constraint set by the inner disc boundary \citep{masset00a,masset00b}. 
-
-The 2D disc occupies
-$R\in[R_\mathrm{min},R_\mathrm{max}],\,\phi\in[0,2\pi]$ and is 
-divided into $(N_R,N_\phi)$ grids, logarithmically spaced in radius and
-uniformly spaced in azimuth. At radial boundaries we set the
-hydrodynamic variables to their initial values.   
-
-The 2D Poisson equation is solved in integral form, 
-\begin{align}\label{2d_grav}
-  &\Phi_{d,z=0}(R,\phi) \notag \\
-  &=-\int_{R_\mathrm{min}}^{R_\mathrm{max}} \int_0^{2\pi}
-  \frac{G\Sigma(R^\prime,\phi^\prime)R^\prime dR^\prime d\phi^\prime}{\sqrt{R^2+R^{\prime 2} -
-      2RR^\prime\cos{(\phi - \phi^\prime)} + \epsilon_g^2}}, 
-\end{align}
-using Fast Fourier Transform (FFT), where $\epsilon_g$ is a softening
-length to prevent a numerical singularity. The FFT approach requires
-$\epsilon_g\propto R$ \citep{baruteau08}. In FARGO, $\epsilon_g$ is
-set to a fraction of $hR$.  
-
-% poisson kernal integration, softening 
-% where used?
-% BC
-\subsection{ZEUS-MP}
-ZEUS-MP  is a general-purpose finite difference
-code \citep{hayes06}. We use the code in 3D spherical geometry, covering
-$r\in[r_\mathrm{min},r_\mathrm{max}]$, $\theta\in[\theta_\mathrm{min},\pi/2]$,
-$\phi\in[0,2\pi]$. The vertical domain is chosen to cover $n_H$
-scale-heights at $R=R_0$, i.e. $\tan{(\pi/2 - \theta_\mathrm{min})}/h=n_H$. 
-The grid is logarithmically spaced in radius and uniformly spaced in the angular
-coordinates. We assume reflectional symmetry across the midplane, and
-apply reflective boundary conditions at radial boundaries and the
-upper disc boundary.  
-
-ZEUS-MP solves the 3D Poisson equation using a conjugate gradient
-method. To supply boundary conditions to the linear solver, we
-expand the boundary potential in spherical harmonics $Y_{lm}$ 
-as described in \cite{boss80}. The expansion is truncated at
-$(l,m)=(\lmax,\mmax)$. This code was used in \cite{lin12b} for
-self-gravitating disc-planet simulations.  
-
-%used in lin 2012 
-\subsection{PLUTO} 
-PLUTO is a general-purpose Godunov code \citep{mignone07}. The grid
-setup is the same as that adopted in ZEUS-MP above. We configure the
-code similarly to that used in \cite{lin14}: piece-wise linear
-reconstruction, a Roe solver and second order Runge-Kutta time
-integration. We also enable the FARGO algorithm for azimuthal
-transport. 
-
-We solve the 3D Poisson equation throughout the domain using spherical
-harmonic expansion \citep{boss80}, as used for the boundary potential
-in ZEUS-MP. This version of PLUTO was used in \cite{lin14b} for
-self-gravitating disc-planet simulations, producing similar results to
-that of ZEUS-MP and FARGO.   
-
-%used in conference proceeding 
-
-\subsection{Diagnostics}
-
-\subsubsection{Evolution of non-axisymmetirc modes}
-The disc evolution is quantified using mode amplitudes and angular
-momenta as follows. We list the 2D definitions with obvious 3D generalisations. 
-A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as 
-\begin{align}
-  f(R,\phi,t) &= \sum_{m=-\infty}^{\infty}f_m(R,t)\exp{\ii m \phi} \notag\\
-  &= f_0 + 2 \real\left[\sum_{m=1}^\infty f_m \exp{(\ii
-      m\phi)}\right], 
-\end{align}
-where the $f_m$ may be obtained from Fourier transform in $\phi$. 
-
-The normalised surface density with azimuthal wavenumber $m$ is
-\begin{align}
-  \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
-      m\phi)}\right]
-\end{align}
-where $\Sigma_{00} = \Sigma_0(t=0)$. The time evolution of the
-$m^\mathrm{th}$ mode can be characterized by 
-assuming $\Sigma_m\propto\exp{(-\ii \sigma t)}$, where
-$\sigma = \omega + \ii\gamma$ is a complex frequency, $\omega$ being 
-the real frequency and $\gamma$ is the growth rate. The total
-non-axisymmetric surface density is 
-\begin{align}
-  \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
-\end{align}
-
-
-\subsubsection{Angular momentum decomposition}
-The total disc angular momentum is
-\begin{align}
-  J &= \int_{R_\mathrm{min}}^{R_\mathrm{max}}\int_0^{2\pi} \Sigma Rv_\phi RdRd\phi \notag\\
-  &= 2\pi\int_{R_\mathrm{min}}^{R_\mathrm{max}} R\Sigma_0 v_{\phi0} R dR \notag\\ 
-  &\phantom{=}+
-  \sum_{m=1}^\infty2\pi\int_{R_\mathrm{min}}^{R_\mathrm{max}} 2R\real\left[\Sigma_m v_{\phi
-      m}^*\right] RdR 
-  %&= \sum_{m=0}^\infty \int _{R_\mathrm{min}}^{R_\mathrm{max}}  j_m(R)
-  %dR 
-  = \sum_{m=0}^\infty J_m. 
-\end{align}
-where $^*$ denotes complex conjugation. We will refer to $J_m$ as the
-$m^\mathrm{th}$ component of the total angular momentum, and use it to
-monitor angular momentum conservation in the numerical simulations. 
-It is important to distinguish this empirical definition from the
-angular momentum of linear perturbations, defined through a
-conservation law, which is given in \S\ref{wkb}. 
-
-%and we idenfity $J_m$ as the  
-%angular momentum associated with disc structure with
-%$m^\mathrm{th}$-fold symmetry, and $j_m$ the associated angular
-%momentum per unit length. We will use $J_m$ to monitor angular momentum 
-%conservation for the disc as a whole.  
-
-\subsubsection{Three-dimensionality}
-In 3D simulations we measure the importance of vertical motion with
-$\Theta$, where 
-\begin{align}\label{theta}
-  \Theta^2 \equiv \frac{\avg{v_z^2}}{\avg{v_R^2}+\avg{v_\phi^2}}, 
-\end{align}
-and $\avg{\cdot}$ denotes the density-weighted average, e.g., 
-\begin{align}
-  \avg{v_z^2} \equiv\frac{
-    \int_{R_1}^{R_2}\int_{\theta_\mathrm{min}}^{\pi/2} \int_{0}^{2\pi}
-    \rho v_z^2 dV}{
-    \int_{R_1}^{R_2}\int_{\theta_\mathrm{min}}^{\pi/2} \int_{0}^{2\pi}
-    \rho dV
-  },
-\end{align}
-and similarly for the horizontal velocities. Thus $\Theta$ is the
-ratio of the average kinetic energy associated with vertical motion to
-that in horizontal motion. The radial range of
-integration is taken over $r\in[R_1,R_2]$ since this is where
-we find the perturbations to be confined. 
-
 \section{Linear density waves}\label{wkb}
-In this paper we take a fully numerical approach using non-linear
-hydrodynamic simulations. However, it will be useful to employ
-linear density wave theory to interpret the simulations.
-We list here the main definitions and results from 2D linear theory,
-taken from \cite{lin11b} and \cite{shu91}.  
+In this paper we will mainly use non-linear hydrodynamic simulations to investigate the
+stability of disc equilibra described 
+above. However, it is useful to  interpret simulation results
+using linear density theory. We list here the main definitions and
+results from 2D linear theory, taken from \cite{lin11b} and
+\cite{shu91}.   In particular, we highlight a key feature of
+locally isothermal discs that enables angular momentum exchange
+between linear perturbations and the background disc. 
 
 In a linear analysis, one assumes a steady axisymmetric background state, such as
 that defined in \S\ref{model}, which is then perturbed such that
@@ -292,38 +153,43 @@ that defined in \S\ref{model}, which is then perturbed such that
   \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
         m\phi\right)\right]}, 
 \end{align}
-and similarly for other variables. We take $m>0$. Since the background is
-axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
-    t\right)} = \Sigma_m$ as defined for diagnostics. 
+and similarly for other variables, where $\sigma=\omega+\ii\gamma$ is
+a complex frequency with $\omega$ being the real frequency, 
+$\gamma$ the growth rate, and $m$ is an integer. Here, we take $m>0$ without
+loss of generality.  
+%Since the background is
+%axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
+ %   t\right)} = \Sigma_m$ as defined for diagnostics. 
+
 The linearised mass and momentum equations are
 \begin{align}
   &-\ii\sbar \delta\Sigma_m = -\frac{1}{R}\frac{d}{dR}\left(R\Sigma\delta
     v_{Rm}\right) - \frac{\ii m \Sigma}{R}\delta v_{\phi m}, \\
   &-\ii\sbar\delta v_{Rm} - 2\Omega \delta v_{\phi m} = -
-  c_s^2(R)\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right) - \frac{d}{dR}\delta\Phi_m,\\
+  c_s^2(R)\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right) - \frac{d}{dR}\delta\Phi_m,\label{radmom}\\
   & -\ii\sbar\delta v_{\phi m} + \frac{\kappa^2}{2\Omega}\delta v_{Rm} =
   -\frac{\ii m }{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} + \delta\Phi_m\right),
 \end{align}
 where $\sbar = \sigma - m\Omega$ and $\kappa^2 =
 R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicyclic frequency. A
-locally isothermal equation of state has been assumed.    
-The linearised Poisson equation is 
+locally isothermal equation of state has been assumed in
+Eq. \ref{radmom}.  The linearised Poisson equation is 
 \begin{align}
   \nabla^2\delta\Phi_m = 4\pi G \delta\Sigma_m \delta(z). 
 \end{align}
 
-The linearised equations can be combined into a single
+These linearised equations can be combined into a single
 integro-differential equation eigenvalue problem. We defer a full
 exploration of the linear problem to a future study. Here, we list some
-general  properties of the linear perturbations that will be useful
+general  properties of the linear perturbations that will be relevant
 for describing simulation results. 
 
 \subsection{Global angular momentum conservation for linear
-  perturbations} 
+  perturbations} \label{global_cons}
 It can be shown that linear perturbations with $\phi$-dependence in the form
 $\exp{(\ii m\phi)}$ satisfies angular momentum conservation
 in the form 
-\begin{align} 
+\begin{align}\label{angcons}
   \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
 \end{align}
 \citep[e.g.][]{narayan87,ryu92,lin93b} where
@@ -333,18 +199,14 @@ in the form
       t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
     m \Omega |\bm{\xi}|^2\right) 
 \end{align}
-is the angular momentum density, $\bm{\xi}$ is the Lagrangian
-displacement, and $\bm{F}$ is the vertically-integrated angular
-momentum flux consisting of a Reynolds stress and a gravitational
-stress \citep{lin11b}. Explicit expressions for $\bm{\xi}$ can be found in,
-e.g. \cite{papaloizou85}. 
-%and $\bm{F}$ can be read off Eq. \ref{angflux1}.  
+is the angular momentum density of the linear disturbance (which may
+be positive or negative), where $\bm{\xi}$ is the Lagrangian
+displacement and $^*$ denotes complex conjugation, and $\bm{F}$ is the
+vertically-integrated angular momentum flux consisting of a Reynolds
+stress and a gravitational stress \citep{lin11b}. Explicit expressions
+for $\bm{\xi}$ can be found in, e.g. \cite{papaloizou85}. 
 
-% \cite{papaloizou85} and \cite{lin11} respectively, and
-
-% lin papaloizou kley 1993, ryu/goodman, narayan 
-
-The background torque density $\tbg$ is 
+In Eq. \ref{angcons}, the background torque density $\tbg$ is 
 \begin{align}\label{baroclinic_torque}
   \tbg \equiv
   -\frac{m}{2}\imag\left(\delta\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
@@ -353,14 +215,23 @@ and arises because we have adopted a locally isothermal equation of
 state. In a barotropic fluid, such as a strictly isothermal disc,
 $\tbg$ vanishes and the total angular momentum associated with
 the perturbation is conserved, provided that there is no net angular
-momentum flux.% and the perturbations are regular. 
+momentum flux. % and the perturbations are regular. 
 
 However, as noted in \cite{lin11b}, if there is an imposed
 temperature gradient, as in the disc models we consider,
-then $\tbg\neq 0$ in general, which corresponds to a torque
-exerted by the background disc on the perturbation. We 
-outline the derivation of $T_\mathrm{BG}$ in Appendix 
-\ref{tbg_deriv}. 
+then $\tbg\neq 0$ in general, which corresponds to a local torque
+exerted by the background disc on the perturbation. We outline the
+derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}. 
+
+The important consequence of the background torque is the possibilty
+of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
+(negative) and the background torque $\tbg$ is positive (negative),
+then the local angular momentum density of the linear disturbance
+further increases (decreases). This implies the amplitude of the disturbance
+may grow by exchanging angular momentum with the background
+disc. In our disc models with $c_s^2\propto R^{-q}$, we expect the
+growth rate of such an instability to scale with $q$. 
+
 
 \subsection{Local results}
 In the local approximation, perturbations are assumed to vary rapidly
@@ -372,8 +243,8 @@ disc is
   (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
 where $k$ is a real wavenumber such that $|kR|\gg1$ \citep{shu91}. 
-Note that in this approximation, only axisymmetric perturbations with
-$m=0$ can be unstable (having an imaginary $\sigma$).    
+Note that in the local approximation, only axisymmetric perturbations
+($m=0$) can be unstable. % (having an imaginary $\sigma$).     
 
 Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
 \omega/m$ of a neutral mode 
@@ -422,3 +293,150 @@ waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
 waves outside co-rotation ($R>R_c$) have positive angular
 momentum. The local approximation becomes less good for global modes,
 but will nevertheless be useful for results interpretation.   
+
+\section{Numerical methods}\label{methods}
+We adopt computational units such that
+$G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
+the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
+
+\subsection{FARGO}
+Our primary code is FARGO with self-gravity \citep{baruteau08}. This
+is a popular, simple finite-difference code for 2D discs. `FARGO' refers
+to its azimuthal transport algorithm, which removes the mean azimuthal
+velocity of the disc, thereby permit larger timesteps than that would otherwise be allowed
+by the usual Courant condition based on the full azimuthal
+velocity \citep{masset00a,masset00b}.     
+
+The 2D disc occupies
+$R\in[R_\mathrm{min},R_\mathrm{max}],\,\phi\in[0,2\pi]$ and is  
+divided into $(N_R,N_\phi)$ grids, logarithmically spaced in radius and
+uniformly spaced in azimuth. At radial boundaries we set the
+hydrodynamic variables to their initial values.   
+
+The 2D Poisson equation is solved in integral form, 
+\begin{align}\label{2d_grav}
+  &\Phi_{d,z=0}(R,\phi) \notag \\
+  &=-\int_{R_\mathrm{min}}^{R_\mathrm{max}} \int_0^{2\pi}
+  \frac{G\Sigma(R^\prime,\phi^\prime)R^\prime dR^\prime d\phi^\prime}{\sqrt{R^2+R^{\prime 2} -
+      2RR^\prime\cos{(\phi - \phi^\prime)} + \epsilon_g^2}}, 
+\end{align}
+using Fast Fourier Transform (FFT), where $\epsilon_g$ is a softening
+length to prevent a numerical singularity. The FFT approach requires
+$\epsilon_g\propto R$ \citep{baruteau08}. In FARGO, $\epsilon_g$ is
+set to a fraction of $hR$.  
+
+% poisson kernal integration, softening 
+% where used?
+% BC
+\subsection{ZEUS-MP}
+ZEUS-MP  is a general-purpose finite difference
+code \citep{hayes06}. We use the code in 3D spherical geometry, covering
+$r\in[r_\mathrm{min},r_\mathrm{max}]$, $\theta\in[\theta_\mathrm{min},\pi/2]$,
+$\phi\in[0,2\pi]$. The vertical domain is chosen to cover $n_H$
+scale-heights at $R=R_0$, i.e. $\tan{(\pi/2 - \theta_\mathrm{min})}/h=n_H$. 
+The grid is logarithmically spaced in radius and uniformly spaced in the angular
+coordinates. We assume symmetry across the midplane, and
+apply reflective boundary conditions at radial boundaries and the
+upper disc boundary.  
+
+ZEUS-MP solves the 3D Poisson equation using a conjugate gradient
+method. To supply boundary conditions to the linear solver, we
+expand the boundary potential in spherical harmonics $Y_{lm}$ 
+as described in \cite{boss80}. The expansion is truncated at
+$(l,m)=(\lmax,\mmax)$. This code was used in \cite{lin12b} for
+self-gravitating disc-planet simulations.  
+
+%used in lin 2012 
+\subsection{PLUTO} 
+PLUTO is a general-purpose Godunov code \citep{mignone07}. The grid
+setup is the same as that adopted in ZEUS-MP above. We configure the
+code similarly to that used in \cite{lin14}: piece-wise linear
+reconstruction, a Roe solver and second order Runge-Kutta time
+integration. We also enable the FARGO algorithm for azimuthal
+transport. 
+
+We solve the 3D Poisson equation throughout the domain using spherical
+harmonic expansion \citep{boss80}, as used for the boundary potential
+in ZEUS-MP. This version of PLUTO was used in \cite{lin14b} for
+self-gravitating disc-planet simulations, producing similar results to
+that of ZEUS-MP and FARGO.   
+
+%used in conference proceeding 
+
+\subsection{Diagnostics}
+
+\subsubsection{Evolution of non-axisymmetirc modes}
+The disc evolution is quantified using mode amplitudes and angular
+momenta as follows. We list the 2D definitions with obvious 3D generalisations. 
+A hydrodynamic variable $f$ (e.g. $\Sigma$) is written as 
+\begin{align}
+  f(R,\phi,t) &= \sum_{m=-\infty}^{\infty}f_m(R,t)\exp{\ii m \phi} \notag\\
+  &= f_0 + 2 \real\left[\sum_{m=1}^\infty f_m \exp{(\ii
+      m\phi)}\right], 
+\end{align}
+where the $f_m$ may be obtained from Fourier transform in $\phi$. 
+
+The normalised surface density with azimuthal wavenumber $m$ is
+\begin{align}
+  \Delta\Sigma_m = \frac{2}{\Sigma_{00}} \real\left[\Sigma_m \exp{(\ii
+      m\phi)}\right]
+\end{align}
+where $\Sigma_{00} = \Sigma_0(t=0)$. The time evolution of the
+$m^\mathrm{th}$ mode can be characterized by 
+assuming $\Sigma_m\propto\exp{(-\ii \sigma t)}$ as in linear
+theory. 
+%where
+%$\sigma = \omega + \ii\gamma$ is a complex frequency, $\omega$ being 
+%the real frequency and $\gamma$ is the growth rate. 
+The total non-axisymmetric surface density is 
+\begin{align}
+  \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
+\end{align}
+
+\subsubsection{Angular momentum decomposition}
+The total disc angular momentum is
+\begin{align}
+  J &= \int_{R_\mathrm{min}}^{R_\mathrm{max}}\int_0^{2\pi} \Sigma Rv_\phi RdRd\phi \notag\\
+  &= 2\pi\int_{R_\mathrm{min}}^{R_\mathrm{max}} R\Sigma_0 v_{\phi0} R dR \notag\\ 
+  &\phantom{=}+
+  \sum_{m=1}^\infty2\pi\int_{R_\mathrm{min}}^{R_\mathrm{max}} 2R\real\left[\Sigma_m v_{\phi
+      m}^*\right] RdR 
+  %&= \sum_{m=0}^\infty \int _{R_\mathrm{min}}^{R_\mathrm{max}}  j_m(R)
+  %dR 
+  = \sum_{m=0}^\infty J_m. 
+\end{align}
+We will refer to $J_m$ as the
+$m^\mathrm{th}$ component of the total angular momentum, and use it to
+monitor numerical angular momentum conservation in the simulations. 
+It is important to distinguish this empirical definition from the
+angular momentum of linear perturbations given in \S\ref{wkb}, which
+is defined through a conservation law. 
+
+%and we idenfity $J_m$ as the  
+%angular momentum associated with disc structure with
+%$m^\mathrm{th}$-fold symmetry, and $j_m$ the associated angular
+%momentum per unit length. We will use $J_m$ to monitor angular momentum 
+%conservation for the disc as a whole.  
+
+\subsubsection{Three-dimensionality}
+In 3D simulations we measure the importance of vertical motion with
+$\Theta$, where 
+\begin{align}\label{theta}
+  \Theta^2 \equiv \frac{\avg{v_z^2}}{\avg{v_R^2}+\avg{v_\phi^2}}, 
+\end{align}
+and $\avg{\cdot}$ denotes the density-weighted average, e.g., 
+\begin{align}
+  \avg{v_z^2} \equiv\frac{
+    \int_{R_1}^{R_2}\int_{\theta_\mathrm{min}}^{\pi/2} \int_{0}^{2\pi}
+    \rho v_z^2 dV}{
+    \int_{R_1}^{R_2}\int_{\theta_\mathrm{min}}^{\pi/2} \int_{0}^{2\pi}
+    \rho dV
+  },
+\end{align}
+and similarly for the horizontal velocities. Thus $\Theta$ is the
+ratio of the average kinetic energy associated with vertical motion to
+that in horizontal motion. The radial range of
+integration is taken over $r\in[R_1,R_2]$ since this is where
+we find the perturbations to be confined. 
+
+
