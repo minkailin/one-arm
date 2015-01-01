@@ -1,5 +1,5 @@
-\section{Governing equations and numerical models}\label{model} 
-We consider a self-gravitating, inviscid fluid disc of mass $M_d$ 
+\section{Governing equations}\label{model} 
+We consider an inviscid fluid disc of mass $M_d$ 
 orbiting a central star of mass $M_*$. We will mainly examine 2D
 (or razor-thin) discs in favour of numerical 
 resolution, but have also carried out some 3D disc
@@ -64,6 +64,370 @@ and the 2D fluid velocity $\bm{v}$ is evaluated at the midplane, as are
 the forces in the momentum equations. In the Poisson equation, $\rho$ is
 replaced by $\Sigma\delta(z)$, where $\delta(z)$ is the
 delta function. 
+
+
+
+\section{Linear density waves}\label{wkb}
+% In this paper we will mainly use non-linear hydrodynamic simulations to investigate the
+% stability of disc equilibria described 
+% above. However, it is useful to  interpret simulation results
+% using linear density theory. We list here the main definitions and
+% results from 2D linear theory, taken from \cite{lin11b} and
+% \cite{shu91}.  
+{\bf We highlight a key feature of locally isothermal discs that
+  enables angular momentum exchange between small disturbances and the
+  background disc through an imposed radial temperature gradient. This
+  conclusion results from the consideration of angular momentum
+  conservation within the framework of linear perturbation theory. 
+  For simplicity, we consider 2D discs, although generalisation to 3D is straight
+  forward.  
+}
+
+In a linear analysis, one assumes a steady axisymmetric background state, % such as
+% that defined in \S\ref{model},
+which is then perturbed such that
+\begin{align}  
+  \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
+        m\phi\right)\right]}, 
+\end{align}
+and similarly for other variables, where $\sigma=\omega+\ii\gamma$ is
+a complex frequency with $\omega$ being the real frequency, 
+$\gamma$ the growth rate, and $m$ is an integer. Here, we take $m>0$ without
+loss of generality.  
+%Since the background is
+%axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
+ %   t\right)} = \Sigma_m$ as defined for diagnostics. 
+
+The linearised mass and momentum equations are
+\begin{align}
+  &-\ii\sbar \delta\Sigma_m = -\frac{1}{R}\frac{d}{dR}\left(R\Sigma\delta
+    v_{Rm}\right) - \frac{\ii m \Sigma}{R}\delta v_{\phi m}, \\
+  &-\ii\sbar\delta v_{Rm} - 2\Omega \delta v_{\phi m} = -
+  c_s^2(R)\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right) - \frac{d}{dR}\delta\Phi_m,\label{radmom}\\
+  & -\ii\sbar\delta v_{\phi m} + \frac{\kappa^2}{2\Omega}\delta v_{Rm} =
+  -\frac{\ii m }{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} + \delta\Phi_m\right),
+\end{align}
+where $\sbar = \sigma - m\Omega$ and $\kappa^2 =
+R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicyclic frequency. A
+locally isothermal equation of state has been assumed in
+Eq. \ref{radmom}.  The linearised Poisson equation is 
+\begin{align}
+  \nabla^2\delta\Phi_m = 4\pi G \delta\Sigma_m \delta(z). 
+\end{align}
+
+These linearised equations can be combined into a single
+integro-differential equation eigenvalue problem. We defer a full
+{\bf numerical} exploration of the linear problem to a future study. Here, we {\bf
+  discuss} some
+general properties of the linear perturbations. % that will be relevant
+% for describing simulation results. 
+
+\subsection{Global angular momentum conservation for linear
+  perturbations} \label{global_cons}
+It can be shown that linear perturbations with $\phi$-dependence in the form
+$\exp{(\ii m\phi)}$ satisfies angular momentum conservation
+in the form 
+\begin{align}\label{angcons}
+  \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
+\end{align}
+\citep[e.g.][]{narayan87,ryu92,lin93b} where
+\begin{align}\label{lin_ang_mom_cons}
+  \jlin \equiv
+  -\frac{m\Sigma}{2}\imag\left(\bm{\xi}^*\cdot\frac{\p\bm{\xi}}{\p
+      t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
+    m \Omega |\bm{\xi}|^2\right) 
+\end{align}
+is the angular momentum density of the linear disturbance (which may
+be positive or negative), $\bm{\xi}$ is the Lagrangian
+displacement and $^*$ denotes complex conjugation, and $\bm{F}$ is the
+vertically-integrated angular momentum flux consisting of a Reynolds
+stress and a gravitational stress \citep{lin11b}. Explicit expressions
+for $\bm{\xi}$ can be found in, e.g. \cite{papaloizou85}. 
+
+In Eq. \ref{angcons}, the background torque density $\tbg$ is 
+\begin{align}\label{baroclinic_torque}
+  \tbg \equiv
+  -\frac{m}{2}\imag\left(\delta\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
+\end{align}
+and arises because we have adopted a locally isothermal equation of
+state. {\bf  We outline the
+derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}.} 
+
+In a barotropic fluid, such as a strictly isothermal disc,
+$\tbg$ vanishes and the total angular momentum associated with
+the perturbation is conserved, provided that there is no net angular
+momentum flux. However, as noted in \cite{lin11b}, if there is an imposed
+temperature gradient, as in the disc models we consider,
+then $\tbg\neq 0$ in general, which corresponds to a local torque
+exerted by the background disc on the perturbation. 
+
+The important consequence of the background torque is the possibility
+of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
+(negative) and the background torque $\tbg$ is {\bf also} positive (negative),
+then the local angular momentum density of the linear disturbance
+{\bf will} further increase (decrease) {\bf with time}. This implies the amplitude of the disturbance
+may grow by exchanging angular momentum with the background
+disc.%  In our disc models with $c_s^2\propto R^{-q}$, we expect the
+% growth rate of such an instability to scale with $q$. 
+
+{\bf 
+  It is simplest to demonstrate instability by determining  
+  the sign of the angular momentum density 
+  $\jlin$ and the background torque $T_\mathrm{BG}$ for perturbations
+  in the local approximation, which we review next. 
+  % depends on the
+  % type of perturbation being considered. 
+  We then show that low-frequency perturbations ($|\omega|\ll\Omega$)
+  are unstable when there a negative radial 
+  temperature gradient is imposed.  
+}
+
+\subsection{Angular momentum density of  non-axisymmetirc low-frequency modes}
+{\bf We now specialise to low-frequency modes and first determine the sign of its
+  angular momentum density.} From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
+form $\exp{(-\ii \sigma t)}$ with $\real{\sigma} = \omega$,  
+the angular momentum density associated with linear waves is
+\begin{align}
+  \jlin = \frac{m\Sigma}{2}\left[\left(\omega -
+      m\Omega\right)|\bm{\xi}|^2 + \ii\Omega\left(\xi_R\xi_\phi^* -
+      \xi_R^*\xi_\phi\right)\right].  
+\end{align}
+For a low-frequency mode, $|\omega|\ll m\Omega$. Then neglecting the
+term $\omega|\bm{\xi}|^2$, {\bf we find}
+\begin{align}
+  \jlin &\simeq \frac{m\Sigma\Omega}{2}\left[-m|\bm{\xi}|^2 + \ii\left(\xi_R\xi_\phi^* -
+      \xi_R^*\xi_\phi\right)\right]\notag\\
+  & = -\frac{m\Sigma\Omega}{2}\left[ (m-1)|\bm{\xi}|^2 +  |\xi_R + \ii\xi_\phi|^2\right].
+%  & \leq 0.
+\end{align}
+
+Thus, low-frequency non-axisymmetric modes ($m\geq1$)
+
+
+
+Thus, low-frequency $m=1$ modes generally have negative
+angular momentum. These are the modes observed in our simulations. 
+If the mode loses (positive) angular momentum 
+to the background, then we can expect instability. We demonstrate
+below how this is possible through a forced temperature
+gradient. 
+
+
+%and setting $m=1$,
+%\begin{align}
+ % \jlin &\simeq \frac{\Sigma\Omega}{2}\left[-|\bm{\xi}|^2 + \ii\left(\xi_R\xi_\phi^* -
+  %    \xi_R^*\xi_\phi\right)\right]\notag\\
+%  & = -\frac{\Sigma\Omega}{2}|\xi_R + \ii\xi_\phi|^2\notag\\
+ % & \leq 0.
+%\end{align}
+
+
+
+
+\subsection{Local results}
+In the local approximation, perturbations are assumed to vary rapidly
+relative to any background gradients. The
+dispersion relation for tightly-wound density 
+waves of the form $\exp{[\ii(-\sigma t + m \phi + kR)]}$ in a razor-thin
+disc is  
+\begin{align}\label{dispersion}
+  (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
+\end{align}
+where $k$ is a real wavenumber such that $|kR|\gg1$ \citep{shu91}. 
+Note that in the local approximation, only axisymmetric perturbations
+($m=0$) can be unstable. % (having an imaginary $\sigma$).     
+
+Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
+\omega/m$ of a neutral mode 
+, Eq. \ref{dispersion} can be solved 
+for $|k|$, 
+\begin{align}\label{wavenumber}
+%  |k| = \frac{\pi G \Sigma}{c_s^2}\left[1 \pm \sqrt{1 -
+ %     Q^2(1-\nu^2)}\right], 
+|k| = k_c\left[1 \pm \sqrt{1 -
+     Q^2(1-\nu^2)}\right], 
+\end{align}
+where 
+ \begin{align}
+   k_c \equiv \frac{\pi G \Sigma}{c_s^2}
+ \end{align}
+ is a characteristic wavenumber, 
+\begin{align}
+  Q \equiv \frac{c_s\kappa}{\pi G \Sigma}
+\end{align}
+is the usual Toomre parameter, and
+\begin{align}
+  \nu \equiv \frac{(\omega - m\Omega)}{\kappa}
+\end{align}
+is a dimensionless frequency. In
+Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
+(long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
+spirals.    
+
+The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
+the fluid rotation,
+\begin{align}
+  \Omega(R_c) = \Omega_p.
+\end{align}
+\emph{Lindblad resonances} $R_L$ occurs where
+\begin{align}
+  \nu^2(R_L) = 1. 
+\end{align}
+Finally, \emph{Q-barriers} occur at radii $R_{Qb}$ where
+\begin{align}
+  Q^2(R_{Qb})\left[1-\nu^2(R_{Qb})\right] = 1.  
+\end{align}
+According to Eq. \ref{wavenumber}, purely wave-like solutions with
+real $k$ are only possible where $Q^2(1-\nu^2)\leq1$.  
+
+A detailed discussion of the properties of local density waves 
+is given in \cite{shu91}. An important result is that
+waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
+waves outside co-rotation ($R>R_c$) have positive angular
+momentum. The local approximation becomes less good for global modes,
+but will nevertheless be useful for results interpretation.   
+
+
+
+\subsection{Unstable interaction between low-frequency modes 
+  and the background disc due to an imposed temperature gradient}
+%The $m=1$ spiral that emerges in our simulations have low frequency
+%($\Omega_p < \Omega$), grows slowly ($\gamma\ll\Omega_p$) and its
+%spatial form is consistent local theory (\S\ref{fargo_m1}). 
+%{\bf
+%  We first regard a low-frequency, $m=1$ disturbance 
+ % as a mode within the framework of local theory, satisfying the
+ % % temperature gradient ignored in local theory
+ % dispersion relation Eq. \ref{dispersion}. }
+%To demonstrate possible
+%instability, 
+{\bf 
+Here we show that the torque density acting on a low-frequency, $m=1$
+local mode due to the background temperature gradient can be negative, which 
+would enforce the mode, because it has negative angular momentum.  
+}
+
+% Note that
+% we will not be assuming a self-gravitating disc until the end of this
+% section. 
+%We begin by recalling the expression for the torque density due to a
+%locally isothermal equation of state,
+%\begin{align*}
+ % T_\mathrm{BG} = - \frac{m}{2}\frac{dc_s^2}{dR}\imag\left(\delta\Sigma_m\xi_R^*\right).   
+%\end{align*}
+The Eulerian surface density perturbation is given by
+\begin{align}\label{den_pert}
+  \delta\Sigma_m = -\nabla\cdot\left(\Sigma\bm{\xi}\right) 
+  = -\frac{1}{R}\frac{d}{dR}\left(R\Sigma \xi_R\right) - \frac{\ii m}{R}\Sigma\xi_\phi.  
+\end{align}
+We invoke local theory by setting $d/dR \to \ii k$ where $k$ is
+real, and assume $|kR|\gg m$ so that the second term on the right hand
+side of Eq. \ref{den_pert} can be neglected. Then    
+\begin{align}
+  \delta\Sigma _m  \simeq -\ii k \Sigma \xi_R.
+\end{align}
+{\bf Inserting this into the expression for the background torque,
+  Eq. \ref{baroclinic_torque}, we find}
+\begin{align}
+  T_\mathrm{BG} = \frac{m}{2}\frac{dc_s^2}{dR}k\Sigma |\xi_R|^2. 
+\end{align}
+
+
+This torque density is negative for trailing waves in discs with
+a fixed temperature profile decreasing outwards ($k>0$ and $dc_s^2/dR<0$,
+respectively). Note that this conclusion does not rely on the
+low-frequency approximation and holds for any $m$.   
+
+However, if the linear disturbance under consideration \emph{is} a
+low-frequency $m=1$ mode, then it has negative angular
+momentum. {\bf Then} if it is a trailing spiral and $dc_s^2/dR<0$, as is typical
+in astrophysical discs, then $T_\mathrm{BG}<0$, and
+the background disc applies a negative torque on the disturbance,
+which further decreases its angular momentum. This suggests the {\bf
+  mode} 
+amplitude will grow.  
+
+Using $\jlin$ and $T_\mathrm{BG}$, we can estimate the 
+growth rate $\gamma$ of linear perturbations due to the background
+torque as  
+\begin{align}
+  2\gamma \sim \frac{T_\mathrm{BG}}{\jlin},
+\end{align}
+where the factor of two accounts for the fact that the angular momentum
+density is quadratic in the linear perturbations. Inserting the above
+expressions for $\jlin$ and $T_\mathrm{BG}$ for $m=1$ gives
+\begin{align}\label{theoretical_rate0}
+  2\gamma \sim
+  -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R|^2}{|\xi_R + \ii
+    \xi_\phi|^2}. 
+%  \lesssim -\frac{dc_s^2}{dR}\frac{k}{\Omega}.
+\end{align}
+In Appendix \ref{horizontal_displacements}, we argue $\xi_\phi \simeq
+2\ii \xi_R$ for the modes of interest. Then 
+%To further simplify this expression, we need to relate $\xi_R$ and
+%$\xi_\phi$. 
+% \begin{align}
+%   2\gamma \sim
+%   -\frac{dc_s^2}{dR}\frac{1}{k\Sigma^2\Omega}\frac{|\delta\Sigma_1|^2}{|\xi_R
+%     + \ii\xi_\phi|^2}.
+% \end{align}
+% Now, using $\delta\Sigma_m/\Sigma = -\ii k \xi_R - \ii m \xi_\phi/R$
+% in the local approximation, we have
+% \begin{align}
+%   2\gamma \sim -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R +
+%     \xi_\phi/kR|^2}{|\xi_R + \ii \xi_\phi|^2}
+%   \lesssim -\frac{dc_s^2}{dR}\frac{k}{\Omega}.
+% \end{align}
+% where we used $dc_s^2/dR <0$, $k>0$ and $|kR|\gg 1$ to obtain the
+% inequality. 
+%where we used $dc_s^2/dR <0$ and $k>0$ to obtain the inequality. 
+for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
+adopted in our disc models,  
+\begin{align}
+  2\gamma \sim q\frac{c_s^2}{R}\frac{k}{\Omega} \sim q h
+  \left(kH\right)\Omega.  
+\end{align}
+
+
+
+
+{\bf It is important to note that this growth is
+due to the temperature gradient and does not depend explicitly on
+whether or not the disc is self-gravitating, i.e. destabilisation is
+not due to self-gravity.}   
+
+
+
+For perturbations in a self-gravitating disc with characteristic
+wavenumber $k \sim \pi G \Sigma/c_s^2 \sim \Omega/Q c_s$, as seen in
+our simulations, we have 
+\begin{align}\label{theoretical_rate}
+  \gamma \sim \frac{qh}{2Q}\Omega,
+\end{align}
+where we used $c_s/R\sim h\Omega$. 
+
+
+
+
+
+
+
+%For our fiducial disc models with
+%$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega \sim O(10^{-2})$,
+%consistent with simulation results. Specifically,
+%Eq. \ref{theoretical_rate} indicates the growth rate should increase
+%linearly with $q$ and $h$, as seen in the simulations
+%(Fig. \ref{fargo_varq_growth}---\ref{fargo_varh_growth}).     
+
+
+\section{Numerical simulations}\label{methods}
+%above discussion is generic for low-frequency non-axisymmetric modes,
+%but illustrate with a concrete example
+We adopt computational units such that
+$G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
+the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
+
+
 
 \subsection{Disc model and initial conditions}
 For the initial disc profile we adopt a modified power-law disc with
@@ -137,167 +501,7 @@ and similarly in 2D.
     parameter (bottom) used in this work.\label{initial_surf}}
 \end{figure}
 
-\section{Linear density waves}\label{wkb}
-In this paper we will mainly use non-linear hydrodynamic simulations to investigate the
-stability of disc equilibria described 
-above. However, it is useful to  interpret simulation results
-using linear density theory. We list here the main definitions and
-results from 2D linear theory, taken from \cite{lin11b} and
-\cite{shu91}.   In particular, we highlight a key feature of
-locally isothermal discs that enables angular momentum exchange
-between linear perturbations and the background disc. 
 
-In a linear analysis, one assumes a steady axisymmetric background state, such as
-that defined in \S\ref{model}, which is then perturbed such that
-\begin{align}  
-  \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
-        m\phi\right)\right]}, 
-\end{align}
-and similarly for other variables, where $\sigma=\omega+\ii\gamma$ is
-a complex frequency with $\omega$ being the real frequency, 
-$\gamma$ the growth rate, and $m$ is an integer. Here, we take $m>0$ without
-loss of generality.  
-%Since the background is
-%axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
- %   t\right)} = \Sigma_m$ as defined for diagnostics. 
-
-The linearised mass and momentum equations are
-\begin{align}
-  &-\ii\sbar \delta\Sigma_m = -\frac{1}{R}\frac{d}{dR}\left(R\Sigma\delta
-    v_{Rm}\right) - \frac{\ii m \Sigma}{R}\delta v_{\phi m}, \\
-  &-\ii\sbar\delta v_{Rm} - 2\Omega \delta v_{\phi m} = -
-  c_s^2(R)\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right) - \frac{d}{dR}\delta\Phi_m,\label{radmom}\\
-  & -\ii\sbar\delta v_{\phi m} + \frac{\kappa^2}{2\Omega}\delta v_{Rm} =
-  -\frac{\ii m }{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} + \delta\Phi_m\right),
-\end{align}
-where $\sbar = \sigma - m\Omega$ and $\kappa^2 =
-R^{-3}\p_R(R^4\Omega^2)$ is the square of the epicyclic frequency. A
-locally isothermal equation of state has been assumed in
-Eq. \ref{radmom}.  The linearised Poisson equation is 
-\begin{align}
-  \nabla^2\delta\Phi_m = 4\pi G \delta\Sigma_m \delta(z). 
-\end{align}
-
-These linearised equations can be combined into a single
-integro-differential equation eigenvalue problem. We defer a full
-exploration of the linear problem to a future study. Here, we list some
-general  properties of the linear perturbations that will be relevant
-for describing simulation results. 
-
-\subsection{Global angular momentum conservation for linear
-  perturbations} \label{global_cons}
-It can be shown that linear perturbations with $\phi$-dependence in the form
-$\exp{(\ii m\phi)}$ satisfies angular momentum conservation
-in the form 
-\begin{align}\label{angcons}
-  \frac{\p \jlin}{\p t} + \nabla\cdot\bm{F} = \tbg, 
-\end{align}
-\citep[e.g.][]{narayan87,ryu92,lin93b} where
-\begin{align}\label{lin_ang_mom_cons}
-  \jlin \equiv
-  -\frac{m\Sigma}{2}\imag\left(\bm{\xi}^*\cdot\frac{\p\bm{\xi}}{\p
-      t} + \Omega \hat{\bm{k}}\cdot\bm{\xi}\times\bm{\xi}^* + \ii
-    m \Omega |\bm{\xi}|^2\right) 
-\end{align}
-is the angular momentum density of the linear disturbance (which may
-be positive or negative), where $\bm{\xi}$ is the Lagrangian
-displacement and $^*$ denotes complex conjugation, and $\bm{F}$ is the
-vertically-integrated angular momentum flux consisting of a Reynolds
-stress and a gravitational stress \citep{lin11b}. Explicit expressions
-for $\bm{\xi}$ can be found in, e.g. \cite{papaloizou85}. 
-
-In Eq. \ref{angcons}, the background torque density $\tbg$ is 
-\begin{align}\label{baroclinic_torque}
-  \tbg \equiv
-  -\frac{m}{2}\imag\left(\delta\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
-\end{align}
-and arises because we have adopted a locally isothermal equation of
-state. In a barotropic fluid, such as a strictly isothermal disc,
-$\tbg$ vanishes and the total angular momentum associated with
-the perturbation is conserved, provided that there is no net angular
-momentum flux. % and the perturbations are regular. 
-
-However, as noted in \cite{lin11b}, if there is an imposed
-temperature gradient, as in the disc models we consider,
-then $\tbg\neq 0$ in general, which corresponds to a local torque
-exerted by the background disc on the perturbation. We outline the
-derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}. 
-
-The important consequence of the background torque is the possibility
-of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
-(negative) and the background torque $\tbg$ is positive (negative),
-then the local angular momentum density of the linear disturbance
-further increases (decreases). This implies the amplitude of the disturbance
-may grow by exchanging angular momentum with the background
-disc. In our disc models with $c_s^2\propto R^{-q}$, we expect the
-growth rate of such an instability to scale with $q$. 
-
-
-\subsection{Local results}
-In the local approximation, perturbations are assumed to vary rapidly
-relative to any background gradients. The
-dispersion relation for tightly-wound density 
-waves of the form $\exp{[\ii(-\sigma t + m \phi + kR)]}$ in a razor-thin
-disc is  
-\begin{align}\label{dispersion}
-  (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
-\end{align}
-where $k$ is a real wavenumber such that $|kR|\gg1$ \citep{shu91}. 
-Note that in the local approximation, only axisymmetric perturbations
-($m=0$) can be unstable. % (having an imaginary $\sigma$).     
-
-Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
-\omega/m$ of a neutral mode 
-, Eq. \ref{dispersion} can be solved 
-for $|k|$, 
-\begin{align}\label{wavenumber}
-  |k| = \frac{\pi G \Sigma}{c_s^2}\left[1 \pm \sqrt{1 -
-      Q^2(1-\nu^2)}\right], 
-\end{align}
-where 
-% \begin{align}
-%   k_T \equiv \frac{\kappa^2}{2\pi G \Sigma}
-% \end{align}
-% is a characteristic wavenumber, 
-\begin{align}
-  Q \equiv \frac{c_s\kappa}{\pi G \Sigma}
-\end{align}
-is the usual Toomre parameter, and
-\begin{align}
-  \nu \equiv \frac{(\omega - m\Omega)}{\kappa}
-\end{align}
-is a dimensionless frequency. In
-Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
-(long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
-spirals.    
-
-The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
-the fluid rotation,
-\begin{align}
-  \Omega(R_c) = \Omega_p.
-\end{align}
-\emph{Lindblad resonances} $R_L$ occurs where
-\begin{align}
-  \nu^2(R_L) = 1. 
-\end{align}
-Finally, \emph{Q-barriers} occur at radii $R_{Qb}$ where
-\begin{align}
-  Q^2(R_{Qb})\left[1-\nu^2(R_{Qb})\right] = 1.  
-\end{align}
-According to Eq. \ref{wavenumber}, purely wave-like solutions with
-real $k$ are only possible where $Q^2(1-\nu^2)\leq1$.  
-
-A detailed discussion of the properties of local density waves 
-is given in \cite{shu91}. An important result is that
-waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
-waves outside co-rotation ($R>R_c$) have positive angular
-momentum. The local approximation becomes less good for global modes,
-but will nevertheless be useful for results interpretation.   
-
-\section{Numerical methods}\label{methods}
-We adopt computational units such that
-$G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
-the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
 
 \subsection{FARGO}
 Our primary code is FARGO with self-gravity \citep{baruteau08}. This
@@ -440,3 +644,61 @@ integration is taken over $r\in[R_1,R_2]$ since this is where
 we find the perturbations to be confined. 
 
 
+
+
+
+% \begin{align}
+%   T_\mathrm{BG} &= -\frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\delta\Sigma_m \left(\frac{\delta
+%         v_{Rm}}{-\ii\sbar}\right)^*\right] \notag\\
+%   & = \frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\ii \delta\Sigma_m \left(\frac{\delta
+%         v_{Rm}}{\sbar}\right)^*\right]
+% \end{align}
+% where we replaced the radial Lagrangian displacement by the Eulerian
+% radial velocity perturbation in Eq. \ref{baroclinic_torque}. 
+% The linearised momentum equations give
+% \begin{align}
+%   D\delta v_{Rm} =& 
+%   \ii\sbar\left[c_s^2\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right)
+%     + \frac{d}{dR}\delta\Phi_m\right] \notag\\ 
+%   &- \frac{2\ii
+%     m\Omega}{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} +
+%     \delta\Phi_m\right),
+% \end{align}
+% where $D\equiv \kappa^2 - \sbar^2$. 
+% We now invoke local theory by setting $d/dR \to \ii k$ where $k$ is
+% real, and using the local solution to the Poisson equation
+% \begin{align}
+%   \delta\Phi_m = -\frac{2\pi G}{|k|}\delta\Sigma_m 
+% \end{align}
+% \citep{shu91}. Then the radial velocity perturbation becomes
+% \begin{align}
+%   \delta v_{Rm} =
+%   \frac{1}{D}\frac{\delta\Sigma_m}{\Sigma}\left(\frac{2\pi G
+%       \Sigma}{|k|} - c_s^2\right)\left(k\sbar + \frac{2\ii
+%       m\Omega}{R}\right),
+% \end{align}
+% so that 
+% \begin{align}
+%   \ii\delta\Sigma_m \left(\frac{\delta v_{Rm}}{\sbar}\right)^* =
+%   \frac{1}{D^*}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
+%       \Sigma}{|k|} - c_s^2\right)\left(\ii k  + \frac{2
+%       m\Omega}{R\sbar^*}\right). 
+% \end{align}
+% For a neutral mode, $\sbar$, and therefore $D$ is real. Then, after
+% taking the imaginary part of the above expression, the torque
+% density is 
+% \begin{align}\label{tbg_explicit}
+%   T_\mathrm{BG} &=
+%   \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{D}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
+%       \Sigma}{|k|} - c_s^2\right)\right].
+% % &\simeq \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{\left(\kappa^2 -
+% %         m^2\Omega^2\right)}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi
+% %       G \Sigma}{|k|} - c_s^2\right)\right]. 
+% \end{align}
+% We now use the local dispersion relation,
+% Eq. \ref{dispersion}, to make the replacement $D = 2\pi G \Sigma |k| -
+% k^2c_s^2$ in the above expression. This gives
+% \begin{align}\label{tbg_simple}
+%   T_\mathrm{BG} =
+%   \frac{m}{2}\frac{dc_s^2}{dR}\frac{1}{k}\frac{|\delta\Sigma_m|^2}{\Sigma}.  
+% \end{align}  
