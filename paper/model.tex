@@ -171,26 +171,22 @@ disc.%  In our disc models with $c_s^2\propto R^{-q}$, we expect the
 % growth rate of such an instability to scale with $q$. 
 
 {\bf 
-  It is simplest to demonstrate instability by determining  
-  the sign of the angular momentum density 
-  $\jlin$ and the background torque $T_\mathrm{BG}$ for perturbations
-  in the local approximation, which we review next. 
-  % depends on the
-  % type of perturbation being considered. 
-  We then show that low-frequency perturbations ($|\omega|\ll\Omega$)
-  are unstable when there a negative radial 
+  We demonstrate instability for low-frequency
+  ($\omega\ll m\Omega$) perturbations by explicitly calculating its 
+  angular momentum density 
+  $\jlin$ and the background torque $T_\mathrm{BG}$, and show that
+  they are unstable when a negative radial 
   temperature gradient is imposed.  
 }
 
 \subsection{Angular momentum density of  non-axisymmetirc low-frequency modes}
-{\bf We now specialise to low-frequency modes and first determine the sign of its
-  angular momentum density.} From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
+From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
 form $\exp{(-\ii \sigma t)}$ with $\real{\sigma} = \omega$,  
 the angular momentum density associated with linear waves is
 \begin{align}
   \jlin = \frac{m\Sigma}{2}\left[\left(\omega -
       m\Omega\right)|\bm{\xi}|^2 + \ii\Omega\left(\xi_R\xi_\phi^* -
-      \xi_R^*\xi_\phi\right)\right].  
+      \xi_R^*\xi_\phi\right)\right].\label{ang_mom_def}  
 \end{align}
 For a low-frequency mode, $|\omega|\ll m\Omega$. Then neglecting the
 term $\omega|\bm{\xi}|^2$, {\bf we find}
@@ -200,18 +196,14 @@ term $\omega|\bm{\xi}|^2$, {\bf we find}
   & = -\frac{m\Sigma\Omega}{2}\left[ (m-1)|\bm{\xi}|^2 +  |\xi_R + \ii\xi_\phi|^2\right].
 %  & \leq 0.
 \end{align}
-
-Thus, low-frequency non-axisymmetric modes ($m\geq1$)
-
-
-
-Thus, low-frequency $m=1$ modes generally have negative
-angular momentum. These are the modes observed in our simulations. 
-If the mode loses (positive) angular momentum 
-to the background, then we can expect instability. We demonstrate
+{\bf
+Thus, non-axisymmetric ($m\geq1$) low-frequency modes generally have 
+negative angular momentum. If the mode loses (positive) angular momentum 
+to the background, then we can expect instability. We show 
 below how this is possible through a forced temperature
-gradient. 
-
+gradient via the background torque. It is simplest to calculate
+$T_\mathrm{BG}$ in the local approximation, which we review first.  
+}
 
 %and setting $m=1$,
 %\begin{align}
@@ -224,7 +216,7 @@ gradient.
 
 
 
-\subsection{Local results}
+\subsection{Local results}\label{local_approx}
 In the local approximation, perturbations are assumed to vary rapidly
 relative to any background gradients. The
 dispersion relation for tightly-wound density 
@@ -234,7 +226,8 @@ disc is
   (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
 where $k$ is a real wavenumber such that $|kR|\gg1$ \citep{shu91}. 
-Note that in the local approximation, only axisymmetric perturbations
+Note that in the {\bf strictly} local approximation, {\bf where all
+  global effects are neglected}, only axisymmetric perturbations
 ($m=0$) can be unstable. % (having an imaginary $\sigma$).     
 
 Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
@@ -281,13 +274,13 @@ According to Eq. \ref{wavenumber}, purely wave-like solutions with
 real $k$ are only possible where $Q^2(1-\nu^2)\leq1$.  
 
 A detailed discussion of the properties of local density waves 
-is given in \cite{shu91}. An important result is that
+is given in \cite{shu91}. An important result, {\bf which holds for
+  waves of all frequencies}, is that
 waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
 waves outside co-rotation ($R>R_c$) have positive angular
-momentum. The local approximation becomes less good for global modes,
-but will nevertheless be useful for results interpretation.   
-
-
+momentum. 
+%The local approximation becomes less good for global modes,
+%but will nevertheless be useful for results interpretation.   
 
 \subsection{Unstable interaction between low-frequency modes 
   and the background disc due to an imposed temperature gradient}
@@ -302,7 +295,7 @@ but will nevertheless be useful for results interpretation.
 %To demonstrate possible
 %instability, 
 {\bf 
-Here we show that the torque density acting on a low-frequency, $m=1$
+Here we show that the torque density acting on a low-frequency, 
 local mode due to the background temperature gradient can be negative, which 
 would enforce the mode, because it has negative angular momentum.  
 }
@@ -339,8 +332,8 @@ respectively). Note that this conclusion does not rely on the
 low-frequency approximation and holds for any $m$.   
 
 However, if the linear disturbance under consideration \emph{is} a
-low-frequency $m=1$ mode, then it has negative angular
-momentum. {\bf Then} if it is a trailing spiral and $dc_s^2/dR<0$, as is typical
+low-frequency mode, then it has negative angular
+momentum. If it is trailing and $dc_s^2/dR<0$, as is typical
 in astrophysical discs, then $T_\mathrm{BG}<0$, and
 the background disc applies a negative torque on the disturbance,
 which further decreases its angular momentum. This suggests the {\bf
@@ -355,15 +348,30 @@ torque as
 \end{align}
 where the factor of two accounts for the fact that the angular momentum
 density is quadratic in the linear perturbations. Inserting the above
-expressions for $\jlin$ and $T_\mathrm{BG}$ for $m=1$ gives
+expressions for $\jlin$ and $T_\mathrm{BG}$ for gives
 \begin{align}\label{theoretical_rate0}
   2\gamma \sim
-  -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R|^2}{|\xi_R + \ii
-    \xi_\phi|^2}. 
-%  \lesssim -\frac{dc_s^2}{dR}\frac{k}{\Omega}.
+  -\frac{dc_s^2}{dR}
+  \frac{k}{\Omega}\frac{|\xi_R|^2}{\left[(m-1)|\bm{\xi}|^2 + |\xi_R +
+      \ii\xi_\phi|^2 \right]} 
+  = -\frac{dc_s^2}{dR}
+  \frac{k}{m\Omega},
+%  -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R|^2}{|\xi_R + \ii
+%   \xi_\phi|^2}. 
 \end{align}
-In Appendix \ref{horizontal_displacements}, we argue $\xi_\phi \simeq
-2\ii \xi_R$ for the modes of interest. Then 
+{\bf where the second equality uses $\xi_\phi \simeq
+2\ii \xi_R/m$ in the local approximation, as shown in  Appendix
+\ref{horizontal_displacements}.} 
+ % {\bf
+% This holds for local modes of all frequencies and can be shown
+% explicitly by evaluating Eq. \ref{ang_mom_def} with 
+% \begin{align}
+%   \xi_\phi = -\frac{2\ii\Omega}{\sbar}\xi_R, 
+% \end{align}
+% consistent with the local approximation as shown in Appendix
+% \ref{horizontal_displacements}. 
+% }
+Then 
 %To further simplify this expression, we need to relate $\xi_R$ and
 %$\xi_\phi$. 
 % \begin{align}
@@ -384,33 +392,23 @@ In Appendix \ref{horizontal_displacements}, we argue $\xi_\phi \simeq
 for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
 adopted in our disc models,  
 \begin{align}
-  2\gamma \sim q\frac{c_s^2}{R}\frac{k}{\Omega} \sim q h
-  \left(kH\right)\Omega.  
+  2\gamma \sim q\frac{c_s^2}{R}\frac{k}{m\Omega} \sim q h
+  \left(\frac{kH}{m}\right)\Omega,\label{theoretical_rate}
 \end{align}
+where we used $c_s\sim H\Omega\sim hR\Omega$. 
+{\bf It is important to note that, although our description of the local
+  approximation accounts for disc self-gravity, mode growth due 
+  to the fixed temperature gradient does not depend explicitly on
+  whether or not the disc is self-gravitating, i.e. destabilisation is
+  not due to self-gravity.}   
 
-
-
-
-{\bf It is important to note that this growth is
-due to the temperature gradient and does not depend explicitly on
-whether or not the disc is self-gravitating, i.e. destabilisation is
-not due to self-gravity.}   
-
-
-
-For perturbations in a self-gravitating disc with characteristic
-wavenumber $k \sim \pi G \Sigma/c_s^2 \sim \Omega/Q c_s$, as seen in
-our simulations, we have 
-\begin{align}\label{theoretical_rate}
-  \gamma \sim \frac{qh}{2Q}\Omega,
-\end{align}
-where we used $c_s/R\sim h\Omega$. 
-
-
-
-
-
-
+% For perturbations in a self-gravitating disc with characteristic
+% wavenumber $k \sim \pi G \Sigma/c_s^2 \sim \Omega/Q c_s$, as seen in
+% our simulations, we have 
+% \begin{align}\label{theoretical_rate}
+%   \gamma \sim \frac{qh}{2Q}\Omega,
+% \end{align}
+% where we used $c_s/R\sim h\Omega$. 
 
 %For our fiducial disc models with
 %$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega \sim O(10^{-2})$,
@@ -423,10 +421,25 @@ where we used $c_s/R\sim h\Omega$.
 \section{Numerical simulations}\label{methods}
 %above discussion is generic for low-frequency non-axisymmetric modes,
 %but illustrate with a concrete example
-We adopt computational units such that
-$G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
-the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
-
+{\bf
+  We illustrate the destabilising effect of a fixed temperature
+  gradient using numerical simulations. The above discussion is
+  generic for low-frequency non-axisymmetric modes, but for
+  simulations we will consider specific examples.  
+  
+  There are two components to the destabilising mechanism.  First
+  the disc should support low-frequency modes, which is then
+  destabilised by an imposed temperature gradient. The latter is
+  straight forward to implement by adopting a locally isothermal
+  equation of state as described in \S\ref{model}.  For the former, we
+  consider discs with a  
+  radially-structured Toomre $Q$ profile. We use local theory to show that such discs support
+  low-frequency trapped one-armed ($m=1$) modes. 
+  This is convenient because Eq. \ref{theoretical_rate} indicates that
+  modes with small $m$ are
+  most favourable for destabilisation by an imposed temperature
+  gradient.  
+}
 
 
 \subsection{Disc model and initial conditions}
@@ -456,8 +469,27 @@ smooth disc. We choose
   &f_2(R) = \frac{1}{2}\left(1 - \epsilon\right)\left[1 -
     \tanh\left(\frac{R-R_{2}}{\Delta_2}\right)\right]  + \epsilon,
 \end{align}
-where $\Delta_{1,2} = \delta R \times H(R_{1,2})$. The bump function
-mimics mass built-up in $R\in[R_1,R_2]$. 
+where $\Delta_{1,2} = \delta R \times H(R_{1,2})$. 
+
+% {\bf The bump function mimics mass built-up in $R\in[R_1,R_2]$.  
+
+% }
+
+% In the case of protoplanetary discs, which have complex structure
+% \citep{armitage10}, GI can also occur in `dead
+% zones' --- sub-portions of the disc where the magneto-rotational
+% instability is ineffective for angular momentum transport
+% \citep{gammie96,turner08,landry13} and therefore has a reduced mass
+% accretion rate. Dead zones may then become
+% self-gravitating with sufficient mass built-up
+% \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}.   
+
+%This might represent, for example, mass  
+ % built-up in a circumstellar or protoplanetary
+ % disc at the outer edge of a `dead zone', in which there
+  %is inefficient magneto-hydrodynamic turbulence to enable accretion. 
+
+
 
 %In 3D, we assume vertical hydrostatic balance
 The 3D disc structure is obtained by assuming vertical hydrostatic
@@ -479,7 +511,7 @@ equations. This procedure is described in \cite{lin12b}.
 Our fiducial parameter values are: $s=2$, $R_{1}=R_0$, $R_{2}=2R_0$,
 $\epsilon=0.1$, $\delta R=5$, $h=0.05$ and
 $Q_\mathrm{out}=2$. An example of the initial surface density and the
-Toomre $Q$ parameter (see\S\ref{wkb}) is shown in
+Toomre $Q$ parameter is shown in
 Fig. \ref{initial_surf}. Since $Q>1$, the disc is stable to local
 axisymmetric perturbations \citep{toomre64}. %min Q is 1.3
 The transition between self-gravitating and 
@@ -501,9 +533,13 @@ and similarly in 2D.
     parameter (bottom) used in this work.\label{initial_surf}}
 \end{figure}
 
+\subsection{Codes}
+{\bf We use three independent grid-based codes to simulate the aforementioned
+system.} We adopt computational units such that
+$G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
+the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
 
-
-\subsection{FARGO}
+\subsubsection{FARGO}
 Our primary code is FARGO with self-gravity \citep{baruteau08}. This
 is a popular, simple finite-difference code for 2D discs. `FARGO' refers
 to its azimuthal transport algorithm, which removes the mean azimuthal
@@ -532,7 +568,7 @@ set to a fraction of $hR$.
 % poisson kernal integration, softening 
 % where used?
 % BC
-\subsection{ZEUS-MP}
+\subsubsection{ZEUS-MP}
 ZEUS-MP  is a general-purpose finite difference
 code \citep{hayes06}. We use the code in 3D spherical geometry, covering
 $r\in[r_\mathrm{min},r_\mathrm{max}]$, $\theta\in[\theta_\mathrm{min},\pi/2]$,
@@ -551,7 +587,7 @@ $(l,m)=(\lmax,\mmax)$. This code was used in \cite{lin12b} for
 self-gravitating disc-planet simulations.  
 
 %used in lin 2012 
-\subsection{PLUTO} 
+\subsubsection{PLUTO} 
 PLUTO is a general-purpose Godunov code \citep{mignone07}. The grid
 setup is the same as that adopted in ZEUS-MP above. We configure the
 code similarly to that used in \cite{lin14}: piece-wise linear

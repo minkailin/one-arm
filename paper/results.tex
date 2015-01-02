@@ -34,7 +34,7 @@ Fig. \ref{fargo_modeamp} plots evolution of the maximum
 non-axisymmetric surface density amplitudes in $R\in[R_{1},R_{2}]$
 for $m\in[1,10]$. Snapshots from the simulation are shown in
 Fig. \ref{fargo_2d}. 
-At early times $t\lesssim100P_0$ the disc 
+At early times $t\lesssim100P_0$ the disc {\bf is } 
 dominated by low-amplitude high-$m$ perturbations. The $m\geq4$ modes
 growth initially and saturate (or decays) after $t=40P_0$. Notice the
 low $m\leq 2$ modes decay initially, but grows between $t\in[20,40]P_0$,
@@ -63,7 +63,8 @@ again after $t=70P_0$, and eventually dominates the annulus.
 Fig. \ref{2d_angmom} shows the evolution of disc angular momentum
 components. Only the $m=0,\,1$ components are 
 plotted since they are dominant. The $m=1$ structure has
-an associated negative angular momentum.  
+an associated negative angular momentum, {\bf which indicates it is a
+  low-frequency mode.}   
 Its growth is compensated by an increase in the axisymmetric
 component of angular momentum, such that $\Delta J_0 + \Delta
 J_1 \sim 0$. Note that FARGO does not conserve angular momentum
@@ -82,175 +83,51 @@ is transferred from the one-armed spiral to the background disc.
     initial total angular momentum $J_\mathrm{ref}$.\label{2d_angmom}} 
 \end{figure}   
 
-\subsection{Properties of the $m=1$ spiral and its growth}\label{fargo_m1}
-In order to characterise the $m=1$ spiral that eventually
-dominates, here we examine a simulation initialised with 
-$M=1$ in Eq. \ref{randpert}. The one-armed spiral that emerges is more
-coherent than the above simulation, which facilitates the analysis
-below.   
-
-Fig. \ref{2d_fargo_viz} shows a snapshot of the $m=1$ surface
-density. By measuring the $m=1$ surface density amplitude and its
-pattern speed, we obtain a co-rotation radius and growth rate 
-\begin{align*}
-  &R_c \simeq 4.4R_0,\\
-  &\gamma\simeq 0.014\Omega_k(R_0) = 0.13\Omega_p. 
-\end{align*}
-This one-armed spiral can be considered as low frequency because its 
-pattern speed $\Omega_p \simeq 0.1\Omega_k(R_0)\lesssim 0.3\Omega$ in
-$R\in[R_{1},R_{2}]$ (where it has the largest amplitude). Thus, the spiral 
-pattern appears nearly stationary. The growth rate $\gamma$ is also slow
-relative to the local rotation, although the characteristic growth
-time $\gamma^{-1} \simeq 10P_0$ is not very long.  
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/polarxy2_dens120_fargo}
-  \caption{Cartesian visualisation of the $m=1$ surface density
-    structure in the FARGO simulation initialised with only $m=1$
-    perturbations. 
-    \label{2d_fargo_viz}} 
-\end{figure}   
-
-Next, we write $\Sigma_1 = 
-|\Sigma_1|\exp{(\ii kR)}$, where $k$ is real, and assume the amplitude
-$|\Sigma_1|$ varies slowly compared to the complex phase. This is the
-main assumption in local theory. We calculate $k$ numerically and plot
-its normalised value in Fig. \ref{fargo_wavenumber}. We find 
-\begin{align*}
-  kR \sim \frac{\pi G \Sigma}{c_s^2}R \sim \frac{1}{hQ}, 
-\end{align*}
-where we used $Q\sim c_s\Omega/\pi G \Sigma$ and $R\Omega/c_s\sim
-h^{-1}$. Since $Q=O(1)$ and $h\ll 1$ imply $|kR|\gg 1$, we 
-can apply results from local theory
-self-consistently. Fig. \ref{2d_fargo_viz} shows the $m=1$ spiral is
-trailing, which is consistent with $k>0$. 
- 
-%snapshot shows it's tightly wound
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/m1_analysis_kr120_fargo}
-  \caption{Normalised radial wavenumber of the $m=1$ spiral in 
-    Fig. \ref{2d_fargo_viz}.\label{fargo_wavenumber}} 
-\end{figure}   
-
-%%%%%%%%%%%%%%%%%%%%%% 
-
-Using the estimated value of $R_c$, we plot in
-Fig. \ref{fargo_qbarrier} the quantity $\nu^2 - 1 + Q^{-2}$, which is
-required to be positive in local theory for purely wave-like
-solutions to the dispersion relation (Eq. \ref{dispersion}) when the
-mode frequency is given. %Note that, with the above measured wavenumber $k$, 
-%Eq. \ref{dispersion} requires $\nu^2 - 1 + Q^{-2}\sim0$ and the lower
-%sign (long waves) to be taken. 
-Fig. \ref{fargo_qbarrier} shows two $Q$-barriers located in
-the inner disc, at $R_{Qb}=R_0$ and $R_{Qb}=1.6R_0$; the bounded region is indeed 
-where the $m=1$ spiral develops. This suggests that the one-armed 
-spiral is trapped. Note in this region, $\nu^2 - 1 + 
-Q^{-2}\simeq 0.1\ll 1$, which is necessary for consistency with 
-the measured wavenumber $k$ and Eq. \ref{wavenumber}.  
-%Eq. \ref{dispersion} with the lower sign taken (i.e. long waves).  
-There is one outer Lindblad resonance at $R_L\simeq
-7.2R_0$. Thus, acoustic waves may be launched in $R\gtrsim 7.2R_0$ by
-the spiral disturbance in the inner disc \citep{lin11b}. 
-%implications: effect on dynamics in outer disc 
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/m1_analysis_Qbar_fargo} 
-  \caption{Dimensionless mode frequency $\nu$ for the $m=1$ spiral in
-    Fig. \ref{2d_fargo_viz}. For a given real mode frequency, the
-    dispersion relation for local density waves, Eq. \ref{dispersion},
-    permits purely wave-like solutions in regions where $\nu^2 - 1 +
-    Q^{-2}>0$.    
-    \label{fargo_qbarrier}} 
-\end{figure}
-
-\subsubsection{Angular momentum exchange with the background disc}  
-The wavenumber $k = \pi G\Sigma/c_s^2$ minimises the shifted frequency
-$\sbar$ in the dispersion relation, Eq. \ref{dispersion}.  
-Physically, then, it is not surprising to 
-find perturbations of this wavenumber in a
-self-gravitating disc where $Q\sim 1$. However, according the
-local dispersion relation, $m=1$ perturbations are
-formally stable for real $k$ and $Q>1$.   
-
-%most of the perturbation is inside co-rotation 
-%so resonant interaction unlikely for instability 
-
-In order to track down the origin for the (slow) growth of the
-$m=1$ spiral, we invoke angular momentum conservation for linear
-perturbations, Eq. \ref{lin_ang_mom_cons}. Assuming fluxes are
-negligible at the disc boundaries, we can integrate
-Eq. \ref{lin_ang_mom_cons} to give
-\begin{align}\label{baroclinic_torque_int}
-  \frac{d}{dt}\underbrace{\int_{R_\mathrm{min}}^{R_\mathrm{max}}\jlin
-    2\pi R dR}_{\jlintot} 
-  =\int_{R\mathrm{min}}^{R\mathrm{max}}T_\mathrm{BG} 2\pi R dR, 
-\end{align}
-where we recall $T_\mathrm{BG}$ is the torque density due to the imposed
-sound-speed profile (Eq. \ref{baroclinic_torque}). We explicitly 
-compute both sides of Eq. \ref{baroclinic_torque_int} using
-simulation data, and compare them in Fig. \ref{fargo_angmom_ex}. There
-is a good match between the two torques, especially at early times
-$t\lesssim110P_0$. The average discrepancy is $\simeq 5\%$. 
-The match is less good later on, when the spiral
-amplitude is no longer small ($\Delta\Sigma_1\sim 0.2$ at $t=110P_0$
-and $\Delta\Sigma_1\sim 0.4$ by $t=120P_0$) and linear theory becomes
-less applicable. Fig. \ref{fargo_angmom_ex} confirms that the $m=1$ spiral
-wave experiences a negative torque that further reduces its angular
-momentum. This is consistent with angular momentum component
-measurements (Fig. \ref {2d_angmom}).  
-
-% similar results if only intergrating between R_1 and R_2
-%wave losses at boundaries 
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/m1_analysis_ang_fargo} 
-  \caption{Rate of change of the $m=1$ wave angular momentum as defined by
-    Eq. \ref{baroclinic_torque_int} (solid) compared to the torque
-    exerted on the wave associated with the background temperature
-    gradient (dotted). 
-    \label{fargo_angmom_ex}} 
-\end{figure}
-
-%ang mom decreases slightly more rapidly than torque exchange provides
-%- probably non-linear effects/shocks 
 
 \subsection{Dependence on the imposed temperature profile}
-The simulations above suggest the growth of the $m=1$ spiral mode
-can be attributed to the background torque applied on linear perturbations
-as a result of an imposed temperature gradient, as discussed in
-\S\ref{global_cons}. According to Eq. \ref{baroclinic_torque}, this
-torque is proportional to $q$, the power-law index used to set the
-sound-speed profile (Eq. \ref{sound-speed}) in our simulations. 
-We confirm this through a series of simulations with $q\in[0,1]$, 
-initialised with $m=1$ perturbations. However, to keep the Toomre $Q$
-profiles similar, we adjust the surface density power-law index such
-that $s = (3+q)/2$.  
+{\bf We show that the growth of the $m=1$ spiral is
+  associated with the imposed temperature gradient  by performing a 
+  series of simulations with $q\in[0,1]$,  However, to keep the Toomre $Q$
+  profiles similar, we adjust the surface density power-law index such
+  that $s = (3+q)/2$.  For clarity these simulations are initialised
+  with $m=1$ perturbations only.  
+}
+
+% The simulations above suggest the growth of the $m=1$ spiral mode
+% can be attributed to the background torque applied on linear perturbations
+% as a result of an imposed temperature gradient, as discussed in
+% \S\ref{global_cons}. 
+% According to Eq. \ref{baroclinic_torque}, this
+% torque is proportional to $q$, the power-law index used to set the
+% sound-speed profile (Eq. \ref{sound-speed}) in our simulations. 
 
 Fig. \ref{fargo_varq} compares the $m=1$ spiral amplitudes as a
 function of $q$. We indeed observe slower growth with decreasing
-$q$. Although the figure indicates growth for the strictly isothermal
+$q$. Although the figure indicates growth for the strictly isothermal 
 disc ($q=0$), we did not observe a coherent one-armed spiral upon
 inspection of the $m=1$ surface density field. The growth in this case
-may be associated with high-$m$ modes, which dominated the
+may be associated with high-$m$ modes, which dominated the 
 simulation.   
-
 % difficult to measure  
 % show result of isothermal calc?
-
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/m1_analysis_plot_fargo_varq}   
   \caption{Evolution of the $m=1$ spiral amplitude as a function of
-    the imposed sound-speed gradient $q$. The maximum value of the
+    the {\bf negative of the imposed temperature gradient} $q$. The maximum value of the
     $m=1$ surface density in $R\in[R_1,R_2]$ is shown. 
     \label{fargo_varq}} 
 \end{figure}
-We plot growth rates of the $m=1$ spiral as a function of $q$ in 
+
+We plot growth rates of the $m=1$ mode as a function of $q$ in 
 Fig. \ref{fargo_varq_growth}. The correlation can be fitted with a 
 linear relation
 \begin{align*}
   \gamma \simeq \left[0.015 q - 7.9\times10^{-4}\right] \Omega_k(R_0). 
 \end{align*}
-% difficult to measure very small growth rates
-This shows that the temperature gradient is responsible for the
+% difficult to measure very small growth rates 
+{\bf As the background torque is proportional to $q$
+  (Eq. \ref{theoretical_rate})}, 
+this {\bf indicates} that the temperature gradient is responsible for the
 development of the one-armed spirals observed in our simulations.  
 
 \begin{figure}
@@ -289,3 +166,155 @@ emerges.
     plotted (dotted line). 
     \label{fargo_varh_growth}} 
 \end{figure}
+
+\subsection{Properties of the $m=1$ spiral and its growth}\label{fargo_m1}
+{\bf Here we analyse the $q=1$ case in Fig. \ref{fargo_varq_growth} in
+  more detail.  
+}
+%In order to characterise the $m=1$ spiral that eventually
+%dominates, here we examine a simulation initialised with 
+%$M=1$ in Eq. \ref{randpert}. The one-armed spiral that emerges is more
+%coherent than the above simulation, which facilitates the analysis
+%below.   
+Fig. \ref{2d_fargo_viz} shows a snapshot of the $m=1$ surface
+density {\bf of this run}. 
+By measuring the $m=1$ surface density amplitude and its
+pattern speed, we obtain a co-rotation radius and growth rate 
+\begin{align*}
+  &R_c \simeq 4.4R_0,\\
+  &\gamma\simeq 0.014\Omega_k(R_0) = 0.13\Omega_p. 
+\end{align*}
+This one-armed spiral can be considered as low frequency because its 
+pattern speed $\Omega_p \simeq 0.1\Omega_k(R_0)\lesssim 0.3\Omega$ in
+$R\in[R_{1},R_{2}]$ (where it has the largest amplitude). Thus, the spiral 
+pattern appears nearly stationary. The growth rate $\gamma$ is also slow
+relative to the local rotation, although the characteristic growth
+time $\gamma^{-1} \simeq 10P_0$ is not very long.  
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/polarxy2_dens120_fargo}
+  \caption{Cartesian visualisation of the $m=1$ surface density
+    structure in the FARGO simulation initialised with only $m=1$
+    perturbations. 
+    \label{2d_fargo_viz}} 
+\end{figure}   
+
+Next, we write $\Sigma_1 = 
+|\Sigma_1|\exp{(\ii kR)}$, where $k$ is real, and assume the amplitude
+$|\Sigma_1|$ varies slowly compared to the complex phase. This is the
+main assumption in local theory. We calculate $k$ numerically and plot
+its normalised value in Fig. \ref{fargo_wavenumber}. We find 
+\begin{align*}
+  kR \sim \frac{\pi G \Sigma}{c_s^2}R \sim \frac{1}{hQ}, 
+\end{align*}
+where we used $Q\sim c_s\Omega/\pi G \Sigma$ and $R\Omega/c_s\sim
+h^{-1}$. Since $Q=O(1)$ and $h\ll 1$ imply $|kR|\gg 1$, we 
+can apply {\bf results from local theory
+  (\S\ref{local_approx})}. {\bf Note also that $k\simeq k_c$. }
+Fig. \ref{2d_fargo_viz} shows the $m=1$
+spiral is trailing, consistent with $k>0$. 
+ 
+%snapshot shows it's tightly wound
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_kr120_fargo}
+  \caption{Normalised radial wavenumber of the $m=1$ spiral in 
+    Fig. \ref{2d_fargo_viz}.\label{fargo_wavenumber}} 
+\end{figure}   
+
+%%%%%%%%%%%%%%%%%%%%%% 
+
+Using the estimated value of $R_c$, we plot in
+Fig. \ref{fargo_qbarrier} the quantity $\nu^2 - 1 + Q^{-2}$, which is
+required to be positive in local theory for purely wave-like
+solutions to the dispersion relation (Eq. \ref{dispersion}) when the
+mode frequency is given. %Note that, with the above measured wavenumber $k$, 
+%Eq. \ref{dispersion} requires $\nu^2 - 1 + Q^{-2}\sim0$ and the lower
+%sign (long waves) to be taken. 
+Fig. \ref{fargo_qbarrier} shows two $Q$-barriers located in
+the inner disc, at $R_{Qb}=R_0$ and $R_{Qb}=1.6R_0$; the bounded region is indeed 
+where the $m=1$ spiral develops. This shows that the one-armed 
+spiral is trapped. Note in this region, $\nu^2 - 1 + 
+Q^{-2}\simeq 0.1\ll 1$, which is necessary for consistency with 
+the measured wavenumber $k$ and Eq. \ref{wavenumber}.  
+%Eq. \ref{dispersion} with the lower sign taken (i.e. long waves).  
+There is one outer Lindblad resonance at $R_L\simeq
+7.2R_0$. Thus, acoustic waves may be launched in $R\gtrsim 7.2R_0$ by
+the spiral disturbance in the inner disc \citep{lin11b}. 
+%implications: effect on dynamics in outer disc 
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_Qbar_fargo} 
+  \caption{Dimensionless mode frequency $\nu$ for the $m=1$ spiral in
+    Fig. \ref{2d_fargo_viz}. For a given real mode frequency, the
+    dispersion relation for local density waves, Eq. \ref{dispersion},
+    permits purely wave-like solutions in regions where $\nu^2 - 1 +
+    Q^{-2}>0$.    
+    \label{fargo_qbarrier}} 
+\end{figure}
+
+
+{\bf
+  We can estimate the expected growth rate of the $m=1$ mode due to the
+  temperature gradient. Setting $k = k_c$ and $m=1$ into
+  Eq. \ref{theoretical_rate} gives
+  \begin{align}\label{theoretical_rate1}
+    \gamma \sim \frac{qh}{2Q}\Omega. 
+  \end{align}
+  Inserting $q=1$, $h=0.05$ and $Q\simeq 1.5$  gives
+  $\gamma \simeq 0.017\Omega$, consistent with numerical
+  results.  
+}
+
+
+
+
+\subsubsection{Angular momentum exchange with the background disc}  
+% The wavenumber $k = \pi G\Sigma/c_s^2$ minimises the shifted frequency
+% $\sbar$ in the dispersion relation, Eq. \ref{dispersion}.  
+% Physically, then, it is not surprising to 
+% find perturbations of this wavenumber in a
+% self-gravitating disc where $Q\sim 1$. However, according the
+% local dispersion relation, $m=1$ perturbations are
+% formally stable for real $k$ and $Q>1$.   
+%most of the perturbation is inside co-rotation 
+%so resonant interaction unlikely for instability 
+
+{\bf We explicitly show that the growth of the $m=1$ spiral is due to
+  the forced temperature gradient via the background torque described
+  in \S\ref{wkb}. We integrate the statement for angular momentum 
+  conservation for linear perturbations, Eq. \ref{lin_ang_mom_cons},
+  assuming boundary fluxes are negligible, to obtain
+}
+% we invoke angular momentum conservation for linear
+% perturbations, Eq. \ref{lin_ang_mom_cons}. 
+% Assuming fluxes are
+% negligible at the disc boundaries, we can integrate
+% Eq. \ref{lin_ang_mom_cons} to give
+\begin{align}\label{baroclinic_torque_int}
+  \frac{d}{dt}\underbrace{\int_{R_\mathrm{min}}^{R_\mathrm{max}}\jlin
+    2\pi R dR}_{\jlintot} 
+  =\int_{R\mathrm{min}}^{R\mathrm{max}}T_\mathrm{BG} 2\pi R dR, 
+\end{align}
+where we recall $T_\mathrm{BG}$ is the torque density associated with the imposed
+sound-speed profile (Eq. \ref{baroclinic_torque}). We  
+compute both sides of Eq. \ref{baroclinic_torque_int} using
+simulation data, and compare them in Fig. \ref{fargo_angmom_ex}. There
+is a good match between the two torques, especially at early times
+$t\lesssim110P_0$. The average discrepancy is $\simeq 5\%$. 
+The match is less good later on, when the spiral
+amplitude is no longer small ($\Delta\Sigma_1\sim 0.2$ at $t=110P_0$
+and $\Delta\Sigma_1\sim 0.4$ by $t=120P_0$) and linear theory becomes
+less applicable. Fig. \ref{fargo_angmom_ex} confirms that the $m=1$ spiral
+wave experiences a negative torque that further reduces its angular
+momentum, {\bf leading to its growth.} 
+This is consistent with angular momentum component
+measurements (Fig. \ref {2d_angmom}).  
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/m1_analysis_ang_fargo} 
+  \caption{Rate of change of the $m=1$ wave angular momentum as defined by
+    Eq. \ref{baroclinic_torque_int} (solid) compared to the torque
+    exerted on the wave associated with the background temperature
+    gradient (dotted). 
+    \label{fargo_angmom_ex}} 
+\end{figure}
+
