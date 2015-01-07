@@ -3,7 +3,181 @@
 %do smooth disc results carry over to structured disks?
 
 \section{Discussion}\label{discussions} 
+   % specific to our numerical 
+   % simulations%  and may or may not be relevant to generic low-frequency
+   %   % modes destabilised by a forced temperature gradient.  
+   % 
 
+{\bf
+  \subsection{Applicability to circumstellar discs}
+  
+
+  \subsubsection{Thermodynamic requirements}
+  
+  % talk about additional simulations at high Q
+
+  %issues with fragmentation 
+ % requirement for fast cooling  
+  % fast cooling fragments 
+  % stabilised by irradiation
+  % background torque and fragmentation may not be mutually exclusive
+  % (speculations) 
+  % these studies do no account for possible global disk structure 
+  %Clarke (2009), Rafikov (2005), and Rice & Armitage (2009)
+  %no fragmentation in our case because disc is maintained at slightly
+  %higher values of Q. no fragmentation of one arm spiral because
+  %co-rotation radius isn't on it 
+  %if irradiation 
+  %one-armed low frequency spiral probably will not fragment because
+  %co-rotation is far away 
+
+  A locally isothermal equation of state represents the limit
+  of infinitely short cooling (and heating) timescales, so the
+  disc temperature instantly returns to its initial value when
+  perturbed.  A short cooling timescale $t_c$ can occur in the outer
+  parts of protoplanetary discs 
+  \citep{rafikov05,clarke09,rice09,cossins10}.  %rafikov07 (convection)
+  However, if a disc with 
+  $Q\simeq 1$ is cooled (towards zero temperature) on a timescale
+  $t_c\ll\Omega_k^{-1}$, it will fragment
+  \citep{gammie01,paarkedooper12}. 
+
+  %internal heating?
+  To avoid fragmentation, the disc must be heated to
+  maintain $Q$ above the threshold for fragmentation \citep[about
+  $Q\lesssim 1.4$ for isothermal discs][]{durisen07}. This may be
+  possible in the outer parts of protoplanetary discs due to heating
+  by irradiation \citep{rafikov07,rice11}. 
+
+  % Numerical simulations performed by
+  % \cite{rice11} indicate external irradiation can stablise
+  % the disc against fragmentation. 
+
+  %It is important to note, however,
+  %that these studies do not consider the possible effect of global
+  %structures present in our numerical simulations.  
+
+
+  %chiang and goldreich
+  The background torque may therefore exist in the outer
+  parts of protoplanetary discs that are strongly irradiated, such
+  that the disc temperature is set externally with a non-zero radial
+  gradient.  Of course, if external irradiation sets a strictly
+  isothermal outer disc, then the background torque vanishes.    
+
+%where does the structure come from? (mass built up, planet gap) 
+ 
+  \subsubsection{Radial disc structure}
+  In our numerical simulations the 
+  $m=1$ spiral is confined between two $Q$-barriers, where real solutions to the local
+  dispersion relation is possible (Eq. \ref{wavenumber}). The
+  existence of such a cavity is a result of the adopted disc
+  structure. Thus, in our disc models the main role of disc structure
+  and self-gravity is to 
+  allow a local $m=1$ mode to be set up, which is then 
+  destabilised by the background torque density. 
+  
+  In order to confine an $m=1$ spiral between two $Q$-barriers, we
+  should have $Q^2(1-\nu^2)=1$ at two radii. Assuming 
+  Keplerian rotation and a slow pattern speed $\Omega_p\ll\Omega$, this amounts to
+  \begin{align}\label{qb_cond}
+    \left(\frac{R_{Qb}}{R_c}\right)^{-3/2} = 2Q^2(R_{Qb}). 
+  \end{align}
+  Then it may be possible to have two $Q$-barriers when the $Q$ profile
+  of the disc rises more rapidly (decays more slowly) than $R^{-3/2}$
+  for decreasing (increasing) $R$. 
+  
+  %in fall/mass loading? 
+  The surface density bump in our initial condition might represent,
+  for example, mass built-up in a 
+`dead zone' in a protoplanetary
+  disc, where the magneto-rotational 
+  instability is ineffective for angular momentum transport
+  \citep{gammie96,turner08,landry13} and therefore has a reduced mass
+  accretion rate. The dead zone may become 
+  self-gravitating with sufficient mass built-up
+  \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}. 
+  However, the thermodynamic conditions in a dead zone 
+  %internal heating and cooling can balance such that a global radial
+  %temperature gradient is maintained - then background torque may
+  %exist. 
+
+
+  %particularly simple functional representation of the bump. a
+  %realistic bump may be different
+  
+  Another possibility is a gap opened by a giant planet. In that case $Q$
+  rises rapidly towards the gap centre since it is a region of low
+  surface density, which may satisfy Eq. \ref{qb_cond}. Then the inner
+  edge of our bump
+  function mimics the outer gap edge. The outer gap edge is then a
+  possible site for the growth of a low-frequency one-armed spiral
+  through the background torque. 
+ %or gap opened by a fragment 
+
+}
+
+
+% The simulations themselves consider an isothermal or locally isothermal equation of state only.  Gammie (2001) and other work since have shown that the evolution of self-gravitating discs depends both on the stability criterion and on the balance between heating and cooling.  If the cooling rate is fast, it is likely to fragment, otherwise it will settle into a quasi-steady, self-gravitating state.  
+
+% When considering isothermal simulations, the likely evolution is one of two things.  It's either initially so unstable that the disc quickly fragments, or it's initially stable enough that any initial perturbations simply drives the system towards being even more stable and the instability quickly weakens through rapid mass transfer (see the work by Laughlin & Bodenheimer 1994/1996).  There is no real way to drive a long-lived quasi-steady, non-fragmenting, self-gravitating state because this is only possible if the system can remain quasi-stable though balancing heating and cooling (see, for example, Lodato & Rice 2004).  
+
+% In fact, in the conclusions it is suggested that the conditions used in the simulation would require a cooling < 0.1 \Omega^{-1} which, based on the work of Gammie 2001, would quickly lead to fragmentation.  The reason it doesn't in the work considered here is that the isothermal assumption assumes that there is some equivalently fast heating mechanism but, in the work here, this is not provided by the instability itself.  If it were, the simulations would become very quickly unstable.  Also, if one looks at the work of Clarke (2009), Rafikov (2005), and Rice & Armitage (2009) the only region of a realistic disc where such rapid cooling is possible is in the outer disc, but such regions are either very gravitationally unstable and fragment, or quickly stablised by an external heating source.  I guess it is possible that there could be a scenario where this exactly produces the conditions assumed here, but that would seem rather fine-tuned and it would be more likely that an external heating source would simply stabilise the disc (unless the disc were extremely massive and could remain unstable even at reasonably high disc temperatures). 
+
+
+{\bf
+  \subsection{Motion of the central star} 
+  
+  \subsection{Role of Lindblad and co-rotation torques}
+  One possible effect of self-gravity is to allow the one-armed spiral  
+  to act as an external potential for the exterior disc. This is
+  analogous to disc-satellite interaction 
+  \citep{goldreich79}, where the embedded satellite exerts a torque on
+  the disc at 
+
+
+
+In Appendix \ref{disc-planet} we estimate the magnitude of this effect
+  using basic results from disc-planet theory \citep[see, e.g.][and
+  references therein]{papaloizou07}.  
+  
+
+One possible effect of self-gravity is to allow the one-armed spiral  
+to act as an external potential for the wider disc. This is
+analogous to disc-satellite interaction 
+\citep{goldreich79}. Here, we estimate the magnitude of this effect
+using basic results from disc-planet theory \citep[see, e.g.][and
+references therein]{papaloizou07}.  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Furthermore, this
+%non-local interaction may be important for the long-term evolution of
+%the outer disc, since it gains angular momentum from the
+
+%also transport ang mom outwards
 
 
 % Having confirmed the $m=1$ spiral instability through numerical
@@ -67,179 +241,3 @@
 %agreement with numerical results. 
 
 %also total torque is integral -> may get cancelations 
-
-
-
-
-\subsection{The role of self-gravity and disc structure} 
-It is important to note that in the above discussion, we only considered a self-gravitating
-perturbation to obtain an appropriate wavenumber $k$ needed to
-evaluate Eq. \ref{theoretical_rate}. 
-The background torque density $T_\mathrm{BG}$ does not depend on  
-self-gravity explicitly, so self-gravity is not directly
-responsible for instability. 
-
-However, 
-our numerical simulations show that the $m=1$ spiral is
-confined between two $Q$-barriers, where real solutions to the local
-dispersion relation is possible (Eq. \ref{wavenumber}), as a result of the adopted disc
-structure. Thus, in our disc models the main role of disc structure and self-gravity is to 
-allow a neutral mode to be set up and confined, which is then
-destabilised through the background torque density. 
-
-In order to confine an $m=1$ spiral between two $Q$-barriers, we
-should have $Q^2(1-\nu^2)=1$ at two radii. Assuming 
-Keplerian rotation and a slow pattern speed $\Omega_p\ll\Omega$, this amounts to
-\begin{align}
-  \left(\frac{R_{Qb}}{R_c}\right)^{-3/2} = 2Q^2(R_{Qb}). 
-\end{align}
-Then it may be possible to have two $Q$-barriers when the $Q$ profile
-of the disc rises more rapidly (decays more slowly) than $R^{-3/2}$
-for decreasing (increasing) $R$. One possibility is a gap
-opened by a giant planet in a constant-$Q$ disc. In that case $Q$
-rises rapidly towards the gap centre since it is a region of low
-surface density. The outer gap edge is then a potential site for the
-growth of a low-frequency one-armed spiral through the background
-torque. 
-
-%talk about additional simulations at high Q
-%spiral mode as external potential to wider disc (lp11)
-%interaction across co-rotation
-
-
-
-
-
-
-\subsection{The confined spiral as an external potential}
-One possible effect of self-gravity is to allow the one-armed spiral  
-to act as an external potential for the wider disc. This is
-analogous to disc-satellite interaction 
-\citep{goldreich79}. Here, we estimate the magnitude of this effect
-using basic results from disc-planet theory \citep[see, e.g.][and
-references therein]{papaloizou07}.  
-
-Let us treat the one-armed spiral confined in $R\in[R_1,R_2]$ as an  
-external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
-    \Omega_pt\right)}$. We take 
-\begin{align} 
-  \Phi_\mathrm{ext}
-  =-\frac{GM_\mathrm{ring}}{\overline{R}}b^{1}_{1/2}(\beta),   
-\end{align}
-where $M_\mathrm{ring}$ is the disc mass contained within
-$R\in[R_1,R_2]$, $\overline{R} = (R_1+R_2)/2$ is the approximate radial
-location of the spiral, $b_{n}^m(\beta)$ is the Laplace coefficient
-and $\beta = R/\overline{R}$. This form of
-$\Phi_\mathrm{ext}$ is the $m=1$ component of the gravitational
-potential of an external satellite on a circular orbit
-\citep{goldreich79}.    
-
-%For an order-of-magnitude exercise, we simply take 
-%\begin{align}
- % \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \overline{R}|}, 
-%\end{align}
-%for the potential associated with a disturbance located at
-%$R=\overline{R}$, where $M_\mathrm{ring}$ 
-
-We expect the external potential to exert a torque on the disc at the
-Lindblad and co-rotation resonances. At the outer Lindblad resonance
-(OLR), this torque is 
-\begin{align}
-  \Gamma_L =
-  \frac{\pi^2\Sigma_L}{3\Omega_L\Omega_p}
-  \left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 -
-      \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2, 
-\end{align}   
-where a Keplerian disc has been assumed and subscript $L$ denotes
-evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
-exist for the pattern speeds observed in our simulations.) 
-
-If we associate the external potential with angular momentum 
-$J_\mathrm{ext}  = M_\mathrm{ring}\overline{R}^2\Omega_p$, we can
-calculate a growth rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
-\begin{align}
-  \frac{\gamma_L}{\Omega_p} = &\frac{\pi
-    h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)\left(\frac{R_c}{\overline{R}}\right) 
-  ^3\left(\frac{R_L}{R_c}\right)^{-3/2}\notag\\ 
-  &\times
-  \left\{\frac{R_L}{\overline{R}}\left.\frac{db_{1/2}^1}{d\beta}\right|_L
-    + 2\left[1 - 
-      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]b_{1/2}^1(\beta_L)\right\}^2. 
-\end{align}
-%\begin{align}
- % \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
-  %  Q_L}\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)^{-1/2}\left(\frac{R_c}{\overline{R}}\right)^{5/2}\notag\\
- % &\times \left\{ \frac{R_L}{R_L - \overline{R}} - 2\left[1 -
-  %    \left(\frac{R_c}{R_L}\right)^{-3/2}\right]\right\}^2\frac{R_c^2}{\left(R_L
-   % - \overline{R}\right)^2}. 
-%\end{align}
-Inserting $h=0.05$, $Q_L=10$, $M_\mathrm{ring} = 0.05M_*$,
-$R_L=7.2R_0$, $R_c=4.4R_0$ and $\overline{R}=1.5R_0$ from our fiducial
-FARGO simulation, we get
-\begin{align}
-  \gamma_L \sim 5\times10^{-4}\Omega_p. 
-\end{align}
-%\begin{align}
- % \gamma_L \sim 0.012\Omega_p. 
-%\end{align}
-%This represents an upper limit on the effect of the OLR on the spiral
-%disturbance, and is much smaller than the growth rate measured in the
-%simulation ($\gamma\sim0.1\Omega_p$). We conclude that for our models,
-%the OLR has negligible effect on the one-armed spiral.  
-For the co-rotation torque, we use the result
-\begin{align}
-  \Gamma_c = \left.
-    \pi^2\Phi_\mathrm{ext}^2\left(\frac{d\Omega}{dR}\right)^{-1}\frac{d}{dR}\left(\frac{2\Sigma}{\Omega}\right)\right|_{c}     
-\end{align}
-for a Keplerian disc, where subscript $c$ denotes evaluation at
-co-rotation radius $R=R_c$. For a power-law surface density profile
-$\Sigma\propto R^{-s}$ we have
-\begin{align}
-\frac{\gamma_c}{\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_c}
-\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_c}{\overline{R}}\right)^4\left(s-\frac{3}{2}\right) 
-\left[b_{1/2}^1(\beta_c)\right]^2    
-\end{align}
-%\begin{align}
-%  \frac{\Gamma_C}{J_\mathrm{ext}\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
- %   \frac{3}{2}\right)\left(\frac{M_\mathrm{ring}}{M_*}\right)\frac{R_c^4}{\overline{R}^2\left(R_c
- %     - \overline{R}\right)^2}.   
-%\end{align}
-Using the above parameter values with $s=2$ and $Q_c=10$, we obtain a
-rate
-\begin{align}
-  \gamma_c\sim 6\times 10^{-4}\Omega_p. 
-\end{align}
-
-These estimates are much smaller than that due to
-the imposed temperature gradient as measured in the simulations
-($\gamma\sim 0.1\Omega_p$). We conclude that for our disc models, the
-Lindblad and co-rotation resonances have negligible effects on the
-growth of the one-armed spiral in the inner disc. We confirmed this with
-additional FARGO simulations with a reduced radial domain size,
-setting $R_\mathrm{max}=3R_0$, which still developed the one-armed
-spiral. 
-
-The torque exerted on the disc at the OLR by an
-external potential is positive, while that at co-rotation 
-depends on the gradient of potential vorticity there
-\citep{goldreich79}. For our disc models with surface density
-$\Sigma\propto R^{-2}$ in the outer disc, this co-rotation torque is
-positive. Interpreting the one-armed spiral as an external potential
-for the outer disc, this means that the spiral loses
-angular momentum by launching density waves with positive angular momentum at
-the OLR, and by applying a positive co-rotation torque on the disc. 
-In principle, this interaction is destabilising because the
-one-armed spiral has negative angular momentum
-\citep{lin11b}. This effect is small in our simulations, but it  
-could be significant in other parameter regimes. %Furthermore, this
-%non-local interaction may be important for the long-term evolution of
-%the outer disc, since it gains angular momentum from the
-
-%also transport ang mom outwards
-
-
-{\bf
-  \subsection{Relevance to protoplanetary discs}
-  
-  
-}

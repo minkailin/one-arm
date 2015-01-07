@@ -166,3 +166,98 @@ In the local approximation, $|kR|\gg m$ by assumption. %  Furthermore,
 For low-frequency modes we have $\sbar \simeq -m\Omega$, so
 $\xi_\phi\simeq 2\ii\xi_R/m$, as used in the main text.  
 }
+
+
+
+
+\section{The confined spiral as an external potential}\label{disc-planet}
+Let us treat the one-armed spiral confined in $R\in[R_1,R_2]$ as an  
+external potential of the form $\Phi_\mathrm{ext}(R)\cos{\left(\phi -
+    \Omega_pt\right)}$. We take 
+\begin{align} 
+  \Phi_\mathrm{ext}
+  =-\frac{GM_\mathrm{ring}}{\overline{R}}b^{1}_{1/2}(\beta),   
+\end{align}
+where $M_\mathrm{ring}$ is the disc mass contained within
+$R\in[R_1,R_2]$, $\overline{R} = (R_1+R_2)/2$ is the approximate radial
+location of the spiral, $b_{n}^m(\beta)$ is the Laplace coefficient
+and $\beta = R/\overline{R}$. This form of
+$\Phi_\mathrm{ext}$ is the $m=1$ component of the gravitational
+potential of an external satellite on a circular orbit
+\citep{goldreich79}.    
+
+%For an order-of-magnitude exercise, we simply take 
+%\begin{align}
+ % \Phi_\mathrm{ext} = -\frac{GM_\mathrm{ring}}{|R - \overline{R}|}, 
+%\end{align}
+%for the potential associated with a disturbance located at
+%$R=\overline{R}$, where $M_\mathrm{ring}$ 
+
+We expect the external potential to exert a torque on the disc at the
+Lindblad and co-rotation resonances. At the outer Lindblad resonance
+(OLR), this torque is 
+\begin{align}
+  \Gamma_L =
+  \frac{\pi^2\Sigma_L}{3\Omega_L\Omega_p}
+  \left[\left.R_L\frac{d\Phi_\mathrm{ext}}{dR}\right|_L + 2\left(1 -
+      \frac{\Omega_p}{\Omega_L}\right)\Phi_\mathrm{ext}\right]^2, 
+\end{align}   
+where a Keplerian disc has been assumed and subscript $L$ denotes
+evaluation at the OLR, $R=R_L$. (The inner Lindblad resonance does not
+exist for the pattern speeds observed in our simulations.) 
+
+If we associate the external potential with angular momentum 
+$J_\mathrm{ext}  = M_\mathrm{ring}\overline{R}^2\Omega_p$, we can
+calculate a growth rate $\gamma_L=\Gamma_L/J_\mathrm{ext}$. Then 
+\begin{align}
+  \frac{\gamma_L}{\Omega_p} = &\frac{\pi
+    h}{3Q_L}\left(\frac{M_p}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)\left(\frac{R_c}{\overline{R}}\right) 
+  ^3\left(\frac{R_L}{R_c}\right)^{-3/2}\notag\\ 
+  &\times
+  \left\{\frac{R_L}{\overline{R}}\left.\frac{db_{1/2}^1}{d\beta}\right|_L
+    + 2\left[1 - 
+      \left(\frac{R_c}{R_L}\right)^{-3/2}\right]b_{1/2}^1(\beta_L)\right\}^2. 
+\end{align}
+%\begin{align}
+ % \frac{\gamma_L}{\Omega_p} \sim &\frac{\pi h}{3
+  %  Q_L}\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_L}{\overline{R}}\right)^{-1/2}\left(\frac{R_c}{\overline{R}}\right)^{5/2}\notag\\
+ % &\times \left\{ \frac{R_L}{R_L - \overline{R}} - 2\left[1 -
+  %    \left(\frac{R_c}{R_L}\right)^{-3/2}\right]\right\}^2\frac{R_c^2}{\left(R_L
+   % - \overline{R}\right)^2}. 
+%\end{align}
+Inserting $h=0.05$, $Q_L=10$, $M_\mathrm{ring} = 0.05M_*$,
+$R_L=7.2R_0$, $R_c=4.4R_0$ and $\overline{R}=1.5R_0$ from our fiducial
+FARGO simulation, we get
+\begin{align}
+  \gamma_L \sim 5\times10^{-4}\Omega_p. 
+\end{align}
+%\begin{align}
+ % \gamma_L \sim 0.012\Omega_p. 
+%\end{align}
+%This represents an upper limit on the effect of the OLR on the spiral
+%disturbance, and is much smaller than the growth rate measured in the
+%simulation ($\gamma\sim0.1\Omega_p$). We conclude that for our models,
+%the OLR has negligible effect on the one-armed spiral.  
+For the co-rotation torque, we use the result
+\begin{align}
+  \Gamma_c = \left.
+    \pi^2\Phi_\mathrm{ext}^2\left(\frac{d\Omega}{dR}\right)^{-1}\frac{d}{dR}\left(\frac{2\Sigma}{\Omega}\right)\right|_{c}     
+\end{align}
+for a Keplerian disc, where subscript $c$ denotes evaluation at
+co-rotation radius $R=R_c$. For a power-law surface density profile
+$\Sigma\propto R^{-s}$ we have
+\begin{align}
+\frac{\gamma_c}{\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_c}
+\left(\frac{M_\mathrm{ring}}{M_*}\right)\left(\frac{R_c}{\overline{R}}\right)^4\left(s-\frac{3}{2}\right) 
+\left[b_{1/2}^1(\beta_c)\right]^2    
+\end{align}
+%\begin{align}
+%  \frac{\Gamma_C}{J_\mathrm{ext}\Omega_p} = \frac{4}{3}\frac{\pi h}{Q_C} \left(s -
+ %   \frac{3}{2}\right)\left(\frac{M_\mathrm{ring}}{M_*}\right)\frac{R_c^4}{\overline{R}^2\left(R_c
+ %     - \overline{R}\right)^2}.   
+%\end{align}
+Using the above parameter values with $s=2$ and $Q_c=10$, we obtain a
+rate
+\begin{align}
+  \gamma_c\sim 6\times 10^{-4}\Omega_p. 
+\end{align}
