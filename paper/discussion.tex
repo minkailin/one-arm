@@ -3,19 +3,21 @@
 %do smooth disc results carry over to structured disks?
 
 \section{Discussion}\label{discussions} 
-   % specific to our numerical 
-   % simulations%  and may or may not be relevant to generic low-frequency
-   %   % modes destabilised by a forced temperature gradient.  
-   % 
+{\bf
+  We discuss below several issues related to self-gravitating
+  discs in the context of our numerical simulations. However, it is
+  important to keep in mind that, strictly speaking, 
+  the growth of the one-armed spiral in our simulations is
+  \emph{not} a gravitational instability in the sense that
+  destabilisation is through the background torque associated with a
+  forced temperature gradient, and not by self-gravitational torques.     
+}
 
 {\bf
   \subsection{Applicability to circumstellar discs}
   
-
-  \subsubsection{Thermodynamic requirements}
-  
+  \subsubsection{Thermodynamic requirements}  
   % talk about additional simulations at high Q
-
   %issues with fragmentation 
  % requirement for fast cooling  
   % fast cooling fragments 
@@ -32,43 +34,57 @@
   %co-rotation is far away 
 
   A locally isothermal equation of state represents the limit
-  of infinitely short cooling (and heating) timescales, so the
-  disc temperature instantly returns to its initial value when
-  perturbed.  A short cooling timescale $t_c$ can occur in the outer
+  of infinitely short cooling (and heating) timescales, so the 
+  disc temperature instantly returns to its initial value when 
+  perturbed. The background torque is generally non-zero if the 
+  resulting temperature profile has a non-zero radial gradient.  
+  
+  A short cooling timescale $t_c$ can occur in the outer
   parts of protoplanetary discs 
-  \citep{rafikov05,clarke09,rice09,cossins10}.  %rafikov07 (convection)
-  However, if a disc with 
-  $Q\simeq 1$ is cooled (towards zero temperature) on a timescale
-  $t_c\ll\Omega_k^{-1}$, it will fragment
-  \citep{gammie01,paarkedooper12}. 
+  \citep{rafikov05,clarke09,rice09,cossins10b}.  %rafikov07 (convection)
+  However, if a disc with $Q\simeq 1$ is cooled (towards zero
+  temperature) on a timescale $t_c\lesssim\Omega_k^{-1}$, it will
+  fragment following gravitational instability
+  \citep{gammie01,rice05,paardekooper12}.  
+  
+  Fragmentation can be avoided if the disc is heated to maintain 
+  $Q>Q_c$, the threshold for fragmentation \citep[$Q_c\simeq
+  1.4$ for isothermal discs,][]{mayer04}. This may be 
+  possible in the outer parts of protoplanetary discs due to
+  stellar irradiation \citep{rafikov07}. Sufficiently strong
+  external irradiation is expected to suppress the linear gravitational
+  instabilities altogether \citep{rice11}.  
 
-  %internal heating?
-  To avoid fragmentation, the disc must be heated to
-  maintain $Q$ above the threshold for fragmentation \citep[about
-  $Q\lesssim 1.4$ for isothermal discs][]{durisen07}. This may be
-  possible in the outer parts of protoplanetary discs due to heating
-  by irradiation \citep{rafikov07,rice11}. 
-
-  % Numerical simulations performed by
-  % \cite{rice11} indicate external irradiation can stablise
-  % the disc against fragmentation. 
-
-  %It is important to note, however,
-  %that these studies do not consider the possible effect of global
-  %structures present in our numerical simulations.  
-
-
-  %chiang and goldreich
+  %chiang and goldreich 
   The background torque may therefore exist in the outer
   parts of protoplanetary discs that are strongly irradiated, such
   that the disc temperature is set externally with a non-zero radial
-  gradient.  Of course, if external irradiation sets a strictly
-  isothermal outer disc, then the background torque vanishes.    
+  gradient. Of course, if external irradiation sets a strictly
+  isothermal outer disc, then the background torque vanishes.     
 
-%where does the structure come from? (mass built up, planet gap) 
+  % We note, however, that there is no obvious reason why the background
+  % torque and gravitational instability/fragmentation cannot coexist.  
+
+  % It is important to note, however,
+  % that these studies do not consider the possible effect of global
+  % structures present in our numerical simulations.  
+  
+  % When $Q\simeq 1$ and the cooling timescale
+  % $t_c\gtrsim\Omega_k^{-1}$, the disc reaches a
+  % quasi-steady in which cooling is balanced by heating due to
+  % gravito-turbulence \citep{lodato04}. This would, in general, produce
+  % a global radial temperature gradient.   
+  
+  % There
+  % is no real way to drive a long-lived quasi-steady, non-fragmenting,
+  % self-gravitating state because this is only possible if the system
+  % can remain quasi-stable though balancing heating and cooling (see,
+  % for example, Lodato & Rice 2004).   
+  
+  % where does the structure come from? (mass built up, planet gap, infall) 
  
   \subsubsection{Radial disc structure}
-  In our numerical simulations the 
+  In our simulations the 
   $m=1$ spiral is confined between two $Q$-barriers, where real solutions to the local
   dispersion relation is possible (Eq. \ref{wavenumber}). The
   existence of such a cavity is a result of the adopted disc
@@ -88,27 +104,22 @@
   for decreasing (increasing) $R$. 
   
   %in fall/mass loading? 
-  The surface density bump in our initial condition might represent,
-  for example, mass built-up in a 
-`dead zone' in a protoplanetary
+  The surface density bump adopted in our numerical simulations might
+  represent 
+  `dead zone' in a protoplanetary
   disc, where the magneto-rotational 
   instability is ineffective for angular momentum transport
   \citep{gammie96,turner08,landry13} and therefore has a reduced mass
   accretion rate. The dead zone may become 
   self-gravitating with sufficient mass built-up
   \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}. 
-  However, the thermodynamic conditions in a dead zone 
-  %internal heating and cooling can balance such that a global radial
-  %temperature gradient is maintained - then background torque may
-  %exist. 
-
-
+ 
   %particularly simple functional representation of the bump. a
   %realistic bump may be different
   
   Another possibility is a gap opened by a giant planet. In that case $Q$
   rises rapidly towards the gap centre since it is a region of low
-  surface density, which may satisfy Eq. \ref{qb_cond}. Then the inner
+  surface density, which can satisfy Eq. \ref{qb_cond}. Then the inner
   edge of our bump
   function mimics the outer gap edge. The outer gap edge is then a
   possible site for the growth of a low-frequency one-armed spiral
@@ -118,11 +129,43 @@
 }
 
 
-% The simulations themselves consider an isothermal or locally isothermal equation of state only.  Gammie (2001) and other work since have shown that the evolution of self-gravitating discs depends both on the stability criterion and on the balance between heating and cooling.  If the cooling rate is fast, it is likely to fragment, otherwise it will settle into a quasi-steady, self-gravitating state.  
+% The simulations themselves consider an isothermal or locally
+% isothermal equation of state only.  Gammie (2001) and other work
+% since have shown that the evolution of self-gravitating discs
+% depends both on the stability criterion and on the balance between
+% heating and cooling.  If the cooling rate is fast, it is likely to
+% fragment, otherwise it will settle into a quasi-steady,
+% self-gravitating state.     
 
-% When considering isothermal simulations, the likely evolution is one of two things.  It's either initially so unstable that the disc quickly fragments, or it's initially stable enough that any initial perturbations simply drives the system towards being even more stable and the instability quickly weakens through rapid mass transfer (see the work by Laughlin & Bodenheimer 1994/1996).  There is no real way to drive a long-lived quasi-steady, non-fragmenting, self-gravitating state because this is only possible if the system can remain quasi-stable though balancing heating and cooling (see, for example, Lodato & Rice 2004).  
+% When considering isothermal simulations, the likely evolution is one
+% of two things.  It's either initially so unstable that the disc
+% quickly fragments, or it's initially stable enough that any initial
+% perturbations simply drives the system towards being even more
+% stable and the instability quickly weakens through rapid mass
+% transfer (see the work by Laughlin & Bodenheimer 1994/1996).  There
+% is no real way to drive a long-lived quasi-steady, non-fragmenting,
+% self-gravitating state because this is only possible if the system
+% can remain quasi-stable though balancing heating and cooling (see,
+% for example, Lodato & Rice 2004).   
 
-% In fact, in the conclusions it is suggested that the conditions used in the simulation would require a cooling < 0.1 \Omega^{-1} which, based on the work of Gammie 2001, would quickly lead to fragmentation.  The reason it doesn't in the work considered here is that the isothermal assumption assumes that there is some equivalently fast heating mechanism but, in the work here, this is not provided by the instability itself.  If it were, the simulations would become very quickly unstable.  Also, if one looks at the work of Clarke (2009), Rafikov (2005), and Rice & Armitage (2009) the only region of a realistic disc where such rapid cooling is possible is in the outer disc, but such regions are either very gravitationally unstable and fragment, or quickly stablised by an external heating source.  I guess it is possible that there could be a scenario where this exactly produces the conditions assumed here, but that would seem rather fine-tuned and it would be more likely that an external heating source would simply stabilise the disc (unless the disc were extremely massive and could remain unstable even at reasonably high disc temperatures). 
+% In fact, in the conclusions it is suggested that the conditions used
+% in the simulation would require a cooling < 0.1 \Omega^{-1} which,
+% based on the work of Gammie 2001, would quickly lead to
+% fragmentation.  The reason it doesn't in the work considered here is
+% that the isothermal assumption assumes that there is some
+% equivalently fast heating mechanism but, in the work here, this is
+% not provided by the instability itself.  If it were, the simulations
+% would become very quickly unstable.  Also, if one looks at the work
+% of Clarke (2009), Rafikov (2005), and Rice & Armitage (2009) the
+% only region of a realistic disc where such rapid cooling is possible
+% is in the outer disc, but such regions are either very
+% gravitationally unstable and fragment, or quickly stablised by an
+% external heating source.  I guess it is possible that there could be
+% a scenario where this exactly produces the conditions assumed here,
+% but that would seem rather fine-tuned and it would be more likely
+% that an external heating source would simply stabilise the disc
+% (unless the disc were extremely massive and could remain unstable
+% even at reasonably high disc temperatures).  
 
 
 {\bf
@@ -141,13 +184,6 @@ In Appendix \ref{disc-planet} we estimate the magnitude of this effect
   using basic results from disc-planet theory \citep[see, e.g.][and
   references therein]{papaloizou07}.  
   
-
-One possible effect of self-gravity is to allow the one-armed spiral  
-to act as an external potential for the wider disc. This is
-analogous to disc-satellite interaction 
-\citep{goldreich79}. Here, we estimate the magnitude of this effect
-using basic results from disc-planet theory \citep[see, e.g.][and
-references therein]{papaloizou07}.  
 
 }
 
