@@ -51,16 +51,17 @@
   $Q>Q_c$, the threshold for fragmentation \citep[$Q_c\simeq
   1.4$ for isothermal discs,][]{mayer04}. This may be 
   possible in the outer parts of protoplanetary discs due to
-  stellar irradiation \citep{rafikov07}. Sufficiently strong
+  stellar irradiation \citep{rafikov09,zhu12}. Sufficiently strong
   external irradiation is expected to suppress the linear gravitational
   instabilities altogether \citep{rice11}.  
 
   %chiang and goldreich 
-  The background torque may therefore exist in the outer
+  The background torque may thus exist in the outer
   parts of protoplanetary discs that are strongly irradiated, such
   that the disc temperature is set externally with a non-zero radial
   gradient. Of course, if external irradiation sets a strictly
-  isothermal outer disc, then the background torque vanishes.     
+  isothermal outer disc \citep[e.g.][]{boley09}, then the background
+  torque vanishes.      
 
   % We note, however, that there is no obvious reason why the background
   % torque and gravitational instability/fragmentation cannot coexist.  
@@ -87,33 +88,43 @@
   In our simulations the 
   $m=1$ spiral is confined between two $Q$-barriers, where real solutions to the local
   dispersion relation is possible (Eq. \ref{wavenumber}). The
-  existence of such a cavity is a result of the adopted disc
-  structure. Thus, in our disc models the main role of disc structure
-  and self-gravity is to 
-  allow a local $m=1$ mode to be set up, which is then 
-  destabilised by the background torque density. 
+  existence of such a cavity is a result of the adopted surface
+  density bump (Eq. \ref{sig_bump}).  
+  Thus, in our disc models the main role of disc structure 
+  and self-gravity is to allow a local $m=1$ mode to be set up, which is then 
+  destabilised by the background torque. 
   
-  In order to confine an $m=1$ spiral between two $Q$-barriers, we
+  In order to confine an $m=1$ mode between two $Q$-barriers, we
   should have $Q^2(1-\nu^2)=1$ at two radii. Assuming 
-  Keplerian rotation and a slow pattern speed $\Omega_p\ll\Omega$, this amounts to
+  Keplerian rotation and a slow pattern speed $\Omega_p\ll\Omega$,
+  this amounts to 
   \begin{align}\label{qb_cond}
     \left(\frac{R_{Qb}}{R_c}\right)^{-3/2} = 2Q^2(R_{Qb}). 
   \end{align}
-  Then it may be possible to have two $Q$-barriers when the $Q$ profile
-  of the disc rises more rapidly (decays more slowly) than $R^{-3/2}$
+  Then two $Q$-barriers may exist when the $Q$ profile
+  rises more rapidly (decays more slowly) than $R^{-3/2}$
   for decreasing (increasing) $R$. 
   
   %in fall/mass loading? 
   The surface density bump adopted in our numerical simulations might
-  represent 
-  `dead zone' in a protoplanetary
-  disc, where the magneto-rotational 
+  represent, for example, mass built-up in a 
+  `dead zone' in protoplanetary 
+  discs, where the magneto-rotational 
   instability is ineffective for angular momentum transport
   \citep{gammie96,turner08,landry13} and therefore has a reduced mass
-  accretion rate. The dead zone may become 
-  self-gravitating with sufficient mass built-up
-  \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}. 
+  accretion rate. The dead zone becomes 
+  self-gravitating with sufficient mass built-up 
+  \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13}.  
+
  
+  
+%  There is some attempt to do so when discussing dead zones, but I
+%  doubt that the conditions there are actually suitable as such a
+%  region would either be stable, or cool very slowly and be
+%  susceptible to the growth of long-lived, high-m-mode spiral
+%  structure. 
+
+
   %particularly simple functional representation of the bump. a
   %realistic bump may be different
   
@@ -170,7 +181,16 @@
 
 {\bf
   \subsection{Motion of the central star} 
-  
+  For the simulations presented in this paper, the indirect potential
+associated with the non-inertial reference frame is purposefully 
+neglected to avoid complications arising from the motion of the
+central star. For the adopted disc masses $M_d\lesssim 0.1 M_*$, this
+effect is not expected to be significant
+\citep{adams89,shu90,michael10}. Indeed, simulations including the indirect
+potential, carried out in the early stages of this project, produced
+similar results.    
+
+
   \subsection{Role of Lindblad and co-rotation torques}
   One possible effect of self-gravity is to allow the one-armed spiral  
   to act as an external potential for the exterior disc. This is
