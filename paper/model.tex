@@ -72,8 +72,7 @@ delta function.
   background disc through an imposed radial temperature gradient. This
   conclusion results from the consideration of angular momentum
   conservation within the framework of linear perturbation theory. 
-  For simplicity, we consider 2D discs, although generalisation to 3D is straight
-  forward.  
+  For simplicity, in this section we consider 2D discs. 
 }
 
 In a linear analysis, one assumes a steady axisymmetric background state, % such as
@@ -85,7 +84,7 @@ which is then perturbed such that
 \end{align}
 and similarly for other variables, where $\sigma=\omega+\ii\gamma$ is
 a complex frequency with $\omega$ being the real frequency, 
-$\gamma$ the growth rate, and $m$ is an integer. Here, we take $m>0$ without
+$\gamma$ the growth rate, and $m$ is an integer. We take $m>0$ without
 loss of generality.  
 %Since the background is
 %axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
@@ -164,12 +163,14 @@ disc.%  In our disc models with $c_s^2\propto R^{-q}$, we expect the
 % growth rate of such an instability to scale with $q$. 
 
 {\bf 
-  We demonstrate instability for low-frequency
-  ($\omega\ll m\Omega$) perturbations by explicitly calculating its 
+  We demonstrate instability for low-frequency modes 
+  ($|\omega|\ll m\Omega$) by explicitly showing its 
   angular momentum density 
-  $\jlin$ and the background torque $T_\mathrm{BG}$, and show that
-  they are unstable when a negative radial 
-  temperature gradient is imposed.  
+  $\jlin<0$, and the background torque $T_\mathrm{BG}<0$ for
+  appropriate perturbations and radial temperature gradients. 
+%, and show that
+%  low-frequency modes can be unstable when a radial 
+%  temperature gradient is imposed.  
 }
 
 \subsection{Angular momentum density of  non-axisymmetirc low-frequency modes}
@@ -248,7 +249,7 @@ is the usual Toomre parameter, and
 is a dimensionless frequency. In
 Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
 (long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
-spirals.    
+waves.    
 
 The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
 the fluid rotation,
@@ -319,10 +320,9 @@ side of Eq. \ref{den_pert} can be neglected. Then
 \end{align}
 
 
-This torque density is negative for trailing waves in discs with
-a fixed temperature profile decreasing outwards ($k>0$ and $dc_s^2/dR<0$,
-respectively). Note that this conclusion does not rely on the
-low-frequency approximation and holds for any $m$.   
+This torque density is negative for trailing waves ($k>0$) in discs with
+a fixed temperature profile decreasing outwards ($dc_s^2/dR<0$). Note
+that this conclusion does not rely on the low-frequency approximation.    
 
 However, if the linear disturbance under consideration \emph{is} a
 low-frequency mode, then it has negative angular
@@ -389,7 +389,8 @@ adopted in our disc models,
   \left(\frac{kH}{m}\right)\Omega,\label{theoretical_rate}
 \end{align}
 where we used $c_s\sim H\Omega\sim hR\Omega$. 
-{\bf It is important to note that, although our description of the local
+{\bf Note the absence of the Toomre parameter $Q$ in
+  Eq. \ref{theoretical_rate}. Although our description of the local 
   approximation accounts for disc self-gravity, mode growth due 
   to the fixed temperature gradient does not depend explicitly on
   whether or not the disc is self-gravitating, i.e. destabilisation is
