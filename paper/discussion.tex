@@ -14,6 +14,43 @@
 }
 
 {\bf
+  \subsection{Motion of the central star} 
+  In our models we have purposefully neglected the indirect potential
+  associated with a non-inertial reference frame to avoid
+  complications arising from the motion of the central star.  
+  It has been established that such motion, in response to an $m=1$
+  disturbance in the disc, can render the disturbance
+  unstable in a barotropic disc (so the background torque is
+  ineffective). 
+
+  However, for the disc masses in our models, $M_d\lesssim 
+  0.1 M_*$, this effect is not expected to be significant
+  \citep{adams89,shu90,michael10}. Indeed, simulations including the
+  indirect potential, carried out in the early stages of this project,
+  produced similar results.    
+  
+  \subsection{Role of Lindblad and co-rotation torques}
+  One effect of self-gravity is to allow the one-armed spiral,
+  confined to $R\sim R_0$, to act as an external potential for the
+  exterior disc in $R\gtrsim R_0$. This is 
+  analogous to disc-satellite interaction 
+  \citep{goldreich79}, where the embedded satellite exerts a torque on
+  the disc at Lindblad and co-rotation resonances. 
+
+  In Appendix \ref{disc-planet} we estimate the magnitude of this effect
+  using basic results from disc-planet theory \citep[see, e.g.][and
+  references therein]{papaloizou07}. There, we find that the angular
+  momentum exchange between the one-armed spiral and the exterior disc
+  is insignificant compared to the background torque.  
+  
+  We confirmed this with additional FARGO simulations that exclude the
+  co-rotation and outer Lindblad resonances (OLR) by reducing radial domain
+  size, setting $R_\mathrm{max} = 3 R_0$. This model still developed
+  the one-armed spiral. 
+}
+
+
+{\bf
   \subsection{Applicability to circumstellar discs}
   
   \subsubsection{Thermodynamic requirements}  
@@ -88,7 +125,7 @@
   In our simulations the 
   $m=1$ spiral is confined between two $Q$-barriers, where real solutions to the local
   dispersion relation is possible (Eq. \ref{wavenumber}). The
-  existence of such a cavity is a result of the adopted surface
+  existence of such a cavity is a result of the initial surface
   density bump (Eq. \ref{sig_bump}).  
   Thus, in our disc models the main role of disc structure 
   and self-gravity is to allow a local $m=1$ mode to be set up, which is then 
@@ -105,38 +142,38 @@
   rises more rapidly (decays more slowly) than $R^{-3/2}$
   for decreasing (increasing) $R$. 
   
-  %in fall/mass loading? 
-  The surface density bump adopted in our numerical simulations might
-  represent, for example, mass built-up in a 
-  `dead zone' in protoplanetary 
-  discs, where the magneto-rotational 
-  instability is ineffective for angular momentum transport
-  \citep{gammie96,turner08,landry13} and therefore has a reduced mass
-  accretion rate. The dead zone becomes 
+  A surface density bump can develop in 
+  `dead zones' of protoplanetary 
+  discs, where there is reduced mass accretion because the magneto-rotational 
+  instability is ineffective for angular momentum transport 
+  \citep{gammie96,turner08,landry13}. The dead zone becomes 
   self-gravitating with sufficient mass built-up 
   \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13}.  
-
- 
   
+  However, conditions in a dead zone may not be suitable for 
+  sustaining a background torque because it may not cool/heat fast enough
+  to maintain a fixed temperature profile. Recently, 
+  \cite{bae14} presented sophisticated numerical models of
+  dead zones, including a range of heating and 
+  cooling processes, which show that dead zones developed large-scale
+  (genuine) gravitational instabilities with multiple spiral
+  arms. Although this does not prove absence of the background torque,
+  it is probably insignificant compared to gravitational torques. 
+
 %  There is some attempt to do so when discussing dead zones, but I
 %  doubt that the conditions there are actually suitable as such a
 %  region would either be stable, or cool very slowly and be
 %  susceptible to the growth of long-lived, high-m-mode spiral
 %  structure. 
 
-
-  %particularly simple functional representation of the bump. a
-  %realistic bump may be different
-  
-  Another possibility is a gap opened by a giant planet. In that case $Q$
+  Another possibility is a gap opened by an embedded planet. In that case $Q$
   rises rapidly towards the gap centre since it is a region of low
-  surface density, which can satisfy Eq. \ref{qb_cond}. Then the inner
-  edge of our bump
-  function mimics the outer gap edge. The outer gap edge is then a
-  possible site for the growth of a low-frequency one-armed spiral
-  through the background torque. 
- %or gap opened by a fragment 
-
+  surface density. This can satisfy Eq. \ref{qb_cond}. Then the inner
+  edge of our bump function mimics the outer gap edge. The outer gap
+  edge is then a potential site for the growth of a low-frequency
+  one-armed spiral through the background torque. However, the
+  locally isothermal requirement limits this process to the
+  outer disc.   
 }
 
 
@@ -179,33 +216,7 @@
 % even at reasonably high disc temperatures).  
 
 
-{\bf
-  \subsection{Motion of the central star} 
-  For the simulations presented in this paper, the indirect potential
-associated with the non-inertial reference frame is purposefully 
-neglected to avoid complications arising from the motion of the
-central star. For the adopted disc masses $M_d\lesssim 0.1 M_*$, this
-effect is not expected to be significant
-\citep{adams89,shu90,michael10}. Indeed, simulations including the indirect
-potential, carried out in the early stages of this project, produced
-similar results.    
 
-
-  \subsection{Role of Lindblad and co-rotation torques}
-  One possible effect of self-gravity is to allow the one-armed spiral  
-  to act as an external potential for the exterior disc. This is
-  analogous to disc-satellite interaction 
-  \citep{goldreich79}, where the embedded satellite exerts a torque on
-  the disc at 
-
-
-
-In Appendix \ref{disc-planet} we estimate the magnitude of this effect
-  using basic results from disc-planet theory \citep[see, e.g.][and
-  references therein]{papaloizou07}.  
-  
-
-}
 
 
 

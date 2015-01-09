@@ -74,24 +74,25 @@
 \begin{abstract} 
   {\bf We describe a new mechanism that leads to the destabilisation of
  non-axisymmetric waves in astrophysical discs with 
-  an imposed radial temperature gradient.  We use linear density wave
-  theory 
-  to show that non-axisymmetric perturbations generally do not conserve
-  their angular momentum in the presence of a forced temperature
-  gradient. This implies an exchange of angular momentum
-  between linear perturbations and the background disc. In particular, 
-  when the disturbance is a low-frequency
-  trailing wave and the disc temperature decreases outwards, this 
-  interaction is unstable and leads to the growth of the wave.  
-  We demonstrate this phenomenon through numerical hydrodynamic
-  simulations of locally isothermal discs in 2D using the FARGO
-  code and in 3D with  the ZEUS-MP and PLUTO codes.  We consider
-  radially structured discs with a self-gravitating region which remains
-  stable in the absence of a temperature gradient. However,
-  when a temperature gradient is imposed we observe exponential growth of an one-armed  
-  spiral mode (azimuthal wavenumber $m=1$) with co-rotation radius 
-  outside the bulk of the spiral arm, resulting in a nearly-stationary
-  one-armed spiral pattern.  The development of this one-armed 
+ an imposed radial temperature gradient. This might apply, for
+ example, to the outer parts of protoplanetary discs. We use linear
+ density wave theory 
+ to show that non-axisymmetric perturbations generally do not conserve
+ their angular momentum in the presence of a forced temperature
+ gradient. This implies an exchange of angular momentum
+ between linear perturbations and the background disc. In particular, 
+ when the disturbance is a low-frequency
+ trailing wave and the disc temperature decreases outwards, this 
+ interaction is unstable and leads to the growth of the wave.  
+ We demonstrate this phenomenon through numerical hydrodynamic
+ simulations of locally isothermal discs in 2D using the FARGO
+ code and in 3D with  the ZEUS-MP and PLUTO codes.  We consider
+ radially structured discs with a self-gravitating region which remains
+ stable in the absence of a temperature gradient. However,
+ when a temperature gradient is imposed we observe exponential growth of an one-armed  
+ spiral mode (azimuthal wavenumber $m=1$) with co-rotation radius 
+ outside the bulk of the spiral arm, resulting in a nearly-stationary
+ one-armed spiral pattern.  The development of this one-armed 
  spiral does not require the movement of the central star, as found in previous studies. 
  Because destabilisation by the imposed temperature gradient does 
  not explicitly require disc self-gravity, we suggest this mechanism may also
@@ -131,19 +132,100 @@ presence of spiral arms in circumstellar discs could be signposts of
 planet formation.  
 
 % but also natural in GI.
-However, spiral arms are also associated with global gravitational 
-instability (GI) of differentially rotating discs
-\citep{goldreich65,laughlin96b,laughlin98,nelson98,lodato05,forgan11}. Large-scale
+Spiral arms are also {\bf characteristic of} global gravitational 
+instability (GI) {\bf in} differentially rotating discs
+\citep{goldreich65,laughlin96b,laughlin98,nelson98,lodato05,forgan11}. Large-scale 
 spiral arms can provide significant angular momentum transport
-necessary for mass accretion \citep{lynden-bell72, papaloizou91,balbus99,lodato04}, and
-spiral structures due to GI are potentially observable with the Atacama Large 
-Millimeter/sub-millimeter Array \citep{cossins10,dipierror14}.   
-
-% when/where does it happen? formation stage/dead zones (special for ppd)
-GI can be expected in the earliest stages of 
-circumstellar disc formation
+necessary for mass accretion \citep{lynden-bell72,
+  papaloizou91,balbus99,lodato04}, and spiral structures due to GI are
+potentially observable with the Atacama Large
+Millimeter/sub-millimeter Array \citep{cossins10,dipierror14}. GI can
+be expected in the earliest stages of circumstellar disc formation 
 \citep{kratter10b,inutsuka10,tsukamoto13}, and may be possible in the
 outer parts of the disc \citep{rafikov05,matzner05,kimura12}.  
+
+Single-arm spirals, or eccentric modes, corresponding to perturbations 
+with azimuthal wavenumber $m=1$, have received interest in
+the context of protoplanetary discs because of their global nature
+\citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. 
+In the `SLING' mechanism proposed by \cite{shu90}, the $m=1$ {\bf
+  gravitational spiral} instability is attributed to motion of the
+central star induced by the one-armed perturbation and requires a
+massive disc \citep[the former may have observable consequences,
+][]{michael10}.    
+
+% The aforementioned analytical studies have adopted
+% barotropic, smooth disc models.
+% In this work, we identify a mechanism to generate one-
+% armed spiral patterns that is related to a non-barotropic
+% equation of state and disc structure.
+% We find that if the disc temperature or sound-speed is a
+% prescribed function of position, then one-armed spiral modes
+% can grow inside a cavity that results from the adopted disc
+% structure.
+
+%The aforementioned analytical studies have adopted barotropic, smooth
+%disc models. 
+
+{\bf
+  In this work we identify a new mechanism that leads to the growth of
+  one-armed spirals in astrophysical discs. We show
+  that when the disc temperature is prescribed (called locally isothermal
+  discs), the usual statement for the conservation of angular momentum
+  for linear perturbations acquires a source term proportional to the
+  temperature gradient. This permits angular momenum exchange between
+  linear perturbations and the background disc. This `background
+  torque' may act to destabilise low-frequency non-axisymmetric
+  trailing waves when the disc temperature decrease outwards.       
+}  
+
+{\bf We employ direct hydrodynamic simulations using three different
+  grid-based codes to demonstrate how this `background torque' 
+  can lead to the growth of one-armed spirals in radially structured, 
+  self-gravitating discs. This is despite the fact that our disc
+  models do not meet the requirements for the `SLING'
+  mechanism. Although our numerical simulations consider
+  self-gravitating discs, this `background torque' is generic for
+  locally isothermal discs and its existence does not depend
+  explicitly on disc self-gravity. Thus, the destabilisation effect we
+  describe should also be applicable to non-self-gravitating discs.  
+}
+
+This paper is organised as follows. We describe the system of interest
+and list the governing equations in 
+\S\ref{model}. {\bf In \S\ref{wkb} we use linear theory  to show
+  how a fixed temperature profile 
+  can destabilise non-axisymmetric waves in discs.} \S\ref{methods} describes
+the {\bf numerical setup and} hydrodynamic codes {\bf we use to 
+  demonstrate the growth of one-armed spirals due to an imposed
+  temperature gradient.} Our {\bf
+  simulation} results are presented in  \S\ref{results2d} for two-
+dimensional (2D) {\bf
+  discs} and \S\ref{results3d} for three-dimensional (3D) {\bf discs}, and we further
+discuss them in \S\ref{discussions}. We summarise in \S\ref{summary} 
+with a discussion on speculations for future work. 
+
+\input{model}
+\input{results}
+\input{results_3d}
+\input{discussion}
+\input{summary}
+
+{\bf
+\section*{Acknowledgments}
+This material is based upon work supported by the National Science Foundation under Grant No. 1228509.
+}
+\bibliographystyle{mn2e}
+\bibliography{ref}
+
+\appendix
+\input{appendix}
+
+\end{document}
+
+
+
+
 
 % In the case of protoplanetary discs, which have complex structure
 % \citep{armitage10}, GI can also occur in `dead
@@ -176,61 +258,3 @@ outer parts of the disc \citep{rafikov05,matzner05,kimura12}.
 
 %brief history of m=1 
 %stellar wobble from indiana group  
-Single-arm spirals, or eccentric modes, corresponding to perturbations 
-with azimuthal wavenumber $m=1$, have received interest in
-the context of protoplanetary discs because of their global nature
-\citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. 
-In the `SLING' mechanism proposed by \cite{shu90}, the $m=1$ spiral
-instability is attributed to motion of the central star induced by the
-one-armed perturbation and requires a massive disc \citep[the former may
-have observable consequences, ][]{michael10}. However, our numerical
-models do not have these features.   
-
-%these are self-gravitating instabilities
-
-The aforementioned analytical studies have adopted barotropic, smooth disc models. 
-In this work, we identify a mechanism to generate one-armed
-spiral patterns that is related to a non-barotropic equation of
-state and disc structure. We find that if the disc temperature or
-sound-speed is a prescribed function of position, then 
-one-armed spiral modes can grow inside a cavity that results from the
-adopted disc structure. 
-
-Our study is based on direct hydrodynamic simulations using three
-different grid-based codes, both in two-dimensions (2D) and
-three-dimensions (3D). We also apply linear
-theory to interpret simulation results. We find that, when the disc
-temperature is prescribed, the usual statement for the conservation of
-angular momentum for linear perturbations acquires a source term
-proportional to the temperature gradient, which may act to destabilise
-$m=1$ perturbations. Although we work with self-gravitating discs,
-this source term does not depend explicitly on disc self-gravity. Thus, the
-destabilisation effect we describe should also be applicable to
-non-self-gravitating discs. 
-
-This paper is organised as follows. In \S\ref{model} we list the
-governing equations and describe the disc equilibria under
-consideration. We briefly review basic results from linear theory in
-\S\ref{wkb} to aid our interpretation of numerical simulations. 
-\S\ref{methods} describes the hydrodynamic codes
-employed in this work and several diagnostic measures. Our main results are presented in 
-\S\ref{results2d} for 2D simulations and \S\ref{results3d} for 3D
-simulations, and we further analyse them in \S\ref{discussions}. 
-We summarise in \S\ref{summary}, with a discussion on
-speculations for future work. 
-
-\input{model}
-\input{results}
-\input{results_3d}
-\input{discussion}
-\input{summary}
-
-%\section*{Acknowledgments}
-
-\bibliographystyle{mn2e}
-\bibliography{ref}
-
-\appendix
-\input{appendix}
-
-\end{document}
