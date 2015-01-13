@@ -79,9 +79,9 @@
  density wave theory 
  to show that non-axisymmetric perturbations generally do not conserve
  their angular momentum in the presence of a forced temperature
- gradient. This implies an exchange of angular momentum
+ gradient. This implies an exchange of angular momentum 
  between linear perturbations and the background disc. In particular, 
- when the disturbance is a low-frequency
+ when the disturbance is a low-frequency 
  trailing wave and the disc temperature decreases outwards, this 
  interaction is unstable and leads to the growth of the wave.  
  We demonstrate this phenomenon through numerical hydrodynamic
@@ -89,12 +89,12 @@
  code and in 3D with  the ZEUS-MP and PLUTO codes.  We consider
  radially structured discs with a self-gravitating region which remains
  stable in the absence of a temperature gradient. However,
- when a temperature gradient is imposed we observe exponential growth of an one-armed  
+ when a temperature gradient is imposed we observe exponential growth of a one-armed  
  spiral mode (azimuthal wavenumber $m=1$) with co-rotation radius 
  outside the bulk of the spiral arm, resulting in a nearly-stationary
  one-armed spiral pattern.  The development of this one-armed 
  spiral does not require the movement of the central star, as found in previous studies. 
- Because destabilisation by the imposed temperature gradient does 
+ Because destabilisation by a forced temperature gradient does 
  not explicitly require disc self-gravity, we suggest this mechanism may also
  affect low-frequency one-armed oscillations in non-self-gravitating
  discs. 
@@ -102,18 +102,12 @@
 \end{abstract}
 
 
-%This might represent, for example, mass  
- % built-up in a circumstellar or protoplanetary
- % disc at the outer edge of a `dead zone', in which there
-  %is inefficient magneto-hydrodynamic turbulence to enable accretion. 
 
 \begin{keywords}
   accretion, accretion discs, hydrodynamics, instabilities, methods: numerical, protoplanetary discs 
 \end{keywords}
 
 \section{Introduction}\label{intro}
-% Protoplanetary discs are expected to contain complex structures
-% \citep{armitage11}, which directly impact planet formation theories.  
 An exciting development in the study of circumstellar 
 discs is the direct observation of large-scale, non-axisymmetric
 structures within them. These
@@ -145,47 +139,34 @@ be expected in the earliest stages of circumstellar disc formation
 outer parts of the disc \citep{rafikov05,matzner05,kimura12}.  
 
 Single-arm spirals, or eccentric modes, corresponding to perturbations 
-with azimuthal wavenumber $m=1$, have received interest in
+with azimuthal wavenumber $m=1$, have received interest in 
 the context of protoplanetary discs because of their global nature
 \citep{adams89,heemskerk92,laughlin96,tremaine01,papaloizou02,hopkins10}. 
-In the `SLING' mechanism proposed by \cite{shu90}, the $m=1$ {\bf
-  gravitational spiral} instability is attributed to motion of the
-central star induced by the one-armed perturbation and requires a
+In the `SLING' mechanism proposed by \cite{shu90}, a $m=1$ {\bf
+  gravitational} instability arises from the motion of the
+central star induced by the one-armed perturbation, and requires a
 massive disc \citep[the former may have observable consequences,
 ][]{michael10}.    
-
-% The aforementioned analytical studies have adopted
-% barotropic, smooth disc models.
-% In this work, we identify a mechanism to generate one-
-% armed spiral patterns that is related to a non-barotropic
-% equation of state and disc structure.
-% We find that if the disc temperature or sound-speed is a
-% prescribed function of position, then one-armed spiral modes
-% can grow inside a cavity that results from the adopted disc
-% structure.
-
-%The aforementioned analytical studies have adopted barotropic, smooth
-%disc models. 
 
 {\bf
   In this work we identify a new mechanism that leads to the growth of
   one-armed spirals in astrophysical discs. We show
   that when the disc temperature is prescribed (called locally isothermal
-  discs), the usual statement for the conservation of angular momentum
+  discs), the usual statement of the conservation of angular momentum
   for linear perturbations acquires a source term proportional to the
   temperature gradient. This permits angular momenum exchange between
   linear perturbations and the background disc. This `background
   torque' may act to destabilise low-frequency non-axisymmetric
-  trailing waves when the disc temperature decrease outwards.       
+  trailing waves when the disc temperature decreases outwards.       
 }  
 
 {\bf We employ direct hydrodynamic simulations using three different
   grid-based codes to demonstrate how this `background torque' 
   can lead to the growth of one-armed spirals in radially structured, 
   self-gravitating discs. This is despite the fact that our disc
-  models do not meet the requirements for the `SLING'
+  models do not meet the requirements for the `SLING' 
   mechanism. Although our numerical simulations consider
-  self-gravitating discs, this `background torque' is generic for
+  self-gravitating discs, the `background torque' is generic for
   locally isothermal discs and its existence does not require
   disc self-gravity. Thus, the destabilisation effect we
   describe should also be applicable to non-self-gravitating discs.  
@@ -228,35 +209,3 @@ Science Foundation under Grant No. 1228509.
 
 
 
-
-% In the case of protoplanetary discs, which have complex structure
-% \citep{armitage10}, GI can also occur in `dead
-% zones' --- sub-portions of the disc where the magneto-rotational
-% instability is ineffective for angular momentum transport
-% \citep{gammie96,turner08,landry13} and therefore has a reduced mass
-% accretion rate. Dead zones may then become
-% self-gravitating with sufficient mass built-up
-% \citep{armitage01,martin12,martin12b,zhu09,zhu10,zhu10b,bae13,bae14}.   
-
-% original motivation for this work (DZGI) 
-
-%A wide range of GIs can occur in  gaseous 
-%astrophysical discs 
-%\citep{papaloizou89,christo92,christo93,hadley11,hadley14}. 
-
-% It is then
-% of theoretical importance to clarify what type of GI is relevant to 
-% partially self-gravitating discs, such as a protoplanetary disc containing a 
-% massive dead zone. 
-% This work presents a first step towards this goal. Specifically, here we 
-% study a class of seemingly simple disc models which were found to 
-% consistently produce \emph{one-armed} spiral structures, despite not 
-% satisfying the usual requirements to generate them. 
-
-
-%through this work we identify a new method to generate one arm
-%spirals 
-%We therefore dedicate this study to verify their origin.     
-
-%brief history of m=1 
-%stellar wobble from indiana group  

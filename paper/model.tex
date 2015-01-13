@@ -43,14 +43,6 @@ $q=0$ has $H\propto R^{3/2}$, and $q=1$ corresponds to a
 
 
 
-%isolated system 
-% ang mom cons
-% The locally isothermal
-% equation of state allows us to apply standard linear density wave
-% theory for results interpretation. 
-% This allows us to consider
-%an isolated disc.   
-
 The 2D disc equations are obtained by replacing $\rho$ with the surface
 mass density $\Sigma$, $p$ becomes the vertically-integrated pressure, 
 and the 2D fluid velocity $\bm{v}$ is evaluated at the midplane, as are
@@ -61,13 +53,8 @@ delta function.
 
 
 \section{Linear density waves}\label{wkb}
-% In this paper we will mainly use non-linear hydrodynamic simulations to investigate the
-% stability of disc equilibria described 
-% above. However, it is useful to  interpret simulation results
-% using linear density theory. We list here the main definitions and
-% results from 2D linear theory, taken from \cite{lin11b} and
-% \cite{shu91}.  
-{\bf We highlight a key feature of locally isothermal discs that
+
+{\bf We describe a key feature of locally isothermal discs that
   enables angular momentum exchange between small disturbances and the
   background disc through an imposed radial temperature gradient. This
   conclusion results from the consideration of angular momentum
@@ -75,8 +62,7 @@ delta function.
   For simplicity, in this section we consider 2D discs. 
 }
 
-In a linear analysis, one assumes a steady axisymmetric background state, % such as
-% that defined in \S\ref{model},
+In a linear analysis, one assumes a steady axisymmetric background state, 
 which is then perturbed such that
 \begin{align}  
   \Sigma \to \Sigma(R) + \delta\Sigma_m(R)\exp{\left[\ii\left(-\sigma t +
@@ -86,9 +72,7 @@ and similarly for other variables, where $\sigma=\omega+\ii\gamma$ is
 a complex frequency with $\omega$ being the real frequency, 
 $\gamma$ the growth rate, and $m$ is an integer. We take $m>0$ without
 loss of generality.  
-%Since the background is
-%axisymmetric, we identify $\delta\Sigma_m(R)\exp{\left(-\ii\sigma
- %   t\right)} = \Sigma_m$ as defined for diagnostics. 
+
 
 The linearised mass and momentum equations are
 \begin{align}
@@ -111,8 +95,7 @@ These linearised equations can be combined into a single
 integro-differential equation eigenvalue problem. We defer a full
 {\bf numerical} exploration of the linear problem to a future study. Here, we {\bf
   discuss} some
-general properties of the linear perturbations. % that will be relevant
-% for describing simulation results. 
+general properties of the linear perturbations. 
 
 \subsection{Global angular momentum conservation for linear
   perturbations} \label{global_cons}
@@ -142,7 +125,7 @@ In Eq. \ref{angcons}, the background torque density $\tbg$ is
   -\frac{m}{2}\imag\left(\delta\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
 \end{align}
 and arises because we have adopted a locally isothermal equation of
-state. {\bf  We outline the
+state {\bf in the perturbed disk}. {\bf  We outline the
 derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}.} 
 
 In a barotropic fluid, such as a strictly isothermal disc,
@@ -159,8 +142,7 @@ of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
 then the local angular momentum density of the linear disturbance
 {\bf will} further increase (decrease) {\bf with time}. This implies the amplitude of the disturbance
 may grow by exchanging angular momentum with the background
-disc.%  In our disc models with $c_s^2\propto R^{-q}$, we expect the
-% growth rate of such an instability to scale with $q$. 
+disc.
 
 {\bf 
   We demonstrate instability for low-frequency modes 
@@ -168,9 +150,6 @@ disc.%  In our disc models with $c_s^2\propto R^{-q}$, we expect the
   angular momentum density 
   $\jlin<0$, and the background torque $T_\mathrm{BG}<0$ for
   appropriate perturbations and radial temperature gradients. 
-%, and show that
-%  low-frequency modes can be unstable when a radial 
-%  temperature gradient is imposed.  
 }
 
 \subsection{Angular momentum density of  non-axisymmetirc low-frequency modes}
@@ -207,9 +186,6 @@ $T_\mathrm{BG}$ in the local approximation, which we review first.
  % & \leq 0.
 %\end{align}
 
-
-
-
 \subsection{Local results}\label{local_approx}
 In the local approximation, perturbations are assumed to vary rapidly
 relative to any background gradients. The
@@ -225,7 +201,7 @@ Note that in the {\bf strictly} local approximation, {\bf where all
 ($m=0$) can be unstable. % (having an imaginary $\sigma$).     
 
 Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
-\omega/m$ of a neutral mode 
+\omega/m$ of a {\bf non-axisymmetric} neutral mode 
 , Eq. \ref{dispersion} can be solved 
 for $|k|$, 
 \begin{align}\label{wavenumber}
@@ -251,7 +227,7 @@ Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
 (long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
 waves.    
 
-The \emph{co-rotation radius} $R_c$ is where the pattern speed matches
+{\bf At the \emph{co-rotation radius} $R_c$} the pattern speed matches
 the fluid rotation,
 \begin{align}
   \Omega(R_c) = \Omega_p.
@@ -273,35 +249,15 @@ is given in \cite{shu91}. An important result, {\bf which holds for
 waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
 waves outside co-rotation ($R>R_c$) have positive angular
 momentum. 
-%The local approximation becomes less good for global modes,
-%but will nevertheless be useful for results interpretation.   
 
 \subsection{Unstable interaction between low-frequency modes 
   and the background disc due to an imposed temperature gradient}
-%The $m=1$ spiral that emerges in our simulations have low frequency
-%($\Omega_p < \Omega$), grows slowly ($\gamma\ll\Omega_p$) and its
-%spatial form is consistent local theory (\S\ref{fargo_m1}). 
-%{\bf
-%  We first regard a low-frequency, $m=1$ disturbance 
- % as a mode within the framework of local theory, satisfying the
- % % temperature gradient ignored in local theory
- % dispersion relation Eq. \ref{dispersion}. }
-%To demonstrate possible
-%instability, 
 {\bf 
 Here we show that the torque density acting on a low-frequency, 
 local mode due to the background temperature gradient can be negative, which 
 would enforce the mode, because it has negative angular momentum.  
 }
 
-% Note that
-% we will not be assuming a self-gravitating disc until the end of this
-% section. 
-%We begin by recalling the expression for the torque density due to a
-%locally isothermal equation of state,
-%\begin{align*}
- % T_\mathrm{BG} = - \frac{m}{2}\frac{dc_s^2}{dR}\imag\left(\delta\Sigma_m\xi_R^*\right).   
-%\end{align*}
 The Eulerian surface density perturbation is given by
 \begin{align}\label{den_pert}
   \delta\Sigma_m = -\nabla\cdot\left(\Sigma\bm{\xi}\right) 
@@ -355,34 +311,7 @@ expressions for $\jlin$ and $T_\mathrm{BG}$ for gives
 {\bf where the second equality uses $\xi_\phi \simeq
 2\ii \xi_R/m$ in the local approximation, as shown in  Appendix
 \ref{horizontal_displacements}.} 
- % {\bf
-% This holds for local modes of all frequencies and can be shown
-% explicitly by evaluating Eq. \ref{ang_mom_def} with 
-% \begin{align}
-%   \xi_\phi = -\frac{2\ii\Omega}{\sbar}\xi_R, 
-% \end{align}
-% consistent with the local approximation as shown in Appendix
-% \ref{horizontal_displacements}. 
-% }
-Then 
-%To further simplify this expression, we need to relate $\xi_R$ and
-%$\xi_\phi$. 
-% \begin{align}
-%   2\gamma \sim
-%   -\frac{dc_s^2}{dR}\frac{1}{k\Sigma^2\Omega}\frac{|\delta\Sigma_1|^2}{|\xi_R
-%     + \ii\xi_\phi|^2}.
-% \end{align}
-% Now, using $\delta\Sigma_m/\Sigma = -\ii k \xi_R - \ii m \xi_\phi/R$
-% in the local approximation, we have
-% \begin{align}
-%   2\gamma \sim -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R +
-%     \xi_\phi/kR|^2}{|\xi_R + \ii \xi_\phi|^2}
-%   \lesssim -\frac{dc_s^2}{dR}\frac{k}{\Omega}.
-% \end{align}
-% where we used $dc_s^2/dR <0$, $k>0$ and $|kR|\gg 1$ to obtain the
-% inequality. 
-%where we used $dc_s^2/dR <0$ and $k>0$ to obtain the inequality. 
-for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
+Then for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
 adopted in our disc models,  
 \begin{align}
   2\gamma \sim q\frac{c_s^2}{R}\frac{k}{m\Omega} \sim q h
@@ -407,27 +336,10 @@ where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
 }   
 
 
-% For perturbations in a self-gravitating disc with characteristic
-% wavenumber $k \sim \pi G \Sigma/c_s^2 \sim \Omega/Q c_s$, as seen in
-% our simulations, we have 
-% \begin{align}\label{theoretical_rate}
-%   \gamma \sim \frac{qh}{2Q}\Omega,
-% \end{align}
-% where we used $c_s/R\sim h\Omega$. 
-
-%For our fiducial disc models with
-%$q=1$, $Q=O(1)$, $h=0.05$, this gives $\gamma/\Omega \sim O(10^{-2})$,
-%consistent with simulation results. Specifically,
-%Eq. \ref{theoretical_rate} indicates the growth rate should increase
-%linearly with $q$ and $h$, as seen in the simulations
-%(Fig. \ref{fargo_varq_growth}---\ref{fargo_varh_growth}).     
-
-
 \section{Numerical simulations}\label{methods}
-%above discussion is generic for low-frequency non-axisymmetric modes,
-%but illustrate with a concrete example
+
 {\bf
-  We illustrate the destabilising effect of a fixed temperature
+  We demonstrate the destabilising effect of a fixed temperature
   gradient using numerical simulations. The above discussion is
   generic for low-frequency non-axisymmetric modes, but for
   simulations we will consider specific examples.  
@@ -442,7 +354,7 @@ where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
   low-frequency trapped one-armed ($m=1$) modes. 
   This is convenient because Eq. \ref{theoretical_rate} indicates that
   modes with small $m$ are
-  most favourable for destabilisation by an imposed temperature
+  more favourable for destabilisation by an imposed temperature
   gradient.  
 }
 
@@ -476,7 +388,6 @@ smooth disc. We choose
 \end{align}
 where $\Delta_{1,2} = \delta R \times H(R_{1,2})$. 
 
-%In 3D, we assume vertical hydrostatic balance
 The 3D disc structure is obtained by assuming vertical hydrostatic
 balance  
 \begin{align}
@@ -519,7 +430,7 @@ and similarly in 2D.
 \end{figure}
 
 \subsection{Codes}
-{\bf We use three independent grid-based codes to simulate the aforementioned
+{\bf We use three independent grid-based codes to simulate the above 
 system.} We adopt computational units such that
 $G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
 the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
