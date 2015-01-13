@@ -12,8 +12,7 @@ $H$. Because of the reduced resolution
 compared to 2D, we use a smooth perturbation by setting
 $\delta = 10^{-3}$ and $M=1$ in Eq. \ref{randpert}. This corresponds
 to a single $m=1$ disturbance in $R\in[R_1,R_2]$.
-%, which
-%eventually dominates in 2D simulations.  
+
 
 The 3D discs are initialised in approximate equilibrium only, so we
 first evolve the disc without perturbations using  
@@ -27,9 +26,7 @@ in the ZEUS-MP and PLUTO runs. We also ran simulations
 with a strictly isothermal equation of state ($q=0$), which display no
 growth compared to that with a temperature gradient.  This confirms
 the temperature gradient effect is the same in 3D. 
-%why no high m
-                                %modes as in 2D for iso disc?
-                                %resolution? 
+
 
 In the ZEUS-MP run, we observed high-$m$ disturbances developed near 
 the inner boundary initially, which is likely responsible for the
@@ -44,11 +41,10 @@ we measure similar growth rates in both codes:
 \end{align*}
 Both are somewhat smaller than the 2D simulations. {\bf This is
   possibily} because of the lower resolutions adopted in 3D {\bf
-  and/or because the effective Toomre parameter is larger in 3D which,
-  from Eq. \ref{theoretical_rate1}, is stabilising.} 
+  and/or because the effective Toomre parameter is larger in 3D
+  \citep{mamat10} which, from Eq. \ref{theoretical_rate1}, is
+  stabilising.}  
 
-% and/or the small softening length
-% employed in 2D. 
 %Rc = 8.6R_0
 
 \begin{figure}
@@ -65,9 +61,7 @@ Both are somewhat smaller than the 2D simulations. {\bf This is
 Visualisations of the 3D simulations are shown in   
 Fig. \ref{3d_prelim} for the disc midplane and near the upper disc
 boundary. The snapshots are chosen when the one-armed spirals in the two codes
-have reached comparable amplitudes. %The agreement between the codes,
-%as well as with the 2D simulations (Fig. \ref{2d_fargo_viz}), is
-%satisfactory. 
+have reached comparable amplitudes. 
 Both codes show similar one-armed patterns at either height, and the
 midplane snapshot is similar to the 2D simulation
 (Fig. \ref{fargo_2d}). 
@@ -108,7 +102,7 @@ increases away from the midplane. It remains
 small in our disc model ($|\Delta\rho_1| \lesssim 0.1$), but could become 
 significant with a larger vertical domain. This means that 3D 
 simulations are necessary to study the effect of the one-armed spiral
-on the exterior, non-self-gravitating disc.  
+on the exterior disc.  
    
 \begin{figure}
   \includegraphics[scale=0.47,clip=true,trim=0cm 0.79cm 0cm
@@ -129,7 +123,6 @@ we measure the three-dimensionality parameter $\Theta < 10^{-2}$
 horizontal motions. This supports a 2D approximation. On the other
 hand, we find  $\mathrm{max}|v_z/c_s|\sim 0.2$ which, although
 sub-sonic, is not very small.  
-%may increase with height 
 
 \subsection{Angular momentum conservation}   
 Fig. \ref{3d_angmom} shows the angular momentum evolution in the 3D 

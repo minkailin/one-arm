@@ -1,16 +1,13 @@
-%to discuss - fixed central star
-%application to ppd
-%do smooth disc results carry over to structured disks?
-
 \section{Discussion}\label{discussions} 
 {\bf
   We discuss below several issues related to self-gravitating
   discs in the context of our numerical simulations. However, it is
-  important to keep in mind that, strictly speaking, 
+  important to keep in mind that 
   the growth of the one-armed spiral in our simulations is
   \emph{not} a gravitational instability in the sense that
   destabilisation is through the background torque associated with a
-  forced temperature gradient, and not by self-gravitational torques.     
+  forced temperature gradient, and not by self-gravitational torques\footnote{In fact, additional simulations with $Q_\mathrm{out}=4$ still
+  develops the one-armed spiral, but with a smaller growth rate.}. 
 }
 
 {\bf
@@ -28,8 +25,8 @@
   
   \subsection{Role of Lindblad and co-rotation torques}
   One effect of self-gravity is to allow the one-armed spiral,
-  confined to $R\sim R_0$, to act as an external potential for the
-  exterior disc in $R\gtrsim R_0$. This is 
+  confined to $R\sim R_0$ in our models, to act as an external potential for the
+  exterior disc in $R>R_0$. This is 
   analogous to disc-satellite interaction 
   \citep{goldreich79}, where the embedded satellite exerts a torque on
   the disc at Lindblad and co-rotation resonances. 
@@ -42,13 +39,18 @@
   
   We confirmed this with additional FARGO simulations that exclude the
   co-rotation and outer Lindblad resonances (OLR) by reducing radial domain
-  size, setting $R_\mathrm{max} = 3 R_0$. This model still developed
+  size to $R_\mathrm{max} = 3 R_0$, which still developed 
   the one-armed spiral. 
+  %instability due to local exchange of angular momentum with the
+  %background disc 
+  %CR and LR do not play a role - extended outer disc not essential
+  %(but used here to avoid potential boundary effects) cannot exclude
+  %a priori 
 }
 
 
 {\bf
-  \subsection{Applicability to circumstellar discs}
+  \subsection{Applicability to protoplanetary discs}
   
   \subsubsection{Thermodynamic requirements}  
   % talk about additional simulations at high Q
@@ -67,8 +69,8 @@
   %one-armed low frequency spiral probably will not fragment because
   %co-rotation is far away 
 
-  A locally isothermal equation of state represents the limit
-  of infinitely short cooling (and heating) timescales, so the 
+  A locally isothermal equation of state represents the ideal limit
+  of infinitely short cooling and heating timescales, so the 
   disc temperature instantly returns to its initial value when 
   perturbed. The background torque is generally non-zero if the 
   resulting temperature profile has a non-zero radial gradient.  
@@ -109,13 +111,7 @@
   % quasi-steady in which cooling is balanced by heating due to
   % gravito-turbulence \citep{lodato04}. This would, in general, produce
   % a global radial temperature gradient.   
-  
-  % There
-  % is no real way to drive a long-lived quasi-steady, non-fragmenting,
-  % self-gravitating state because this is only possible if the system
-  % can remain quasi-stable though balancing heating and cooling (see,
-  % for example, Lodato & Rice 2004).   
-  
+     
   % where does the structure come from? (mass built up, planet gap, infall) 
  
   \subsubsection{Radial disc structure}
@@ -137,7 +133,9 @@
   \end{align}
   Then two $Q$-barriers may exist when the $Q^2$ profile
   rises more rapidly (decays more slowly) than $R^{-3/2}$
-  for decreasing (increasing) $R$. 
+  for decreasing (increasing) $R$. Note that 
+  Eq. \ref{qb_cond} does not necessarily require strong self-gravity
+  if $R_c$ is large. 
   
   A surface density bump can develop in 
   `dead zones' of protoplanetary 
@@ -157,12 +155,6 @@
   arms. Although this does not prove absence of the background torque,
   it is probably insignificant compared to gravitational torques. 
 
-%  There is some attempt to do so when discussing dead zones, but I
-%  doubt that the conditions there are actually suitable as such a
-%  region would either be stable, or cool very slowly and be
-%  susceptible to the growth of long-lived, high-m-mode spiral
-%  structure. 
-
   Another possibility is a gap opened by an embedded planet. In that case $Q$
   rises rapidly towards the gap centre since it is a region of low
   surface density. This can satisfy Eq. \ref{qb_cond}. Then the inner
@@ -175,134 +167,3 @@
 }
 
 
-% The simulations themselves consider an isothermal or locally
-% isothermal equation of state only.  Gammie (2001) and other work
-% since have shown that the evolution of self-gravitating discs
-% depends both on the stability criterion and on the balance between
-% heating and cooling.  If the cooling rate is fast, it is likely to
-% fragment, otherwise it will settle into a quasi-steady,
-% self-gravitating state.     
-
-% When considering isothermal simulations, the likely evolution is one
-% of two things.  It's either initially so unstable that the disc
-% quickly fragments, or it's initially stable enough that any initial
-% perturbations simply drives the system towards being even more
-% stable and the instability quickly weakens through rapid mass
-% transfer (see the work by Laughlin & Bodenheimer 1994/1996).  There
-% is no real way to drive a long-lived quasi-steady, non-fragmenting,
-% self-gravitating state because this is only possible if the system
-% can remain quasi-stable though balancing heating and cooling (see,
-% for example, Lodato & Rice 2004).   
-
-% In fact, in the conclusions it is suggested that the conditions used
-% in the simulation would require a cooling < 0.1 \Omega^{-1} which,
-% based on the work of Gammie 2001, would quickly lead to
-% fragmentation.  The reason it doesn't in the work considered here is
-% that the isothermal assumption assumes that there is some
-% equivalently fast heating mechanism but, in the work here, this is
-% not provided by the instability itself.  If it were, the simulations
-% would become very quickly unstable.  Also, if one looks at the work
-% of Clarke (2009), Rafikov (2005), and Rice & Armitage (2009) the
-% only region of a realistic disc where such rapid cooling is possible
-% is in the outer disc, but such regions are either very
-% gravitationally unstable and fragment, or quickly stablised by an
-% external heating source.  I guess it is possible that there could be
-% a scenario where this exactly produces the conditions assumed here,
-% but that would seem rather fine-tuned and it would be more likely
-% that an external heating source would simply stabilise the disc
-% (unless the disc were extremely massive and could remain unstable
-% even at reasonably high disc temperatures).  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%Furthermore, this
-%non-local interaction may be important for the long-term evolution of
-%the outer disc, since it gains angular momentum from the
-
-%also transport ang mom outwards
-
-
-% Having confirmed the $m=1$ spiral instability through numerical
-% simulations, we now use results from the simulations combined with
-% linear theory to construct an explanation for their growth. For
-% simplicity, we return to 2D discs. 
-
-% The dominant disturbance in our simulations is an one-armed, $m=1$
-% trailing spiral, and its growth is associated with the imposed temperature
-% gradient. As discussed in \S\ref{global_cons}, in a locally isothermal disc this imposed
-% temperature gradient generally results in a torque being exerted on
-% linear perturbations. An instability is therefore possible if the sign
-% of this torque is the same as that of the angular momentum associated
-% with the linear perturbation. 
-
-%associated angular mometum density is the same as that
-%of this
-% According to previous studies \citep{adams89}, our disc models
-% should not support $m=1$ linear spiral instabilities. This is because
-% our discs are not sufficiently massive ($M_d\lesssim 0.1M_*$) and, more
-% importantly, we have surpressed the motion of the central star. The 
-% latter can induce $m=1$ instabilities in massive discs  \citep{shu90}.   
-
-
-%the latter assumes  k=pi\Sigma G /c_s^2 is always the most favoured 
-
-% The temperature gradient affects the growth rate through the
-% explicit depdence of the background torque on $q$. The growth 
-% rate is also dependent on the underlying disturbance being
-% considered (i.e. through $k$ and $\bm{\xi}$ in
-% Eq. \ref{theoretical_rate0}). % Of course, the temperature gradient
-% % plays no role on local modes. However, other disc parameters such as
-% % $c_s^2$ may affect the mode that develops. 
-% The dependence on $h$ in 
-% Eq. \ref{theoretical_rate} assumes $k=\pi\Sigma G/c_s^2$ is always the
-% most favourable wavenumber for low-frequency modes.  
- 
-%By 
-%definition, the global temperature gradient does not affect modes in
-%local theory. 
-%however, changing $h$ may also modify the mode properties (since
-%temperature appears in local theory) in addition
-%to the magnitude of the temperature gradient. Thus, we expect the depedence of
-%the background torque on $q$ to be better described by
-%Eq. \{theoretical_rate} 
-
-%by definition, q does not affect local neutral modes
-%Of course, we assumed a neutral mode to obtain expressions
-%for $\jlin$ and $T_\mathrm{BG}$ in the first place, 
-%Recall that in local theory non-axisymmetric modes are stable for real
-%$k$  
-%Eq. \ref{theoretical_rate} should be interpreted
-%as an order-of-magnitude estimate of the perturbative effect of a
-%temperature gradient on local, low-frequency $m=1$ modes.  
-
-%neutral modes are not actually neutral)
-%gamma << omega_p << omega 
-%so
-%Eq. \ref{theoretical_rate} is only an order-of-magnitude
-%constraint. Nevertheless, the expected growth rate is in reasonable
-%agreement with numerical results. 
-
-%also total torque is integral -> may get cancelations 

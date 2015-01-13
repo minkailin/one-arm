@@ -35,8 +35,9 @@ where the sound-speed $c_s$ is given by
 where $c_{s0} = h R_0\Omega_k(R_0)$ and 
 $h$ is the disc aspect-ratio at the reference radius $R=R_0$, 
 $\Omega_k=\sqrt{GM_*/R^3}$ is the midplane Keplerian frequency, and
-$q$ is the imposed temperature gradient (since, for an ideal gas the
-temperature is proportional to $c_s^2$). The vertical disc scale-height is
+$q$ is the imposed temperature gradient since, for an ideal gas the
+temperature is proportional to $c_s^2$. {\bf For convenience we will
+  refer to $c_s^2$ as the disc temperature.} The vertical disc scale-height is
 defined by $H=c_s/\Omega_k$. Thus, a strictly isothermal disc with
 $q=0$ has $H\propto R^{3/2}$, and $q=1$ corresponds to a 
  disc with constant $H/R$. 
@@ -283,7 +284,7 @@ that this conclusion does not rely on the low-frequency approximation.
 However, if the linear disturbance under consideration \emph{is} a
 low-frequency mode, then it has negative angular
 momentum. If it is trailing and $dc_s^2/dR<0$, as is typical
-in astrophysical discs, then $T_\mathrm{BG}<0$, and
+in astrophysical discs, then $T_\mathrm{BG}<0$ and
 the background disc applies a negative torque on the disturbance,
 which further decreases its angular momentum. This suggests the {\bf
   mode} 
@@ -344,18 +345,18 @@ where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
   generic for low-frequency non-axisymmetric modes, but for
   simulations we will consider specific examples.  
   
-  There are two components to the destabilising mechanism.  First
+  There are two parts to the destabilising mechanism: 
   the disc should support low-frequency modes, which is then
   destabilised by an imposed temperature gradient. The latter is
   straight forward to implement by adopting a locally isothermal
   equation of state as described in \S\ref{model}.  For the former, we
   consider discs with a  
-  radially-structured Toomre $Q$ profile. We use local theory to show that such discs support
-  low-frequency trapped one-armed ($m=1$) modes. 
+  radially-structured Toomre $Q$ profile. We use local theory to show
+  that such discs can trap 
+  low-frequency one-armed ($m=1$) modes.  
   This is convenient because Eq. \ref{theoretical_rate} indicates that
   modes with small $m$ are
-  more favourable for destabilisation by an imposed temperature
-  gradient.  
+  more favourable for destabilisation. 
 }
 
 
@@ -461,9 +462,6 @@ length to prevent a numerical singularity. The FFT approach requires
 $\epsilon_g\propto R$ \citep{baruteau08}. In FARGO, $\epsilon_g$ is
 set to a fraction of $hR$.  
 
-% poisson kernal integration, softening 
-% where used?
-% BC
 \subsubsection{ZEUS-MP}
 ZEUS-MP  is a general-purpose finite difference
 code \citep{hayes06}. We use the code in 3D spherical geometry, covering
@@ -482,7 +480,6 @@ as described in \cite{boss80}. The expansion is truncated at
 $(l,m)=(\lmax,\mmax)$. This code was used in \cite{lin12b} for
 self-gravitating disc-planet simulations.  
 
-%used in lin 2012 
 \subsubsection{PLUTO} 
 PLUTO is a general-purpose Godunov code \citep{mignone07}. The grid
 setup is the same as that adopted in ZEUS-MP above. We configure the
@@ -496,8 +493,6 @@ harmonic expansion \citep{boss80}, as used for the boundary potential
 in ZEUS-MP. This version of PLUTO was used in \cite{lin14b} for
 self-gravitating disc-planet simulations, producing similar results to
 that of ZEUS-MP and FARGO.   
-
-%used in conference proceeding 
 
 \subsection{Diagnostics}
 
@@ -521,9 +516,7 @@ where $\Sigma_{00} = \Sigma_0(t=0)$. The time evolution of the
 $m^\mathrm{th}$ mode can be characterized by 
 assuming $\Sigma_m\propto\exp{(-\ii \sigma t)}$ as in linear
 theory. 
-%where
-%$\sigma = \omega + \ii\gamma$ is a complex frequency, $\omega$ being 
-%the real frequency and $\gamma$ is the growth rate. 
+
 The total non-axisymmetric surface density is 
 \begin{align}
   \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
@@ -537,8 +530,6 @@ The total disc angular momentum is
   &\phantom{=}+
   \sum_{m=1}^\infty2\pi\int_{R_\mathrm{min}}^{R_\mathrm{max}} 2R\real\left[\Sigma_m v_{\phi
       m}^*\right] RdR 
-  %&= \sum_{m=0}^\infty \int _{R_\mathrm{min}}^{R_\mathrm{max}}  j_m(R)
-  %dR 
   = \sum_{m=0}^\infty J_m. 
 \end{align}
 We will refer to $J_m$ as the
@@ -547,12 +538,6 @@ monitor numerical angular momentum conservation in the simulations.
 It is important to distinguish this empirical definition from the
 angular momentum of linear perturbations given in \S\ref{wkb}, which
 is defined through a conservation law. 
-
-%and we idenfity $J_m$ as the  
-%angular momentum associated with disc structure with
-%$m^\mathrm{th}$-fold symmetry, and $j_m$ the associated angular
-%momentum per unit length. We will use $J_m$ to monitor angular momentum 
-%conservation for the disc as a whole.  
 
 \subsubsection{Three-dimensionality}
 In 3D simulations we measure the importance of vertical motion with
@@ -576,61 +561,3 @@ integration is taken over $r\in[R_1,R_2]$ since this is where
 we find the perturbations to be confined. 
 
 
-
-
-
-% \begin{align}
-%   T_\mathrm{BG} &= -\frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\delta\Sigma_m \left(\frac{\delta
-%         v_{Rm}}{-\ii\sbar}\right)^*\right] \notag\\
-%   & = \frac{m}{2}\frac{dc_s^2}{dR}\imag\left[\ii \delta\Sigma_m \left(\frac{\delta
-%         v_{Rm}}{\sbar}\right)^*\right]
-% \end{align}
-% where we replaced the radial Lagrangian displacement by the Eulerian
-% radial velocity perturbation in Eq. \ref{baroclinic_torque}. 
-% The linearised momentum equations give
-% \begin{align}
-%   D\delta v_{Rm} =& 
-%   \ii\sbar\left[c_s^2\frac{d}{dR}\left(\frac{\delta\Sigma_m}{\Sigma}\right)
-%     + \frac{d}{dR}\delta\Phi_m\right] \notag\\ 
-%   &- \frac{2\ii
-%     m\Omega}{R}\left(c_s^2\frac{\delta\Sigma_m}{\Sigma} +
-%     \delta\Phi_m\right),
-% \end{align}
-% where $D\equiv \kappa^2 - \sbar^2$. 
-% We now invoke local theory by setting $d/dR \to \ii k$ where $k$ is
-% real, and using the local solution to the Poisson equation
-% \begin{align}
-%   \delta\Phi_m = -\frac{2\pi G}{|k|}\delta\Sigma_m 
-% \end{align}
-% \citep{shu91}. Then the radial velocity perturbation becomes
-% \begin{align}
-%   \delta v_{Rm} =
-%   \frac{1}{D}\frac{\delta\Sigma_m}{\Sigma}\left(\frac{2\pi G
-%       \Sigma}{|k|} - c_s^2\right)\left(k\sbar + \frac{2\ii
-%       m\Omega}{R}\right),
-% \end{align}
-% so that 
-% \begin{align}
-%   \ii\delta\Sigma_m \left(\frac{\delta v_{Rm}}{\sbar}\right)^* =
-%   \frac{1}{D^*}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
-%       \Sigma}{|k|} - c_s^2\right)\left(\ii k  + \frac{2
-%       m\Omega}{R\sbar^*}\right). 
-% \end{align}
-% For a neutral mode, $\sbar$, and therefore $D$ is real. Then, after
-% taking the imaginary part of the above expression, the torque
-% density is 
-% \begin{align}\label{tbg_explicit}
-%   T_\mathrm{BG} &=
-%   \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{D}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi G
-%       \Sigma}{|k|} - c_s^2\right)\right].
-% % &\simeq \frac{m}{2}\frac{dc_s^2}{dR}\left[\frac{k}{\left(\kappa^2 -
-% %         m^2\Omega^2\right)}\frac{|\delta\Sigma_m|^2}{\Sigma}\left(\frac{2\pi
-% %       G \Sigma}{|k|} - c_s^2\right)\right]. 
-% \end{align}
-% We now use the local dispersion relation,
-% Eq. \ref{dispersion}, to make the replacement $D = 2\pi G \Sigma |k| -
-% k^2c_s^2$ in the above expression. This gives
-% \begin{align}\label{tbg_simple}
-%   T_\mathrm{BG} =
-%   \frac{m}{2}\frac{dc_s^2}{dR}\frac{1}{k}\frac{|\delta\Sigma_m|^2}{\Sigma}.  
-% \end{align}  
