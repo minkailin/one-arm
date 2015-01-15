@@ -306,12 +306,14 @@ temperature would be unrealistically low.
 The high-m perturbations do in fact persist in the reference run 
 (Fig. 2), but it is overshadowed by the one-armed instability. 
 
-I note that Lodato & Rice (2004) cool their discs to zero temperature
+Lodato & Rice (2004) cool their discs to zero temperature
 which is balanced against shock-heating (as in many similar
-studies). The system we consider are closer to irradiated discs (Rice
-et al. 2011) in which the temperature is set externally (e.g. Boley
-2009), which may then give rise to the background torque (Section
-7.3.1). 
+studies). The systems we consider are closer to irradiated discs (Rice
+et al. 2011) in which the temperature is set externally 
+(e.g. Stamatellos &  Whitworth 2008, Boley 2009). I note that 
+such global simulations including heating (irradiation) and cooling 
+may not have been run long enough to see low-frequency modes 
+which grow slowly, and thus appear stable.  
 
 The properties of the disc as a whole, i.e. its total mass and outer
 radius, is not expected to be important as far as destabilisation by
