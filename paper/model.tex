@@ -139,7 +139,7 @@ exerted by the background disc on the perturbation.
 
 The important consequence of the background torque is the possibility
 of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
-(negative) and the background torque $\tbg$ is {\bf also} positive (negative),
+(negative) and $\tbg$ is {\bf also} positive (negative),
 then the local angular momentum density of the linear disturbance
 {\bf will} further increase (decrease) {\bf with time}. This implies the amplitude of the disturbance
 may grow by exchanging angular momentum with the background
@@ -153,7 +153,7 @@ disc.
   appropriate perturbations and radial temperature gradients. 
 }
 
-\subsection{Angular momentum density of  non-axisymmetirc low-frequency modes}
+\subsection{Angular momentum density of  non-axisymmetric low-frequency modes}
 From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
 form $\exp{(-\ii \sigma t)}$ with $\real{\sigma} = \omega$,  
 the angular momentum density associated with linear waves is
@@ -310,7 +310,7 @@ expressions for $\jlin$ and $T_\mathrm{BG}$ for gives
 %   \xi_\phi|^2}. 
 \end{align}
 {\bf where the second equality uses $\xi_\phi \simeq
-2\ii \xi_R/m$ in the local approximation, as shown in  Appendix
+2\ii \xi_R/m$ for low-frequency modes in the local approximation, as shown in  Appendix
 \ref{horizontal_displacements}.} 
 Then for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
 adopted in our disc models,  
@@ -440,7 +440,7 @@ the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.
 Our primary code is FARGO with self-gravity \citep{baruteau08}. This
 is a popular, simple finite-difference code for 2D discs. `FARGO' refers
 to its azimuthal transport algorithm, which removes the mean azimuthal
-velocity of the disc, thereby permit larger timesteps than that would otherwise be allowed
+velocity of the disc, thereby permit larger time-steps than that would otherwise be allowed
 by the usual Courant condition based on the full azimuthal
 velocity \citep{masset00a,masset00b}.     
 
@@ -515,9 +515,7 @@ The normalised surface density with azimuthal wavenumber $m$ is
 where $\Sigma_{00} = \Sigma_0(t=0)$. The time evolution of the
 $m^\mathrm{th}$ mode can be characterized by 
 assuming $\Sigma_m\propto\exp{(-\ii \sigma t)}$ as in linear
-theory. 
-
-The total non-axisymmetric surface density is 
+theory. The total non-axisymmetric surface density is 
 \begin{align}
   \Delta\Sigma = \frac{\Sigma - \Sigma_0}{\Sigma_0}. 
 \end{align}
