@@ -1,9 +1,10 @@
 I thank the reviewer for a timely report and for providing important 
 comments. I have re-structured the 
-paper to re-orientate this work in order to address
-the issues raised by the reviewer. The revisions are made in bold,
-which I further explain below in chronological order. Response to the
-reviewer's specific comments follow afterwards. 		
+paper to re-orientate this work, as well as run additional
+simulations, in order to address the issues raised by the
+reviewer. The revisions are made in bold, which I further explain
+below in chronological order. Response to the reviewer's specific
+comments follow afterwards. 	 	
 
 **********************************************************************
 
