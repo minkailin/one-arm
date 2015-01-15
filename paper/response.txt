@@ -99,9 +99,10 @@ Here I discuss possible relevance of the results to protoplanetary
 discs.  
 
 I state that the destabilising mechanism --- the background
-torque --- only exists in the presence of a fixed temperature
-gradient. This in turn requires the system to return to its initial
-temperature profile quickly when perturbed. 
+torque --- exists in the presence of a fixed temperature
+gradient. (It only vanishes identically for strictly 
+adiabatic/barotropic discs, see Appendix A.) This in turn requires the system t
+o return to its initial temperature profile quickly when perturbed. 
 
 I suggest that outer parts of protoplanetary discs, where rapid
 cooling may be possible and in which stellar irradiation can be
@@ -137,9 +138,7 @@ gravito-turbulence.
 I suggest planetary gaps as another possibility. For example, if a
 giant planet opens a gap in a constant-Q disc, then the trapping
 condition Eq. 49, may give rise to two Q-barriers at the outer gap
-edge. Note that this does not necessarly require strong self-gravity.  	 
-
-fukagawa 13 
+edge. Note that this does not necessarily require strong self-gravity.  	 
 
 
 Section 8: Summaryand conclusions
