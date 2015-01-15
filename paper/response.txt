@@ -139,6 +139,8 @@ giant planet opens a gap in a constant-Q disc, then the trapping
 condition Eq. 49, may give rise to two Q-barriers at the outer gap
 edge. Note that this does not necessarly require strong self-gravity.  	 
 
+fukagawa 13 
+
 
 Section 8: Summaryand conclusions
 
@@ -149,8 +151,8 @@ Seciton 8.1:
 
 At the end of this section I remind the reader that the background torque
 is a generic feature of locally isothermal discs. It may be relevant whenever 
-the disc temperature is set externally. Here, I mention another possible application in 
-Be star discs. 
+the disc temperature is set externally. Here, I mention another
+possible application in  Be star discs. 
 
 ************************************************************************
 
@@ -187,26 +189,30 @@ Lodato & Rice 2004).
 ************************************************************************
 Our disc models have radial structure. It is not clear how to  
 apply results obtained the above studies that use smooth discs to the 
-present work. 
+present work.  
 
-In a smooth disc non-axisymmetric gravitational instabilities can 
+In a smooth disc, non-axisymmetric gravitational instabilities can 
 operate when Q<1.5-1.7. This is satisfied in our reference disc model, 
 but this region is rather narrow, about 10 scale heights wide within the 
 surface density bump. It is not obvious that the high-m modes 
-observed early on in this simulation is a gravitational instability 
+observed early on in this simulation is a true gravitational instability 
 (Fig. 3, right panel), because the radial disc structure may permit 
 other hydrodynamical shear instabilities (Lovelace et al. 1999). 
 
 In any case, the high-m modes saturate at small amplitude (<0.01) and no 
-fragmentation is seen, even though the discs are (locally) isothermal. 
-Eventually a one-armed spiral grows, but as explained above, this is not 
-a gravitational instability in the usual sense.   
+fragmentation is seen (Fig. 2), even though the discs are (locally)
+isothermal and min(Q) ~ 1.3. Thus, our models concern 
+self-gravitating, but (effectively) gravitationally stable discs.  
+Eventually a one-armed spiral grows, but as explained above, this is
+not a gravitational instability in the usual sense.     
 
-Furthermore, fragmentation of the one-armed spiral is unlikely. Durisen
-
-
-
-
+Durisen, Hartquist & Pickett (2008) and Rogers & Wadsley (2012) 
+find that fragmentation occurs the corotation radius. However, the
+one-armed spirals in our simulations have low-frequency, so its 
+corotation radius is not within the spiral arm itself. This makes
+fragmentation unlikely (the one-armed spiral does not grow because 
+of self-gravity anyway). 
+*************************************************************************
 
 In fact, in the conclusions it is suggested that the conditions used
 in the simulation would require a cooling < 0.1 \Omega^{-1} which,
@@ -226,14 +232,23 @@ fine-tuned and it would be more likely that an external heating source
 would simply stabilise the disc (unless the disc were extremely
 massive and could remain unstable even at reasonably high disc
 temperatures).  
+*************************************************************************
+The value 0.1/Omega is based on a limited number of preliminary
+simulations that are currently underway. The critical thermal
+relaxation time may depend on the disc parameters. I mention this in
+Section 8.1. 
 
+I thank the reviewer for pointing out external heating. In Section
+7.3.1 I suggest that our disc models may be appropriate to describe
+the outer parts of protoplanetary discs that are subject to external
+irradiation such that they are gravitationally stable. 
 
+Note that stabilisation by external irradiation against  
+self-gravitational instabilities does not necessarily imply
+stablisation against the one-armed spiral instability described in
+this paper. 
 
-
-
-
-
-
+**************************************************************************
 When considering the reference run discussed on page 5, my suspicion
 is that the behaviour can largely be explained as being a consequence
 of the chosen numerical setup.  For example, the initial Q profile has
@@ -242,12 +257,42 @@ unstable.  The simulation is seeded with an initial high-m
 perturbation that decays quite quickly and is then replaced by a
 long-lived m=1 spiral mode that continues to grow and in which the
 growth rate depends on the imposed temperature profile.  
+***************************************************************************
+The minimum Q in the reference run is between 1.3 and 1.4 which,
+according to previous studies, should result in  
+strong non-axisymmetric gravitational instabilities (Durisen et
+al. 2007, Helled et al. 2013). This does not occur here, despite the
+simulations being (effectively) isothermal, which should favour
+GI. 
 
+Fig. 2 shows that the high-m modes do not decay over the simulation
+timescale, but it saturates at a small amplitude. Thus, if these
+high-m modes are GI, then GI is weak in our models despite having low
+Q.  
 
+One possible origin of discrepency is the fact that our discs are
+radially structured, while the aforementioned studies employ global
+smooth discs, or local disc models where any effect of global radial 
+structure are absent. It is not obvious that results from smooth-disc
+studies can be directly applied to structured discs. 
+  
+It is not unreasonable to study radially-structured discs. Realistic
+discs may not be described by smooth power-laws, e.g. a disc 
+with an gap induced by a planet (Section 7.3.2).  
 
+The numerical setup was chosen to effectively demonstrate the
+destabilising effect of the background torque (Section 5.2 and
+5.3). However, its occurence is not limited to the particular setup
+presented in Section 5 and 6. 
 
+I have performed additional simulations with 
+higher Q and simulations with only an inner bump edge (by setting a
+large R2, see Eq. 33). These simulations still developed the one-armed
+spiral, but require longer runs so high-resolution/3D is not
+feasible. A full parameter survey is beyond the scope of this work,
+but is the subject of a follow-up study.  
 
-
+***************************************************************************
 It's my view that if you used a realistic equation of state that
 included heating and cooling, the high-m mode instability would either
 persist (as suggested by Lodato & Rice 2004) or the system would
@@ -258,12 +303,25 @@ assumption about the central star mass and disc outer radius, my
 suspicion is that to have the Q profile used, the outer radius would
 either have to be very small (a very compact disc) or the disc
 temperature would be unrealistically low.  
+***************************************************************************
+The high-m perturbations do in fact persist in the reference run 
+(Fig. 2), but it is overshadowed by the one-armed instability. 
 
+I note that Lodato & Rice (2004) cool their discs to zero temperature
+which is balanced against shock-heating (as in many similar
+studies). The system we consider are closer to irradiated discs (Rice
+et al. 2011) in which the temperature is set externally (e.g. Boley
+2009), which may then give rise to the background torque (Section
+7.3.1). 
 
+The properties of the disc as a whole, i.e. its total mass and outer
+radius, is not expected to be important as far as destabilisation by
+the background torque is concerned. These parameters do not appear in
+our description of this effect (Section 3). In Section 7.3.2 I suggest
+disc-planet interaction as one possible origin for the required
+structure in the Q-profile to trap m=1 modes.   
 
-
-
-
+***************************************************************************
 I have a further issue with the m=1 mode.  In these simulations the
 central star is fixed.  As I understand it, the m=1 mode is not
 axi-symmetric and hence it would seem to me that if the central star
@@ -275,14 +333,19 @@ of mass fixed and this may have implications for the growth of
 instabilities in the disc).  It would certainly be interesting to know
 if you could get the same result as obtained here if the central star
 was allowed to move.  
+***************************************************************************
+The usual interpretation of m=1 gravitational instabilities is
+attributed to the motion of the central star (Adams, Ruden & Shu 1989,
+Shu et al. 1990, Heemskerk, Papaloizou, Savonije 1992). Moving the
+star with the disc requires a somewhat massive disc, which is not the
+case considered in this work. 
 
+I have performed simulations including the indirect potential, and
+thus allowing the star to move, which gave very similar results to
+those presented, i.e. the one-armed mode still develops. This is
+mentioned in Section 7.1. 
 
-
-
-
-
-
-
+***************************************************************************
 As I said at the beginning, I don't have any fundamental problems with
 how the paper is written, the problem it is trying to address, or how
 the assumptions and setup is explained.  The main issue is that I
@@ -297,5 +360,15 @@ do so when discussing dead zones, but I doubt that the conditions
 there are actually suitable as such a region would either be stable,
 or cool very slowly and be susceptible to the growth of long-lived,
 high-m-mode spiral structure. 
+****************************************************************************
+I have moved the issue of dead zones to Section 7.3.2. Dead
+zones may have the appropriate radial structure to trap one-armed
+modes. However, I state that, in agreement with the reviewer, dead
+zones may not have the suitable thermodynamic conditions to enable the 
+background torque. 
 
-
+I suggest a planetary gap as another possibility. I  
+highlight the transition disc around HD 142527 which shows a gap structure
+at large radii (>100AU), for which observations estimate a low, 
+but possibily stable Toomre Q value against self-gravity. Thus, the disc model 
+considered in this work may not be too artificial.       
