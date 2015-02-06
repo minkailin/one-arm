@@ -35,9 +35,9 @@ where the sound-speed $c_s$ is given by
 where $c_{s0} = h R_0\Omega_k(R_0)$ and 
 $h$ is the disc aspect-ratio at the reference radius $R=R_0$, 
 $\Omega_k=\sqrt{GM_*/R^3}$ is the midplane Keplerian frequency, and
-$q$ is the imposed temperature gradient since, for an ideal gas the
-temperature is proportional to $c_s^2$. {\bf For convenience we will
-  refer to $c_s^2$ as the disc temperature.} The vertical disc scale-height is
+$-q$ is the imposed temperature gradient since, for an ideal gas the
+temperature is proportional to $c_s^2$. For convenience we will
+  refer to $c_s^2$ as the disc temperature. The vertical disc scale-height is
 defined by $H=c_s/\Omega_k$. Thus, a strictly isothermal disc with
 $q=0$ has $H\propto R^{3/2}$, and $q=1$ corresponds to a 
  disc with constant $H/R$. 
@@ -55,13 +55,13 @@ delta function.
 
 \section{Linear density waves}\label{wkb}
 
-{\bf We describe a key feature of locally isothermal discs that
+ We describe a key feature of locally isothermal discs that
   enables angular momentum exchange between small disturbances and the
   background disc through an imposed radial temperature gradient. This
   conclusion results from the consideration of angular momentum
   conservation within the framework of linear perturbation theory. 
   For simplicity, in this section we consider 2D discs. 
-}
+
 
 In a linear analysis, one assumes a steady axisymmetric background state, 
 which is then perturbed such that
@@ -94,8 +94,8 @@ Eq. \ref{radmom}.  The linearised Poisson equation is
 
 These linearised equations can be combined into a single
 integro-differential equation eigenvalue problem. We defer a full
-{\bf numerical} exploration of the linear problem to a future study. Here, we {\bf
-  discuss} some
+ numerical exploration of the linear problem to a future study. Here, we 
+  discuss some
 general properties of the linear perturbations. 
 
 \subsection{Global angular momentum conservation for linear
@@ -126,8 +126,8 @@ In Eq. \ref{angcons}, the background torque density $\tbg$ is
   -\frac{m}{2}\imag\left(\delta\Sigma_m\xi_R^*\frac{dc_s^2}{dR}\right), 
 \end{align}
 and arises because we have adopted a locally isothermal equation of
-state {\bf in the perturbed disc}. {\bf  We outline the
-derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}.} 
+state in the perturbed disc.  We outline the
+derivation of $T_\mathrm{BG}$ in Appendix \ref{tbg_deriv}. 
 
 In a barotropic fluid, such as a strictly isothermal disc,
 $\tbg$ vanishes and the total angular momentum associated with
@@ -139,19 +139,19 @@ exerted by the background disc on the perturbation.
 
 The important consequence of the background torque is the possibility
 of instability if $\tbg\jlin>0$. That is, if $\jlin$ is positive
-(negative) and $\tbg$ is {\bf also} positive (negative),
+(negative) and $\tbg$ is also positive (negative),
 then the local angular momentum density of the linear disturbance
-{\bf will} further increase (decrease) {\bf with time}. This implies the amplitude of the disturbance
+ will further increase (decrease) with time. This implies the amplitude of the disturbance
 may grow by exchanging angular momentum with the background
 disc.
 
-{\bf 
+ 
   We demonstrate instability for low-frequency modes 
   ($|\omega|\ll m\Omega$) by explicitly showing its 
   angular momentum density 
   $\jlin<0$, and the background torque $T_\mathrm{BG}<0$ for
   appropriate perturbations and radial temperature gradients. 
-}
+
 
 \subsection{Angular momentum density of  non-axisymmetric low-frequency modes}
 From Eq. \ref{lin_ang_mom_cons} and assuming a time-dependence of the
@@ -163,21 +163,21 @@ the angular momentum density associated with linear waves is
       \xi_R^*\xi_\phi\right)\right].\label{ang_mom_def}  
 \end{align}
 For a low-frequency mode, $|\omega|\ll m\Omega$. Then neglecting the
-term $\omega|\bm{\xi}|^2$, {\bf we find}
+term $\omega|\bm{\xi}|^2$,  we find 
 \begin{align}
   \jlin &\simeq \frac{m\Sigma\Omega}{2}\left[-m|\bm{\xi}|^2 + \ii\left(\xi_R\xi_\phi^* -
       \xi_R^*\xi_\phi\right)\right]\notag\\
   & = -\frac{m\Sigma\Omega}{2}\left[ (m-1)|\bm{\xi}|^2 +  |\xi_R + \ii\xi_\phi|^2\right].
 %  & \leq 0.
 \end{align}
-{\bf
+
 Thus, non-axisymmetric ($m\geq1$) low-frequency modes generally have 
 negative angular momentum. If the mode loses (positive) angular momentum 
 to the background, then we can expect instability. We show 
 below how this is possible through a forced temperature
 gradient via the background torque. It is simplest to calculate
 $T_\mathrm{BG}$ in the local approximation, which we review first.  
-}
+
 
 %and setting $m=1$,
 %\begin{align}
@@ -197,12 +197,12 @@ disc is
   (\sigma - m\Omega)^2 = \kappa^2 + k^2c_s^2 - 2\pi G \Sigma |k|, 
 \end{align}
 where $k$ is a real wavenumber such that $|kR|\gg1$ \citep{shu91}. 
-Note that in the {\bf strictly} local approximation, {\bf where all
-  global effects are neglected}, only axisymmetric perturbations
+Note that in the strictly local approximation, where all
+  global effects are neglected, only axisymmetric perturbations
 ($m=0$) can be unstable. % (having an imaginary $\sigma$).     
 
 Given the real frequency $\omega$ or pattern speed $\Omega_p\equiv  
-\omega/m$ of a {\bf non-axisymmetric} neutral mode 
+\omega/m$ of a non-axisymmetric neutral mode 
 , Eq. \ref{dispersion} can be solved 
 for $|k|$, 
 \begin{align}\label{wavenumber}
@@ -228,7 +228,7 @@ Eq. \ref{wavenumber}, the upper (lower) sign correspond to short
 (long) waves, and $k>0$ ($k<0$) correspond to trailing (leading)
 waves.    
 
-{\bf At the \emph{co-rotation radius} $R_c$} the pattern speed matches
+ At the \emph{co-rotation radius} $R_c$ the pattern speed matches
 the fluid rotation,
 \begin{align}
   \Omega(R_c) = \Omega_p.
@@ -245,19 +245,19 @@ According to Eq. \ref{wavenumber}, purely wave-like solutions with
 real $k$ are only possible where $Q^2(1-\nu^2)\leq1$.  
 
 A detailed discussion of the properties of local density waves 
-is given in \cite{shu91}. An important result, {\bf which holds for
-  waves of all frequencies}, is that
+is given in \cite{shu91}. An important result, which holds for
+  waves of all frequencies, is that
 waves interior to co-rotation ($R<R_c$) have negative angular momentum, while
 waves outside co-rotation ($R>R_c$) have positive angular
 momentum. 
 
 \subsection{Unstable interaction between low-frequency modes 
   and the background disc due to an imposed temperature gradient}
-{\bf 
+ 
 Here we show that the torque density acting on a 
 local mode due to the background temperature gradient can be negative, which 
 would enforce low-frequency modes, because they have negative angular momentum.  
-}
+
 
 The Eulerian surface density perturbation is given by
 \begin{align}\label{den_pert}
@@ -270,8 +270,8 @@ side of Eq. \ref{den_pert} can be neglected. Then
 \begin{align}
   \delta\Sigma _m  \simeq -\ii k \Sigma \xi_R.
 \end{align}
-{\bf Inserting this into the expression for the background torque,
-  Eq. \ref{baroclinic_torque}, we find}
+ Inserting this into the expression for the background torque,
+  Eq. \ref{baroclinic_torque}, we find 
 \begin{align}
   T_\mathrm{BG} = \frac{m}{2}\frac{dc_s^2}{dR}k\Sigma |\xi_R|^2. \label{baroclinic_torque1}
 \end{align}
@@ -286,8 +286,8 @@ low-frequency mode, then it has negative angular
 momentum. If it is trailing and $dc_s^2/dR<0$, as is typical
 in astrophysical discs, then $T_\mathrm{BG}<0$ and
 the background disc applies a negative torque on the disturbance,
-which further decreases its angular momentum. This suggests the {\bf
-  mode} 
+which further decreases its angular momentum. This suggests the 
+  mode  
 amplitude will grow.  
 
 Using $\jlin$ and $T_\mathrm{BG}$, we can estimate the 
@@ -309,23 +309,23 @@ expressions for $\jlin$ and $T_\mathrm{BG}$ for gives
 %  -\frac{dc_s^2}{dR}\frac{k}{\Omega}\frac{|\xi_R|^2}{|\xi_R + \ii
 %   \xi_\phi|^2}. 
 \end{align}
-{\bf where the second equality uses $\xi_\phi \simeq
+ where the second equality uses $\xi_\phi \simeq
 2\ii \xi_R/m$ for low-frequency modes in the local approximation, as shown in  Appendix
-\ref{horizontal_displacements}.} 
+\ref{horizontal_displacements}. 
 Then for the temperature profiles $c_s^2 = c_{s0}^2 (R/R_0)^{-q}$ as
 adopted in our disc models,  
 \begin{align}
   2\gamma \sim q\frac{c_s^2}{R}\frac{k}{m\Omega} \sim q h
   \left(\frac{kH}{m}\right)\Omega,\label{theoretical_rate}
 \end{align}
-where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
+where we used $c_s\sim H\Omega\sim hR\Omega$. 
   Eq. \ref{theoretical_rate} suggests that perturbations with small
   radial length-scales ($kH\gtrsim m$) are most favourable for
   destabilisation. Taking the local approximation is then
-  appropriate.}       
+  appropriate.   
 
 
-{\bf Note that the derivation of Eq. \ref{baroclinic_torque1} and 
+ Note that the derivation of Eq. \ref{baroclinic_torque1} and 
   Eq. \ref{theoretical_rate} do not 
   require the disc to be self-gravitating. Thus, destabilisation by the
   background torque is not directly associated with disc
@@ -334,12 +334,11 @@ where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
   of disc parameters (as done in \S\ref{fargo_m1}), we need to insert a 
   value of $k$, which may depend on disc    
   self-gravity (e.g. from Eq. \ref{wavenumber}).  
-}   
+   
 
 
 \section{Numerical simulations}\label{methods}
 
-{\bf
   We demonstrate the destabilising effect of a fixed temperature
   gradient using numerical simulations. The above discussion is
   generic for low-frequency non-axisymmetric modes, but for
@@ -357,7 +356,6 @@ where we used $c_s\sim H\Omega\sim hR\Omega$. {\bf
   This is convenient because Eq. \ref{theoretical_rate} indicates that
   modes with small $m$ are
   more favourable for destabilisation. 
-}
 
 
 \subsection{Disc model and initial conditions}
@@ -431,8 +429,8 @@ and similarly in 2D.
 \end{figure}
 
 \subsection{Codes}
-{\bf We use three independent grid-based codes to simulate the above 
-system.} We adopt computational units such that
+We use three independent grid-based codes to simulate the above 
+system. We adopt computational units such that
 $G=M_*=R_0=1$. Time is measured  in the Keplerian orbital period at
 the reference radius, $P_0\equiv  2\pi/\Omega_k(R_0)$.   
 
